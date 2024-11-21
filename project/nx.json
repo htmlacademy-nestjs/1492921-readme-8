@@ -38,7 +38,8 @@
         "apps/account-e2e/**/*",
         "blog-e2e/**/*",
         "file-vault-e2e/**/*",
-        "comment-e2e/**/*"
+        "comment-e2e/**/*",
+        "notify-e2e/**/*"
       ]
     }
   ]
