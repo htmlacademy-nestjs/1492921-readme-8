@@ -1,1 +1,2 @@
-export * from './lib/shared-helpers';
+// Ре-экспорт модулей из `./lib`
+export * from './lib/common';
