@@ -17,6 +17,7 @@
     "paths": {
       "@project/authentication": ["libs/account/authentication/src/index.ts"],
       "@project/blog-user": ["libs/account/blog-user/src/index.ts"],
+      "@project/data-access": ["libs/data-access/src/index.ts"],
       "@project/shared-helpers": ["libs/shared-helpers/src/index.ts"],
       "@project/shared-types": ["libs/shared-types/src/index.ts"]
     }
