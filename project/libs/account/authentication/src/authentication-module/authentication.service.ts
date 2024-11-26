@@ -27,10 +27,11 @@ export class AuthenticationService {
       passwordHash: '',
     };
 
-    const existUser = await this.blogUserRepository.findByEmail(email);
-
-    if (existUser) {
-      throw new ConflictException(AuthUserError.UserExists);
+    if (await this.blogUserRepository.findByEmail(email)) {
+      throw new ConflictException(AuthUserError.EmailExists);
+    }
+    if (await this.blogUserRepository.findByLogin(login)) {
+      throw new ConflictException(AuthUserError.LoginExists);
     }
 
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
