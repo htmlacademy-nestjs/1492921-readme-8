@@ -4,9 +4,9 @@ import { StorableEntity, AuthUser } from '@project/shared-types';
 export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
   public email: string;
   public login: string;
-  public firstname: string;
-  public lastname: string;
+  public name: string;
   public avatarUrl: string;
+  public registerDate: Date;
   public passwordHash: string;
 
   constructor(user?: AuthUser) {
@@ -21,10 +21,10 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
 
     this.id = user.id ?? '';
     this.email = user.email;
-    this.login = user.login;
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
-    this.avatarUrl = user.avatarUrl;
+    this.login = user.login ?? user.email;
+    this.name = user.name ?? this.login;
+    this.avatarUrl = user.avatarUrl ?? '';
+    this.registerDate = user.registerDate;
     this.passwordHash = user.passwordHash;
   }
 
@@ -33,9 +33,9 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
       id: this.id,
       email: this.email,
       login: this.login,
-      firstname: this.firstname,
-      lastname: this.lastname,
+      name: this.name,
       avatarUrl: this.avatarUrl,
+      registerDate: this.registerDate,
       passwordHash: this.passwordHash,
     };
   }
