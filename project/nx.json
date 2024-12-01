@@ -36,10 +36,10 @@
       },
       "exclude": [
         "apps/account-e2e/**/*",
-        "blog-e2e/**/*",
-        "file-vault-e2e/**/*",
-        "comment-e2e/**/*",
-        "notify-e2e/**/*"
+        "apps/blog-e2e/**/*",
+        "apps/file-vault-e2e/**/*",
+        "apps/comment-e2e/**/*",
+        "apps/notify-e2e/**/*"
       ]
     }
   ]
