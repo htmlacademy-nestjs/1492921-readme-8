@@ -1,7 +1,7 @@
 {
   "name": "comment",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "comment/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/comment/src",
   "projectType": "application",
   "tags": [],
   "targets": {

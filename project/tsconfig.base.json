@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -14,7 +15,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@project/authentication": ["libs/account/authentication/src/index.ts"],
+      "@project/blog-post": ["libs/blog/blog-post/src/index.ts"],
+      "@project/blog-user": ["libs/account/blog-user/src/index.ts"],
+      "@project/data-access": ["libs/data-access/src/index.ts"],
+      "@project/shared-helpers": ["libs/shared-helpers/src/index.ts"],
+      "@project/shared-types": ["libs/shared-types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
