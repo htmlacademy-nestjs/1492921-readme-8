@@ -1,0 +1,20 @@
+# Create a new post
+POST http://localhost:3000/api/posts/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "postType": "text",
+  "authorId": "dd89cfe4-b0bc-4798-b144-05230bc80ee5",
+  "tags": [ "Ford", "BMW", "Fiat" ],
+  "name": "Первый пост",
+  "preview": "Превью текста",
+  "text": "Текст поста"
+}
+
+###
+
+# Get post by ID
+GET http://localhost:3000/api/posts/7aef6925-4fe5-4057-b5cc-cc7cf214df05 HTTP/1.1
+
+###
+
