@@ -11,8 +11,8 @@ export function getMongooseOptions(): MongooseModuleAsyncOptions {
           password: config.get<string>('db.password'),
           host: config.get<string>('db.host'),
           port: config.get<string>('db.port'),
-          authDatabase: config.get<string>('db.authBase'),
           databaseName: config.get<string>('db.name'),
+          authDatabase: config.get<string>('db.authBase'),
         }),
       };
     },
