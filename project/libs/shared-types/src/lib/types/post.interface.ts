@@ -1,7 +1,7 @@
 import { PostState } from './post-state.enum';
 import { PostType } from './post-type.enum';
 
-export interface BasePost {
+export interface Post {
   id?: string;
   postType: PostType;
   authorId: string;
@@ -9,41 +9,70 @@ export interface BasePost {
   repostId?: string;
   repostAuthorId?: string; // Избыточно
   tags?: string[];
-  state: PostState; // Избыточно
-  createDate: Date;
-  publicationDate: Date;
-  likesCount: number; // Избыточно
-  commentsCount: number; // Избыточно
+  state?: PostState; // Избыточно
+  createDate?: Date;
+  publicationDate?: Date;
+  likesCount?: number; // Избыточно
+  commentsCount?: number; // Избыточно
+  name?: string;
+  url?: string;
+  preview?: string;
+  text?: string;
+  quoteAuthorId?: string;
+  quoteText?: string;
+  description?: string;
 }
 
-export interface VideoPost extends BasePost {
-  name: string;
-  url: string;
-}
+// export interface BasePost {
+//   id?: string;
+//   postType: PostType;
+//   authorId: string;
+//   isRepost: boolean; // Избыточно
+//   repostId?: string;
+//   repostAuthorId?: string; // Избыточно
+//   tags?: string[];
+//   state?: PostState; // Избыточно
+//   createDate?: Date;
+//   publicationDate?: Date;
+//   likesCount?: number; // Избыточно
+//   commentsCount?: number; // Избыточно
+// }
 
-export interface TextPost extends BasePost {
-  name: string;
-  preview: string;
-  text: string;
-}
+// export interface VideoPost extends BasePost {
+//   //postType: PostType.Video;
+//   name: string;
+//   url: string;
+// }
 
-export interface QuotePost extends BasePost {
-  quoteAuthorId: string;
-  quoteText: string;
-}
+// export interface TextPost extends BasePost {
+//   //postType: PostType.Text;
+//   name: string;
+//   preview: string;
+//   text: string;
+// }
 
-export interface PhotoPost extends BasePost {
-  url: string;
-}
+// export interface QuotePost extends BasePost {
+//   //postType: PostType.Quote;
+//   quoteAuthorId: string;
+//   quoteText: string;
+// }
 
-export interface LinkPost extends BasePost {
-  description: string;
-  url: string;
-}
+// export interface PhotoPost extends BasePost {
+//   // postType: PostType.Photo;
+//   url: string;
+// }
 
-export interface Post
-  extends VideoPost,
-    TextPost,
-    QuotePost,
-    PhotoPost,
-    LinkPost {}
+// export interface LinkPost extends BasePost {
+//   //postType: PostType.Link;
+//   description: string;
+//   url: string;
+// }
+
+// //export type Post = TextPost | VideoPost | QuotePost | PhotoPost | LinkPost;
+
+// export interface Post
+//   extends VideoPost,
+//     TextPost,
+//     QuotePost,
+//     PhotoPost,
+//     LinkPost {}
