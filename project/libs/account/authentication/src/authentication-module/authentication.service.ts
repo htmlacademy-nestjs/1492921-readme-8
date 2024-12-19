@@ -4,7 +4,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
