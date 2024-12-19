@@ -20,7 +20,7 @@ export class CreateUserDto {
     description: 'User avatar',
     example: 'https://16.design.htmlacademy.pro/static/avatar/5.jpg',
   })
-  public avatarUrl: string;
+  public avatarUrl?: string;
   @ApiProperty({
     description: 'User password',
     example: '123456',

@@ -19,9 +19,11 @@ export abstract class BaseMongoRepository<
       return null;
     }
 
-    const plainObject = document.toObject({ versionKey: false }) as ReturnType<
-      T['toPOJO']
-    >;
+    const plainObject = document.toObject({
+      getters: true,
+      flattenObjectIds: true,
+      versionKey: false,
+    }) as ReturnType<T['toPOJO']>;
     return this.entityFactory.create(plainObject);
   }
 
@@ -30,24 +32,13 @@ export abstract class BaseMongoRepository<
     return this.createEntityFromDocument(document);
   }
 
-  public async save(entity: T): Promise<void> {
-    console.log('entity');
-    console.log(entity);
+  public async save(entity: T): Promise<T> {
     const newEntity = new this.model(entity.toPOJO());
     await newEntity.save();
-
-    console.log('toPOJO');
-    console.log(entity.toPOJO());
-    console.log('newEntity');
-    console.log(newEntity);
-
-    entity.id = newEntity.id.toString();
-
-    console.log('Entity');
-    console.log(entity);
+    return this.createEntityFromDocument(newEntity);
   }
 
-  public async update(entity: T): Promise<void> {
+  public async update(entity: T): Promise<T> {
     const updatedDocument = await this.model
       .findByIdAndUpdate(entity.id, entity.toPOJO(), {
         new: true,
@@ -58,6 +49,7 @@ export abstract class BaseMongoRepository<
     if (!updatedDocument) {
       throw new NotFoundException(`Entity with id ${entity.id} not found`);
     }
+    return this.createEntityFromDocument(updatedDocument);
   }
 
   public async deleteById(id: T['id']): Promise<void> {

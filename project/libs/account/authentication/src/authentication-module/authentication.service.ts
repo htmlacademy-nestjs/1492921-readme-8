@@ -31,7 +31,6 @@ export class AuthenticationService {
       login,
       name,
       avatarUrl,
-      registerDate: dayjs().toDate(),
       passwordHash: '',
     };
 
@@ -43,10 +42,7 @@ export class AuthenticationService {
     }
 
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
-
-    this.blogUserRepository.save(userEntity);
-
-    return userEntity;
+    return await this.blogUserRepository.save(userEntity);
   }
 
   public async verifyUser(dto: LoginUserDto) {

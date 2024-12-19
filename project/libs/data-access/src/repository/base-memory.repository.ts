@@ -20,20 +20,23 @@ export abstract class BaseMemoryRepository<
     return this.entityFactory.create(foundEntity);
   }
 
-  public async save(entity: T): Promise<void> {
+  public async save(entity: T): Promise<T> {
     if (!entity.id) {
       entity.id = randomUUID();
     }
-
-    this.entities.set(entity.id, entity.toPOJO());
+    const newEntity = entity.toPOJO();
+    this.entities.set(entity.id, newEntity);
+    return entity;
   }
 
-  public async update(entity: T): Promise<void> {
+  public async update(entity: T): Promise<T> {
     if (!this.entities.has(entity.id)) {
       throw new Error('Entity not found');
     }
 
-    this.entities.set(entity.id, entity.toPOJO());
+    const newEntity = entity.toPOJO();
+    this.entities.set(entity.id, newEntity);
+    return entity;
   }
 
   public async deleteById(id: T['id']): Promise<void> {

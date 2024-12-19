@@ -4,5 +4,5 @@ export interface User {
   login: string;
   name: string;
   avatarUrl?: string;
-  registerDate: Date;
+  registerDate?: Date;
 }

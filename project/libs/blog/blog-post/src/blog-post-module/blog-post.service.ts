@@ -9,9 +9,9 @@ import { CreatePostDto } from '../dto/create-post.dto';
 //import { Post, PostState, PostType } from '@project/shared-types';
 //import { blogPostError } from './blog-post.constant';
 
-Injectable();
+@Injectable()
 export class BlogPostService {
-  constructor(private readonly blogPostRepository: BlogPostRepository) {}
+  constructor(private blogPostRepository: BlogPostRepository) {}
 
   public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
     // const {
@@ -62,10 +62,7 @@ export class BlogPostService {
     // }
 
     const newPost = BlogPostFactory.createFromCreatePostDto(dto);
-    console.log('blogPostRepository');
-    console.log(this.blogPostRepository);
     await this.blogPostRepository.save(newPost);
-
     return newPost;
   }
 

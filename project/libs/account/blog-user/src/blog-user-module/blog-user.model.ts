@@ -5,7 +5,7 @@ import { AuthUser } from '@project/shared-types';
 
 @Schema({
   collection: 'accounts',
-  timestamps: true,
+  timestamps: { createdAt: 'registerDate' },
 })
 export class BlogUserModel extends Document implements AuthUser {
   @Prop({
@@ -29,7 +29,7 @@ export class BlogUserModel extends Document implements AuthUser {
   public avatarUrl: string;
 
   @Prop({
-    required: true,
+    required: false,
   })
   public registerDate: Date;
 
