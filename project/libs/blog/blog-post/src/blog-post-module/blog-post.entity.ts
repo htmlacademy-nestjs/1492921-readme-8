@@ -47,8 +47,8 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.state = post.state;
     this.createDate = post.createDate;
     this.publicationDate = post.publicationDate;
-    this.likesCount = post.likesCount;
-    this.commentsCount = post.commentsCount;
+    this.likesCount = post.likesCount ?? 0;
+    this.commentsCount = post.commentsCount ?? 0;
 
     this.name = post.name ?? '';
     this.url = post.url ?? '';
@@ -59,7 +59,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.description = post.description ?? '';
   }
 
-  toPOJO(): Post {
+  public toPOJO(): Post {
     return {
       id: this.id,
       postType: this.postType,
