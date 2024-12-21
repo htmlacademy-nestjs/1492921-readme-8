@@ -3,9 +3,9 @@ POST http://localhost:3000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "Alex@nmail.ru",
-  "login": "Alexey",
-  "name": "Alexey Ivanov",
+  "email": "Petrov@nmail.ru",
+  "login": "PetrovIvan",
+  "name": "Ivan Petrov",
   "password": "12345678"
 }
 
