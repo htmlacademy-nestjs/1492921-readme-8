@@ -1,5 +1,5 @@
 export default {
-  displayName: 'models',
+  displayName: 'blog-models',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
