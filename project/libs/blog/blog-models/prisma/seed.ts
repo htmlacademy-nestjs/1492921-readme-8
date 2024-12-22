@@ -1,7 +1,5 @@
 import { PostType, PrismaClient } from '@prisma/client';
 
-const TAGS = ['#auto', '#travel', '#database'];
-
 const FIRST_POST_UUID = '2b7a9322-353a-41e4-b009-4c1a83ad15e5';
 const SECOND_POST_UUID = '7e00699f-5847-45bb-9227-7c59190d0470';
 
@@ -63,14 +61,6 @@ function getPosts() {
 }
 
 async function seedDb(prismaClient: PrismaClient) {
-  for (const tag of TAGS) {
-    await prismaClient.tag.upsert({
-      where: { name: tag },
-      update: {},
-      create: { name: tag },
-    });
-  }
-
   const mockPosts = getPosts();
 
   for (const post of mockPosts) {
