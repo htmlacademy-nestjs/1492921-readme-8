@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://user_blog:12345678@localhost:5432/readme_blog"  //env("DATABASE_URL")
+}
+
+enum PostType {
+  Video
+  Text
+  Quote
+  Photo
+  Link
+}
+
+model Post {
+  id                  String        @id @default(uuid())
+  postType            PostType      @map("post_type")
+  authorId            String        @map("author_id")
+  repostId            String?       @map("repost_id")
+  tags                Tag[]
+  createDate          DateTime      @default(now()) @map("create_date")
+  publicationDate     DateTime      @map("public_date")
+  likesCount          Int           @default(0) @map("likes_count")
+  commentsCount       Int           @default(0) @map("comments_count")
+  name                String?
+  url                 String?
+  preview             String?
+  text                String?
+  quoteAuthorId       String?       @map("quote_author_id")
+  quoteText           String?       @map("quote_text")
+  description         String?
+  comments            Comment[]
+  likes               Like[]
+  originalPost        Post?          @relation("PostReposts", fields: [repostId], references: [id])
+  reposts             Post[]         @relation("PostReposts")
+  @@index([authorId])
+  @@index([createDate])
+  @@index([likesCount])
+  @@index([commentsCount])
+
+  @@map("posts")
+}
+
+model Tag {
+  name                String        @id
+  posts               Post[]
+  @@index([name])
+
+  @@map("tags")
+}
+
+model Comment {
+  id                  String        @id @default(uuid()) @map("id")
+  postId              String        @map("post_id")
+  userId              String        @map("user_id")
+  text                String
+  createDate          DateTime      @default(now()) @map("create_date")
+  post                Post          @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("comments")
+}
+
+model Like {
+  userId              String        @map("user_id")
+  postId              String        @map("post_id")
+  post                Post          @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  @@id([userId, postId])
+  @@unique([userId, postId])
+
+  @@map("likes")
+}
