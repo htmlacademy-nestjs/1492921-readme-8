@@ -7,3 +7,4 @@ export { AuthUser } from './lib/types/auth-user.interface';
 export { PostState } from './lib/types/post-state.enum';
 export { PostType } from './lib/types/post-type.enum';
 export { Post } from './lib/types/post.interface';
+export { Comment } from './lib/types/comment.interface';
