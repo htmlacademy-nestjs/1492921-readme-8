@@ -9,7 +9,7 @@ export interface Post {
   isRepost: boolean; // Избыточно
   repostId?: string;
   repostAuthorId?: string; // Избыточно
-  tags?: string[];
+  tags: string[];
   state?: PostState; // Избыточно
   createDate?: Date;
   publicationDate?: Date;
@@ -19,8 +19,9 @@ export interface Post {
   url?: string;
   preview?: string;
   text?: string;
-  quoteAuthorId?: string;
   quoteText?: string;
+  quoteAuthor?: string;
+  //quoteAuthorId?: string;
   description?: string;
   comments: Comment[];
 }

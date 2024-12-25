@@ -10,6 +10,9 @@ export class BlogPostRdo {
   @Expose()
   public authorId: string;
   @Expose()
+  @Type(() => BlogAuthorRdo)
+  public author: BlogAuthorRdo;
+  @Expose()
   public isRepost: boolean;
   @Expose()
   public repostId: string;
@@ -37,7 +40,7 @@ export class BlogPostRdo {
   @Expose()
   public text: string;
   @Expose()
-  @Type(() => BlogAuthorRdo)
+  //@Type(() => BlogAuthorRdo)
   public quoteAuthor: BlogAuthorRdo;
   @Expose()
   public quoteText: string;

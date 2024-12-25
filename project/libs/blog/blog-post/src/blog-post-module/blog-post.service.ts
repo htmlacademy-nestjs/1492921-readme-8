@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
 //import { Post, PostState, PostType } from '@project/shared-types';
 //import { blogPostError } from './blog-post.constant';
 

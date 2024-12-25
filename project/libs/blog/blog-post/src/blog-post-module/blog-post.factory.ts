@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 import { Post, EntityFactory, PostState } from '@project/shared-types';
 import { BlogPostEntity } from './blog-post.entity';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class BlogPostFactory implements EntityFactory<BlogPostEntity> {

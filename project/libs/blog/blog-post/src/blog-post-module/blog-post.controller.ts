@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { BlogPostService } from './blog-post.service';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
 //import { BlogPostRdo } from '../rdo/blog-post.rdo';
 //import { fillDto } from '@project/shared-helpers';
 
