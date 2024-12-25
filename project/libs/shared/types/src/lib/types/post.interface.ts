@@ -6,7 +6,7 @@ export interface Post {
   id?: string;
   postType: PostType;
   authorId: string;
-  isRepost: boolean; // Избыточно
+  isRepost?: boolean; // Избыточно
   repostId?: string;
   repostAuthorId?: string; // Избыточно
   tags: string[];
