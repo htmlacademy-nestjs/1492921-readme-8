@@ -3,7 +3,6 @@ import {
   IsArray,
   IsIn,
   IsISO8601,
-  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -21,12 +20,6 @@ export class CreatePostDto {
   postType?: PostType;
 
   @IsString()
-  @IsMongoId()
-  @IsNotEmpty()
-  @IsOptional()
-  authorId?: string;
-
-  @IsString()
   @IsOptional()
   repostId?: string;
 
@@ -40,7 +33,7 @@ export class CreatePostDto {
   tags?: string[];
 
   @IsISO8601()
-  publicationDate: Date;
+  publicationDate?: Date;
 
   @IsString()
   @IsOptional()

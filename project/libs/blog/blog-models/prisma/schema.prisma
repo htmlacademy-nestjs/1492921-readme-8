@@ -29,14 +29,14 @@ model Post {
   repostId            String?       @map("repost_id")
   tags                Tag[]
   createDate          DateTime      @default(now()) @map("create_date")
-  publicationDate     DateTime      @map("public_date")
+  publicationDate     DateTime?     @map("public_date")
   likesCount          Int           @default(0) @map("likes_count")
   commentsCount       Int           @default(0) @map("comments_count")
   name                String?
   url                 String?
   preview             String?
   text                String?
-  quoteAuthorId       String?       @map("quote_author_id")
+  quoteAuthor         String?       @map("quote_author")
   quoteText           String?       @map("quote_text")
   description         String?
   comments            Comment[]

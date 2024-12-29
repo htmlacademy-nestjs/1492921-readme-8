@@ -12,7 +12,7 @@ export class BlogPostWithPaginationRdo {
   public totalItems: number;
 
   @Expose()
-  public currentPag: number;
+  public currentPage: number;
 
   @Expose()
   public itemsPerPage: number;
