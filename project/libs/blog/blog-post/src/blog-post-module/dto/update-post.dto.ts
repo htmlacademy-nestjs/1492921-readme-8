@@ -13,7 +13,7 @@ import {
 
 import { PostType } from '@project/shared-types';
 
-export class CreatePostDto {
+export class UpdatePostDto {
   @IsIn(Object.values(PostType))
   @IsNotEmpty()
   @IsOptional()
