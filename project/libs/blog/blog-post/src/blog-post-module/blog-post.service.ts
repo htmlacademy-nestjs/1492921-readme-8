@@ -12,10 +12,20 @@ import { BlogPostQuery } from './blog-post.query';
 import { PaginationResult } from '@project/shared-types';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { TagSetup } from './blog-post.constant';
+import {
+  BlogCommentEntity,
+  BlogCommentFactory,
+  BlogCommentRepository,
+  CreateCommentDto,
+} from '@project/blog-comment';
 
 @Injectable()
 export class BlogPostService {
-  constructor(private blogPostRepository: BlogPostRepository) {}
+  constructor(
+    private blogPostRepository: BlogPostRepository,
+    private readonly blogCommentRepository: BlogCommentRepository,
+    private readonly blogCommentFactory: BlogCommentFactory
+  ) {}
 
   private checkTags(tags: string[]): string[] {
     if (tags && tags.length > 0) {
@@ -87,5 +97,18 @@ export class BlogPostService {
       return await this.blogPostRepository.update(existsPost);
     }
     return existsPost;
+  }
+
+  public async addComment(
+    postId: string,
+    dto: CreateCommentDto
+  ): Promise<BlogCommentEntity> {
+    const existsPost = await this.getPost(postId);
+    const newComment = this.blogCommentFactory.createFromDto(
+      dto,
+      existsPost.id
+    );
+
+    return await this.blogCommentRepository.save(newComment);
   }
 }

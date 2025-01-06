@@ -5,9 +5,10 @@ import { BlogPostService } from './blog-post.service';
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostFactory } from './blog-post.factory';
 import { PrismaClientModule } from '@project/blog-models';
+import { BlogCommentModule } from '@project/blog-comment';
 
 @Module({
-  imports: [PrismaClientModule],
+  imports: [BlogCommentModule, PrismaClientModule],
   controllers: [BlogPostController],
   providers: [BlogPostService, BlogPostRepository, BlogPostFactory],
   exports: [BlogPostService],

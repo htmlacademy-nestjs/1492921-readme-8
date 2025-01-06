@@ -18,15 +18,11 @@ import { BlogPostRdo } from './rdo/blog-post.rdo';
 import { BlogPostQuery } from './blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post as TPost } from '@project/shared-types';
+import { CommentRdo, CreateCommentDto } from '@project/blog-comment';
 
 @Controller('posts')
 export class BlogPostController {
   constructor(private readonly blogPostService: BlogPostService) {}
-
-  // private toPostRdo(post: TPost): BlogPostRdo {
-  //   return { ...post, tags: post.tags.map((tag) => tag.name) };
-  // }
 
   @Get('/:id')
   public async show(@Param('id') id: string) {
@@ -60,5 +56,14 @@ export class BlogPostController {
   public async update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
     const updatedPost = await this.blogPostService.updatePost(id, dto);
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
+  }
+
+  @Post('/:id/comments')
+  public async createComment(
+    @Param('id') postId: string,
+    @Body() dto: CreateCommentDto
+  ) {
+    const newComment = await this.blogPostService.addComment(postId, dto);
+    return fillDto(CommentRdo, newComment.toPOJO());
   }
 }
