@@ -14,16 +14,25 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
 
   public static createFromCreatePostDto(dto: CreatePostDto): BlogPostEntity {
     const entity = new BlogPostEntity();
+    entity.postType = dto.postType;
     entity.authorId = dto.authorId;
     //entity.isRepost = dto.repostId ? true : false;
-    entity.repostId = dto.repostId ?? '';
+    entity.repostId = dto.repostId;
     //entity.repostAuthorId = dto.repostAuthorId;
-    entity.tags = (dto.tags ?? []).map((tag) => ({ name: tag }));
+    entity.tags = dto.tags ?? []; //(dto.tags ?? []).map((tag) => ({ name: tag }));
     //entity.state = PostState.Published;
     entity.createDate = dayjs().toDate();
     entity.publicationDate = dayjs().toDate();
     entity.likesCount = 0;
     entity.commentsCount = 0;
+    entity.name = dto.name;
+    entity.url = dto.url;
+    entity.preview = dto.preview;
+    entity.text = dto.text;
+    entity.quoteText = dto.quoteText;
+    entity.quoteAuthor = dto.quoteAuthor;
+    entity.description = dto.description;
+    entity.comments = [];
 
     return entity;
   }

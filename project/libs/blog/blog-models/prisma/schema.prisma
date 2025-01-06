@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
   output = "../../../../node_modules/.prisma/client"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -15,11 +16,16 @@ datasource db {
 }
 
 enum PostType {
-  Video
-  Text
-  Quote
-  Photo
-  Link
+  video
+  text
+  quote
+  photo
+  link
+}
+
+enum StateType {
+  draft
+  published
 }
 
 model Post {
@@ -29,7 +35,7 @@ model Post {
   repostId            String?       @map("repost_id")
   tags                Tag[]
   createDate          DateTime      @default(now()) @map("create_date")
-  publicationDate     DateTime?     @map("public_date")
+  publicationDate     DateTime?     @map("publication_date")
   likesCount          Int           @default(0) @map("likes_count")
   commentsCount       Int           @default(0) @map("comments_count")
   name                String?
@@ -54,18 +60,20 @@ model Post {
 model Tag {
   name                String        @id
   posts               Post[]
+  //vPosts              vPost[]
   @@index([name])
 
   @@map("tags")
 }
 
 model Comment {
-  id                  String        @id @default(uuid()) @map("id")
+  id                  String        @id @default(uuid())
   postId              String        @map("post_id")
   userId              String        @map("user_id")
   text                String
   createDate          DateTime      @default(now()) @map("create_date")
   post                Post          @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vPost               vPost         @relation(map: "comments_post_id_fkey1", fields: [postId], references: [id])
 
   @@map("comments")
 }
@@ -78,4 +86,27 @@ model Like {
   @@unique([userId, postId])
 
   @@map("likes")
+}
+
+view vPost {
+  id                      String        @id
+  postType                PostType      @map("post_type")
+  authorId                String        @map("author_id")
+  repostId                String?       @map("repost_id")
+  repostAuthorId          String?       @map("repost_author_id")
+  tags                    String[]
+  createDate              DateTime      @map("create_date")
+  publicationDate         DateTime?     @map("publication_date")
+  likesCount              Int           @map("likes_count")
+  commentsCount           Int           @map("comments_count")
+  name                    String?
+  url                     String?
+  preview                 String?
+  text                    String?
+  quoteAuthor             String?       @map("quote_author")
+  quoteText               String?       @map("quote_text")
+  description             String?
+  comments                Comment[]
+
+  @@map("v_posts")
 }

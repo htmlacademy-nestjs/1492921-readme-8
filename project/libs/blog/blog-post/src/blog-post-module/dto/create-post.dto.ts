@@ -55,47 +55,41 @@ export class CreatePostDto {
   tags?: string[];
 
   @IsString()
-  @IsOptional()
-  @Length(20, 50)
   @ValidateIf((o) => [PostType.Video, PostType.Text].includes(o.postType))
+  @Length(20, 50)
   name?: string;
 
   @IsString()
-  @IsOptional()
-  @IsUrl()
   @ValidateIf((o) =>
     [PostType.Video, PostType.Photo, PostType.Link].includes(o.postType)
   )
+  @IsNotEmpty()
+  @IsUrl()
   url?: string;
 
   @IsString()
-  @IsOptional()
-  @Length(50, 255)
   @ValidateIf((o) => o.postType === PostType.Text)
+  @Length(50, 255)
   preview?: string;
 
   @IsString()
-  @IsOptional()
-  @Length(100, 1024)
   @ValidateIf((o) => o.postType === PostType.Text)
+  @Length(100, 1024)
   text?: string;
 
   @IsString()
-  @IsOptional()
-  @Length(20, 300)
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @Length(20, 300)
   quoteText?: string;
 
   @IsString()
-  @IsOptional()
-  @Length(3, 50)
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @Length(3, 50)
   quoteAuthor?: string;
   //quoteAuthorId?: string;
 
   @IsString()
-  @IsOptional()
-  @Length(1, 300)
   @ValidateIf((o) => o.postType === PostType.Link)
+  @Length(1, 300)
   description?: string;
 }

@@ -72,6 +72,9 @@ export class BlogPostService {
     if (!existsPost) {
       throw new NotFoundException(`Post with id ${id} not found.`);
     }
+    if (existsPost.postType != dto.postType) {
+      throw new NotFoundException('postType cannot be changed');
+    }
     let hasChanges = false;
     const dtoUpdate = { ...dto, tags: this.checkTags(dto.tags) };
     for (const [key, value] of Object.entries(dtoUpdate)) {

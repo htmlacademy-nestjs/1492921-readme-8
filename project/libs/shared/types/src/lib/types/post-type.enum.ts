@@ -7,11 +7,11 @@
 // }
 
 export const PostType = {
-  Video: 'Video',
-  Text: 'Text',
-  Quote: 'Quote',
-  Photo: 'Photo',
-  Link: 'Link',
+  Video: 'video',
+  Text: 'text',
+  Quote: 'quote',
+  Photo: 'photo',
+  Link: 'link',
 } as const;
 
-export type PostType = keyof typeof PostType;
+export type PostType = (typeof PostType)[keyof typeof PostType];

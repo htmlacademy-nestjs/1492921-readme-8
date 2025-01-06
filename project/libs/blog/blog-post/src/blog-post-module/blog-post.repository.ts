@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { PaginationResult, Post } from '@project/shared-types';
+import { PaginationResult, Post, Tag } from '@project/shared-types';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from '@project/blog-models';
 
@@ -21,6 +21,10 @@ export class BlogPostRepository extends BasePostgresRepository<
     super(entityFactory, client);
   }
 
+  private prepareTagForEntity(tags: Tag[]): string[] {
+    return tags.map((tag) => tag.name);
+  }
+
   private async getPostCount(where: Prisma.PostWhereInput): Promise<number> {
     return this.client.post.count({ where });
   }
@@ -31,13 +35,19 @@ export class BlogPostRepository extends BasePostgresRepository<
 
   public async save(entity: BlogPostEntity): Promise<BlogPostEntity> {
     const pojoEntity = entity.toPOJO();
+    // удаление избыточных полей
+    delete pojoEntity.id;
+    delete pojoEntity.isRepost;
+    delete pojoEntity.repostAuthorId;
+    delete pojoEntity.state;
+
     const record = await this.client.post.create({
       data: {
         ...pojoEntity,
         tags: {
           connectOrCreate: (pojoEntity.tags ?? []).map((tag) => ({
-            create: tag,
-            where: tag,
+            create: { name: tag },
+            where: { name: tag },
           })),
         },
         comments: {
@@ -45,8 +55,7 @@ export class BlogPostRepository extends BasePostgresRepository<
         },
       },
     });
-    //entity.id = record.id;
-    const postEntity = this.createEntityFromDocument(record);
+    const postEntity = await this.findById(record.id);
     if (postEntity) {
       return postEntity;
     }
@@ -62,12 +71,11 @@ export class BlogPostRepository extends BasePostgresRepository<
   }
 
   public async findById(id: string): Promise<BlogPostEntity> {
-    const record = await this.client.post.findUnique({
+    const record = await this.client.vPost.findUnique({
       where: {
         id,
       },
       include: {
-        tags: true,
         comments: true,
       },
     });
@@ -87,8 +95,8 @@ export class BlogPostRepository extends BasePostgresRepository<
         repostId: pojoEntity.repostId ?? null,
         tags: {
           connectOrCreate: (pojoEntity.tags ?? []).map((tag) => ({
-            create: tag,
-            where: tag,
+            create: { name: tag },
+            where: { name: tag },
           })),
         },
         publicationDate: pojoEntity.publicationDate,
@@ -100,12 +108,12 @@ export class BlogPostRepository extends BasePostgresRepository<
         quoteAuthor: pojoEntity.quoteAuthor,
         description: pojoEntity.description,
       },
-      include: {
-        comments: true,
-        tags: true,
-      },
+      // include: {
+      //   comments: true,
+      //   tags: true,
+      // },
     });
-    return this.createEntityFromDocument(record);
+    return await this.findById(record.id);
   }
 
   public async find(
@@ -146,7 +154,12 @@ export class BlogPostRepository extends BasePostgresRepository<
     ]);
 
     return {
-      entities: records.map((record) => this.createEntityFromDocument(record)),
+      entities: records.map((record) =>
+        this.createEntityFromDocument({
+          ...record,
+          tags: this.prepareTagForEntity(record.tags),
+        })
+      ),
       currentPage: query?.page,
       totalPages: this.calculatePostsPage(postCount, take),
       itemsPerPage: take,

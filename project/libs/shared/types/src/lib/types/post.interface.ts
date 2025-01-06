@@ -1,18 +1,17 @@
-//import { PostState } from './post-state.enum';
+import { PostState } from './post-state.enum';
 import { PostType } from './post-type.enum';
-//import { PostType } from '@prisma/client';
 import { Comment } from './comment.interface';
-import { Tag } from './tag.interface';
+//import { Tag } from './tag.interface';
 
 export interface Post {
   id?: string;
   postType: PostType;
   authorId: string;
-  //isRepost?: boolean; // Избыточно
+  isRepost?: boolean; // Избыточно
   repostId?: string;
-  //repostAuthorId?: string; // Избыточно
-  tags?: Tag[];
-  //state?: PostState; // Избыточно
+  repostAuthorId?: string; // Избыточно
+  tags?: string[];
+  state?: PostState; // Избыточно
   createDate?: Date;
   publicationDate?: Date;
   likesCount?: number; // Избыточно

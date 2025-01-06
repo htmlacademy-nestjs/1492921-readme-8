@@ -1,20 +1,60 @@
+# Get all posts
+GET http://localhost:3000/api/posts HTTP/1.1
+
+###
+
+# Get posts with filter
+
+GET http://localhost:3000/api/posts?limit=2&sortDirection=desc&categories[]=39614113-7ad5-45b6-8093-06455437e1e2&page=1 HTTP/1.1
+
+###
+
+# Get post by id
+GET http://localhost:3000/api/posts/142cb7ca-cd50-4110-8d2d-deee1ef8f223 HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/posts/7e00699f-5847-45bb-9227-7c59190d0470 HTTP/1.1
+
+###
 # Create a new post
 POST http://localhost:3000/api/posts/ HTTP/1.1
 Content-Type: application/json
 
 {
   "postType": "text",
-  "authorId": "dd89cfe4-b0bc-4798-b144-05230bc80ee5",
-  "tags": [ "Ford", "BMW", "Fiat" ],
-  "name": "Первый пост",
-  "preview": "Превью текста",
-  "text": "Текст поста"
+  "authorId": "6766fdb720f78014bf83d5a3",
+  "tags": [ "#Ford", "#BMW", "#Fiat" ],
+  "name": "Первый пост не менее 20 символов",
+  "preview": "Превью текста должно быть длинным около 50 символов",
+  "text": " Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов"
 }
 
 ###
 
-# Get post by ID
-GET http://localhost:3000/api/posts/7aef6925-4fe5-4057-b5cc-cc7cf214df05 HTTP/1.1
+# Delete the post by id
+DELETE http://localhost:3000/api/posts/0549e0e7-ad8c-43b8-aa35-507ba547d743 HTTP/1.1
+
+###
+
+# Update post by id
+PATCH http://localhost:3000/api/posts/142cb7ca-cd50-4110-8d2d-deee1ef8f223 HTTP/1.1
+Content-Type: application/json
+
+{
+  "postType": "video",
+  "name": "Это блог про кремль в г.Москва"
+}
+
+###
+
+PATCH http://localhost:3000/api/posts/2b7a9322-353a-41e4-b009-4c1a83ad15e5 HTTP/1.1
+Content-Type: application/json
+
+{
+  "postType": "text",
+  "preview": "Предварительный текст поста, который должен быть более 50 сим"
+}
 
 ###
 

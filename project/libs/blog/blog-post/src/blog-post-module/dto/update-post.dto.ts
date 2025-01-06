@@ -1,6 +1,7 @@
 import {
   ArrayMaxSize,
   IsArray,
+  IsEmpty,
   IsIn,
   IsISO8601,
   IsNotEmpty,
@@ -12,71 +13,72 @@ import {
 } from 'class-validator';
 
 import { PostType } from '@project/shared-types';
+import { ImATeapotException } from '@nestjs/common';
 
 export class UpdatePostDto {
   @IsIn(Object.values(PostType))
   @IsNotEmpty()
-  @IsOptional()
-  postType?: PostType;
+  postType: PostType;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   repostId?: string;
 
   //repostAuthorId?: string;
-
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @IsString({ each: true })
   @ArrayMaxSize(8)
   @Length(3, 10, { each: true })
   tags?: string[];
 
+  @IsOptional()
   @IsISO8601()
   publicationDate?: Date;
 
-  @IsString()
   @IsOptional()
-  @Length(20, 50)
+  @IsString()
   @ValidateIf((o) => [PostType.Video, PostType.Text].includes(o.postType))
+  @Length(20, 50)
   name?: string;
 
-  @IsString()
   @IsOptional()
-  @IsUrl()
   @ValidateIf((o) =>
     [PostType.Video, PostType.Photo, PostType.Link].includes(o.postType)
   )
+  @IsNotEmpty()
+  @IsString()
+  @IsUrl()
   url?: string;
 
-  @IsString()
   @IsOptional()
-  @Length(50, 255)
+  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @Length(50, 255)
   preview?: string;
 
-  @IsString()
   @IsOptional()
-  @Length(100, 1024)
+  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @Length(100, 1024)
   text?: string;
 
-  @IsString()
   @IsOptional()
-  @Length(20, 300)
+  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @Length(20, 300)
   quoteText?: string;
 
-  @IsString()
   @IsOptional()
-  @Length(3, 50)
+  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @Length(3, 50)
   quoteAuthor?: string;
   //quoteAuthorId?: string;
 
-  @IsString()
   @IsOptional()
-  @Length(1, 300)
+  @IsString()
   @ValidateIf((o) => o.postType === PostType.Link)
+  @Length(1, 300)
   description?: string;
 }

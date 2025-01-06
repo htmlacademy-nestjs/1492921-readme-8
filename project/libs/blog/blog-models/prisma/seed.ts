@@ -8,15 +8,17 @@ const POST_UIDS = [
   '142cb7ca-cd50-4110-8d2d-deee1ef8f223',
 ];
 
-const FIRST_USER_ID = '6766cb736c313811f627c05e';
-const SECOND_USER_ID = '6766cbb86c313811f627c062';
+const USERS = [
+  { id: '6766cb736c313811f627c05e', name: 'Alexey Ivanov', avatarUrl: '' },
+  { id: '6766cbb86c313811f627c062', name: 'Ivan Petrov', avatarUrl: '' },
+];
 
 function getPosts() {
   return [
     {
       id: POST_UIDS[0],
-      postType: PostType.Text,
-      authorId: FIRST_USER_ID,
+      postType: PostType.text,
+      authorId: USERS[0].id,
       repostId: null,
       tags: {
         connectOrCreate: [
@@ -34,8 +36,8 @@ function getPosts() {
     },
     {
       id: POST_UIDS[1],
-      postType: PostType.Photo,
-      authorId: SECOND_USER_ID,
+      postType: PostType.photo,
+      authorId: USERS[1].id,
       repostId: null,
       tags: {
         connectOrCreate: [
@@ -54,18 +56,18 @@ function getPosts() {
       comments: [
         {
           text: 'Крутое фото',
-          userId: FIRST_USER_ID,
+          userId: USERS[0].id,
         },
         {
           text: 'Надо будет обязательно посетить',
-          userId: SECOND_USER_ID,
+          userId: USERS[1].id,
         },
       ],
     },
     {
       id: POST_UIDS[2],
-      postType: PostType.Quote,
-      authorId: SECOND_USER_ID,
+      postType: PostType.quote,
+      authorId: USERS[0].id,
       repostId: null,
       tags: {},
       publicationDate: new Date().toISOString(),
@@ -76,8 +78,8 @@ function getPosts() {
     },
     {
       id: POST_UIDS[3],
-      postType: PostType.Link,
-      authorId: SECOND_USER_ID,
+      postType: PostType.link,
+      authorId: USERS[1].id,
       repostId: null,
       tags: {},
       publicationDate: new Date().toISOString(),
@@ -87,8 +89,8 @@ function getPosts() {
     },
     {
       id: POST_UIDS[4],
-      postType: PostType.Video,
-      authorId: FIRST_USER_ID,
+      postType: PostType.video,
+      authorId: USERS[1].id,
       repostId: POST_UIDS[0],
       tags: {
         connectOrCreate: [

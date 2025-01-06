@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "PostType" AS ENUM ('Video', 'Text', 'Quote', 'Photo', 'Link');
+CREATE TYPE "PostType" AS ENUM ('video', 'text', 'quote', 'photo', 'link');
 
 -- CreateTable
 CREATE TABLE "posts" (
@@ -8,7 +8,7 @@ CREATE TABLE "posts" (
     "author_id" TEXT NOT NULL,
     "repost_id" TEXT,
     "create_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "public_date" TIMESTAMP(3),
+    "publication_date" TIMESTAMP(3),
     "likes_count" INTEGER NOT NULL DEFAULT 0,
     "comments_count" INTEGER NOT NULL DEFAULT 0,
     "name" TEXT,
