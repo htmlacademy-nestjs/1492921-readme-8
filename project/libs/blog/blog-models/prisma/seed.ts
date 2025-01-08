@@ -1,19 +1,24 @@
 import { PostType, PrismaClient } from '@prisma/client';
 
-const TAGS = ['#auto', '#travel', '#database'];
+const POST_UIDS = [
+  '2b7a9322-353a-41e4-b009-4c1a83ad15e5',
+  '7e00699f-5847-45bb-9227-7c59190d0470',
+  'b4c56be0-712f-434f-b304-ff76263c94f1',
+  '925f4a8d-a144-445e-9327-82a507c5ae76',
+  '142cb7ca-cd50-4110-8d2d-deee1ef8f223',
+];
 
-const FIRST_POST_UUID = '2b7a9322-353a-41e4-b009-4c1a83ad15e5';
-const SECOND_POST_UUID = '7e00699f-5847-45bb-9227-7c59190d0470';
-
-const FIRST_USER_ID = '6766cb736c313811f627c05e';
-const SECOND_USER_ID = '6766cbb86c313811f627c062';
+const USERS = [
+  { id: '6766cb736c313811f627c05e', name: 'Alexey Ivanov', avatarUrl: '' },
+  { id: '6766cbb86c313811f627c062', name: 'Ivan Petrov', avatarUrl: '' },
+];
 
 function getPosts() {
   return [
     {
-      id: FIRST_POST_UUID,
-      postType: PostType.Text,
-      authorId: FIRST_USER_ID,
+      id: POST_UIDS[0],
+      postType: PostType.text,
+      authorId: USERS[0].id,
       repostId: null,
       tags: {
         connectOrCreate: [
@@ -30,9 +35,9 @@ function getPosts() {
       comments: [],
     },
     {
-      id: SECOND_POST_UUID,
-      postType: PostType.Photo,
-      authorId: SECOND_USER_ID,
+      id: POST_UIDS[1],
+      postType: PostType.photo,
+      authorId: USERS[1].id,
       repostId: null,
       tags: {
         connectOrCreate: [
@@ -51,26 +56,59 @@ function getPosts() {
       comments: [
         {
           text: 'Крутое фото',
-          userId: FIRST_USER_ID,
+          userId: USERS[0].id,
         },
         {
           text: 'Надо будет обязательно посетить',
-          userId: SECOND_USER_ID,
+          userId: USERS[1].id,
         },
       ],
+    },
+    {
+      id: POST_UIDS[2],
+      postType: PostType.quote,
+      authorId: USERS[0].id,
+      repostId: null,
+      tags: {},
+      publicationDate: new Date().toISOString(),
+      quoteText:
+        'Кто хочет, тот ищет возможности, кто не хочет — ищет причины.',
+      quoteAuthor: 'Сократ',
+      comments: [],
+    },
+    {
+      id: POST_UIDS[3],
+      postType: PostType.link,
+      authorId: USERS[1].id,
+      repostId: null,
+      tags: {},
+      publicationDate: new Date().toISOString(),
+      url: 'https://up.htmlacademy.ru/profession/fullstack/8/nodejs-2/8',
+      description: 'Node.js и Nest.js. Микросервисная архитектура',
+      comments: [],
+    },
+    {
+      id: POST_UIDS[4],
+      postType: PostType.video,
+      authorId: USERS[1].id,
+      repostId: POST_UIDS[0],
+      tags: {
+        connectOrCreate: [
+          {
+            create: { name: '#moscow' },
+            where: { name: '#moscow' },
+          },
+        ],
+      },
+      publicationDate: new Date().toISOString(),
+      name: 'Кремль',
+      url: 'https://ic.pics.livejournal.com/anton_i_masha/74760968/910048/910048_2000.jpg',
+      comments: [],
     },
   ];
 }
 
 async function seedDb(prismaClient: PrismaClient) {
-  for (const tag of TAGS) {
-    await prismaClient.tag.upsert({
-      where: { name: tag },
-      update: {},
-      create: { name: tag },
-    });
-  }
-
   const mockPosts = getPosts();
 
   for (const post of mockPosts) {
@@ -94,6 +132,9 @@ async function seedDb(prismaClient: PrismaClient) {
         preview: post.preview,
         text: post.text,
         url: post.url,
+        quoteText: post.quoteText,
+        quoteAuthor: post.quoteAuthor,
+        description: post.description,
       },
     });
   }

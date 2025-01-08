@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticationService } from './authentication.service';
@@ -7,6 +15,9 @@ import { LoginUserDto } from '../dto/login-user.dto';
 import { AuthenticationResponseMessage } from './authentication.constant';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { UserRdo } from '../rdo/user.rdo';
+import { MongoIdValidationPipe } from '@project/pipes';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { fillDto } from '@project/shared-helpers';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -39,7 +50,8 @@ export class AuthenticationController {
   @Post('login')
   public async login(@Body() dto: LoginUserDto) {
     const verifiedUser = await this.authService.verifyUser(dto);
-    return verifiedUser.toPOJO();
+    const userToken = await this.authService.createUserToken(verifiedUser);
+    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
   }
 
   @ApiResponse({
@@ -52,8 +64,14 @@ export class AuthenticationController {
     description: AuthenticationResponseMessage.UserNotFound,
   })
   @Get(':id')
-  public async show(@Param('id') id: string) {
+  public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/demo/:id')
+  public async demoPipe(@Param('id') id: number) {
+    console.log(typeof id);
   }
 }

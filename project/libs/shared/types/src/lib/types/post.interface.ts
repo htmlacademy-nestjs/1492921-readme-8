@@ -1,11 +1,13 @@
 import { PostState } from './post-state.enum';
 import { PostType } from './post-type.enum';
+import { Comment } from './comment.interface';
+//import { Tag } from './tag.interface';
 
 export interface Post {
   id?: string;
   postType: PostType;
   authorId: string;
-  isRepost: boolean; // Избыточно
+  isRepost?: boolean; // Избыточно
   repostId?: string;
   repostAuthorId?: string; // Избыточно
   tags?: string[];
@@ -18,9 +20,11 @@ export interface Post {
   url?: string;
   preview?: string;
   text?: string;
-  quoteAuthorId?: string;
   quoteText?: string;
+  quoteAuthor?: string;
+  //quoteAuthorId?: string;
   description?: string;
+  comments?: Comment[];
 }
 
 // export interface BasePost {

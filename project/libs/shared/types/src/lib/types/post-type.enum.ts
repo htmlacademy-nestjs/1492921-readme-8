@@ -1,17 +1,17 @@
-export enum PostType {
-  Video = 'video',
-  Text = 'text',
-  Quote = 'quote',
-  Photo = 'photo',
-  Link = 'link',
-}
+// export enum PostType {
+//   Video,
+//   Text,
+//   Quote,
+//   Photo,
+//   Link,
+// }
 
-// export const PostType = {
-//   Video: 'video',
-//   Text: 'text',
-//   Quote: 'quote',
-//   Photo: 'photo',
-//   Link: 'link',
-// } as const;
+export const PostType = {
+  Video: 'video',
+  Text: 'text',
+  Quote: 'quote',
+  Photo: 'photo',
+  Link: 'link',
+} as const;
 
-// export type TPostType = keyof typeof PostType;
+export type PostType = (typeof PostType)[keyof typeof PostType];

@@ -9,13 +9,23 @@ export class BlogPostRdo {
   public postType: PostType;
   @Expose()
   public authorId: string;
+  // @Expose()
+  // public authorName: string;
+  // @Expose()
+  // public authorAvatarUrl: string;
+  // @Expose({ name: 'authorId' })
+  // @Type(() => BlogAuthorRdo)
+  // public author: BlogAuthorRdo;
   @Expose()
   public isRepost: boolean;
   @Expose()
   public repostId: string;
   @Expose()
-  @Type(() => BlogAuthorRdo)
-  public repostAuthor: BlogAuthorRdo;
+  public repostAuthorId: string;
+  // @Expose({ name: 'isRepost' })
+  // getIsRepost() {
+  //   return this.repostId ? true : false;
+  // }
   @Expose()
   public tags: string[];
   @Expose()
@@ -37,10 +47,11 @@ export class BlogPostRdo {
   @Expose()
   public text: string;
   @Expose()
-  @Type(() => BlogAuthorRdo)
-  public quoteAuthor: BlogAuthorRdo;
+  public quoteAuthor: string;
   @Expose()
   public quoteText: string;
   @Expose()
   public description: string;
+  @Expose()
+  public comments: Comment[];
 }

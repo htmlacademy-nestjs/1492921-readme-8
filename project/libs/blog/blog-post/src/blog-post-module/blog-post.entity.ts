@@ -4,7 +4,10 @@ import {
   PostState,
   PostType,
   StorableEntity,
+  //Tag,
 } from '@project/shared-types';
+
+import { BlogCommentEntity, BlogCommentFactory } from '@project/blog-comment';
 
 export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public postType: PostType;
@@ -19,13 +22,15 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public likesCount: number; // Избыточно
   public commentsCount: number; // Избыточно
 
-  public name: string; // заполняется для VideoPost, TextPost
-  public url: string; // заполняется для VideoPost, PhotoPost, LinkPost
-  public preview: string; // заполняется для TextPost
-  public text: string; // заполняется для TextPost
-  public quoteAuthorId: string; // заполняется для QuotePost
-  public quoteText: string; // заполняется для QuotePost
-  public description: string; // заполняется для LinkPost
+  public name: string; // заполняется для Video, Text
+  public url: string; // заполняется для Video, Photo, Link
+  public preview: string; // заполняется для Text
+  public text: string; // заполняется для Text
+  public quoteText: string; // заполняется для Quote
+  public quoteAuthor: string; // заполняется для Quote
+  //public quoteAuthorId: string; // заполняется для Quote
+  public description: string; // заполняется для Link
+  public comments: BlogCommentEntity[];
 
   constructor(post?: Post) {
     super();
@@ -37,26 +42,34 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       return;
     }
 
-    this.id = post.id ?? '';
+    this.id = post.id ?? undefined;
     this.postType = post.postType;
     this.authorId = post.authorId;
-    this.isRepost = post.isRepost;
-    this.repostId = post.repostId ?? '';
-    this.repostAuthorId = post.repostAuthorId ?? '';
-    this.tags = post.tags ?? [];
-    this.state = post.state;
-    this.createDate = post.createDate;
-    this.publicationDate = post.publicationDate;
+    this.isRepost = this.repostId ? true : false;
+    this.repostId = post.repostId ?? null;
+    this.repostAuthorId = post.repostAuthorId ?? null;
+    this.tags = post.tags;
+    this.state = post.publicationDate ? 'published' : 'draft';
+    this.createDate = post.createDate ?? new Date();
+    this.publicationDate = post.publicationDate ?? null;
     this.likesCount = post.likesCount ?? 0;
     this.commentsCount = post.commentsCount ?? 0;
 
-    this.name = post.name ?? '';
-    this.url = post.url ?? '';
-    this.preview = post.preview ?? '';
-    this.text = post.text ?? '';
-    this.quoteAuthorId = post.quoteAuthorId ?? '';
-    this.quoteText = post.quoteText ?? '';
-    this.description = post.description ?? '';
+    this.name = post.name ?? null;
+    this.url = post.url ?? null;
+    this.preview = post.preview ?? null;
+    this.text = post.text ?? null;
+    this.quoteAuthor = post.quoteAuthor ?? null;
+    //this.quoteAuthorId = post.quoteAuthorId ?? '';
+    this.quoteText = post.quoteText ?? null;
+    this.description = post.description ?? null;
+
+    this.comments = [];
+    const blogCommentFactory = new BlogCommentFactory();
+    for (const comment of post.comments ?? []) {
+      const blogCommentEntity = blogCommentFactory.create(comment);
+      this.comments.push(blogCommentEntity);
+    }
   }
 
   public toPOJO(): Post {
@@ -77,9 +90,11 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       url: this.url,
       preview: this.preview,
       text: this.text,
-      quoteAuthorId: this.quoteAuthorId,
       quoteText: this.quoteText,
+      quoteAuthor: this.quoteAuthor,
+      //quoteAuthorId: this.quoteAuthorId,
       description: this.description,
+      comments: this.comments.map((commentEntity) => commentEntity.toPOJO()),
     };
   }
 }
