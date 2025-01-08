@@ -15,3 +15,4 @@ export { Comment } from './lib/types/comment.interface';
 export { Tag } from './lib/types/tag.interface';
 export { File } from './lib/types/file.interface';
 export { StoredFile } from './lib/types/stored-file.interface';
+export { Subscriber } from './lib/types/subscriber.interface';
