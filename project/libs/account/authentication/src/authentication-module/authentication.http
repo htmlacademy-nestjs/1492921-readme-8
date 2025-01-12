@@ -3,8 +3,8 @@ POST http://localhost:3000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "Alex7@nmail.ru",
-  "name": "Alex7",
+  "email": "Alex8@nmail.ru",
+  "name": "Alex8",
   "password": "12345678"
 }
 
@@ -24,8 +24,8 @@ Content-Type: application/json
 
 ###
 # Get user by ID
-GET http://localhost:3000/api/auth/677bc3c6afb6b657f65cbb34 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzdiYzNjNmFmYjZiNjU3ZjY1Y2JiMzQiLCJlbWFpbCI6IkFubmFAbm1haWwucnUiLCJsb2dpbiI6IlBlbmVrU2FudGVobmlrIiwibmFtZSI6IkFubmEiLCJpYXQiOjE3MzYxNjQzNDIsImV4cCI6MTczNjE2NDY0Mn0.cPbPNH9dRZ4ZFPqHSeYOIL13ryFh0SfTYM9rfEREI5M
+GET http://localhost:3000/api/auth/6783fb538d36172d33b5dda6 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNjcwNjg0MSwiZXhwIjoxNzM2NzA3MTQxfQ.z9kKc5ELcf9izReW119JCQsP-sGTVjdRaQFtmgVOFO0
 
 ###
 
@@ -34,7 +34,7 @@ POST http://localhost:3000/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "Alex7@nmail.ru",
+  "login": "Alex8@nmail.ru",
   "password": "12345678"
 }
 
@@ -42,12 +42,12 @@ Content-Type: application/json
 
 # Get new JWT pair
 POST http://localhost:3000/api/auth/refresh HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsImxhc3RuYW1lIjoiU21pdGgiLCJmaXJzdG5hbWUiOiJLZWtzIiwiaWF0IjoxNzA1NjgwMDA4LCJleHAiOjE3MDgyNzIwMDh9.10Jr7bWOiFTTi42JcMgPh0GVbxa2ikvn8vUVcF8d-AY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsInRva2VuSWQiOiI0ZjZhYjNkNi0zODAxLTQ0ZGEtYTU3Yi0zNDZjNmRkZjk3ZGMiLCJpYXQiOjE3MzY3MDg4MjcsImV4cCI6MTczOTMwMDgyN30.CGocE6vbtV8OVMh5G5aUUcEZyGkyqpQ2VbKMqBEZsDI
 
 ###
 
 # Check user token
 POST http://localhost:3000/api/auth/check HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDQwMzJmYmU0Y2FlYjg2OGM2ZWVjMzYiLCJlbWFpbCI6InVzZXJAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsImxhc3RuYW1lIjoiU21pdGgiLCJmaXJzdG5hbWUiOiJLZWtzIiwiaWF0IjoxNjgzMTIxMzU1LCJleHAiOjE2ODMxMjE5NTV9.laK4-SAzu_ZMznRVsRWrHxELTGu_P48kpY_CwHPjxtk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNjcwODg5NiwiZXhwIjoxNzM2NzA5MTk2fQ.y9rEKiMvX4s5WhAg4LDXGxHnYx5rsD88xzKRjJaQlRs
 
 ###

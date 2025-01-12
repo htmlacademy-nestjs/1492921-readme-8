@@ -57,9 +57,7 @@ export class AuthenticationService {
 
   public async verifyUser(dto: LoginUserDto) {
     const { login, password } = dto;
-    const existUser =
-      (await this.blogUserRepository.findByLogin(login)) ||
-      (await this.blogUserRepository.findByEmail(login));
+    const existUser = await this.blogUserRepository.findByLogin(login);
 
     if (!existUser) {
       throw new NotFoundException(AuthUserError.UserNotFound);
@@ -72,11 +70,28 @@ export class AuthenticationService {
     return existUser;
   }
 
-  public async getUser(identificator: string) {
-    const user =
-      (await this.blogUserRepository.findById(identificator)) ||
-      (await this.blogUserRepository.findByLogin(identificator)) ||
-      (await this.blogUserRepository.findByEmail(identificator));
+  public async getUserById(id: string) {
+    const user = await this.blogUserRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(AuthUserError.UserNotFound);
+    }
+
+    return user;
+  }
+
+  public async getUserByEmail(email: string) {
+    const user = await this.blogUserRepository.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(AuthUserError.UserNotFound);
+    }
+
+    return user;
+  }
+
+  public async getUserByLogin(login: string) {
+    const user = await this.blogUserRepository.findByLogin(login);
 
     if (!user) {
       throw new NotFoundException(AuthUserError.UserNotFound);
@@ -92,7 +107,6 @@ export class AuthenticationService {
       tokenId: crypto.randomUUID(),
     };
     await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
-
     try {
       const accessToken = await this.jwtService.signAsync(accessTokenPayload);
       const refreshToken = await this.jwtService.signAsync(

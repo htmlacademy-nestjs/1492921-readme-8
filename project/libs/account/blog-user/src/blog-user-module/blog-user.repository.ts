@@ -21,11 +21,17 @@ export class BlogUserRepository extends BaseMongoRepository<
   }
 
   public async findByEmail(email: string): Promise<BlogUserEntity | null> {
+    if (!email) {
+      return null;
+    }
     const document = await this.model.findOne({ email }).exec();
     return this.createEntityFromDocument(document);
   }
 
   public async findByLogin(login: string): Promise<BlogUserEntity | null> {
+    if (!login) {
+      return null;
+    }
     const document = await this.model.findOne({ login }).exec();
     return this.createEntityFromDocument(document);
   }

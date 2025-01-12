@@ -62,7 +62,6 @@ export class AuthenticationController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   public async login(@Req() { user }: RequestWithUser) {
-    console.log('user', user);
     const userToken = await this.authService.createUserToken(user);
     return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
@@ -79,17 +78,17 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   public async show(@Param('id', MongoIdValidationPipe) id: string) {
-    const existUser = await this.authService.getUser(id);
+    const existUser = await this.authService.getUserById(id);
     return existUser.toPOJO();
   }
 
-  @UseGuards(JwtRefreshGuard)
-  @Post('refresh')
-  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get a new access/refresh tokens',
   })
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
   public async refreshToken(@Req() { user }: RequestWithUser) {
     return this.authService.createUserToken(user);
   }
