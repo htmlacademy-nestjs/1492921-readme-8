@@ -40,7 +40,6 @@ function getConfig(): RabbitConfig {
     queue: process.env.RABBIT_QUEUE,
     exchange: process.env.RABBIT_EXCHANGE,
   };
-  console.log('LIB config process.env.RABBIT_HOST', process.env.RABBIT_HOST);
   validateConfig(config);
   return config;
 }

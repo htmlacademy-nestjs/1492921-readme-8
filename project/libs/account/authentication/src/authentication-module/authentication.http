@@ -3,6 +3,19 @@ POST http://localhost:3000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
+  "email": "Anna@nmail.ru",
+  "login": "PenekSantehnik",
+  "name": "Anna",
+  "password": "12345678",
+}
+
+###
+
+# Create a new user with uncorrected url
+POST http://localhost:3000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
   "email": "Anna4@nmail.ru",
   "login": "PenekSantehnik4",
   "name": "Anna",
@@ -11,7 +24,6 @@ Content-Type: application/json
 }
 
 ###
-
 # Get user by ID
 GET http://localhost:3000/api/auth/677bc3c6afb6b657f65cbb34 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzdiYzNjNmFmYjZiNjU3ZjY1Y2JiMzQiLCJlbWFpbCI6IkFubmFAbm1haWwucnUiLCJsb2dpbiI6IlBlbmVrU2FudGVobmlrIiwibmFtZSI6IkFubmEiLCJpYXQiOjE3MzYxNjQzNDIsImV4cCI6MTczNjE2NDY0Mn0.cPbPNH9dRZ4ZFPqHSeYOIL13ryFh0SfTYM9rfEREI5M
