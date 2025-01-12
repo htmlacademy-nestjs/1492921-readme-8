@@ -112,6 +112,7 @@ function getConfig(): NotifyConfig {
     },
   };
 
+  console.log('process.env.MAIL_SMTP_HOST', process.env.MAIL_SMTP_HOST);
   validateConfig(config);
   return config;
 }

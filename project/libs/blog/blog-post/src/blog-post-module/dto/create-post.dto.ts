@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 
 import { PostType } from '@project/shared-types';
+import { Optional } from '@nestjs/common';
 
 // import { CreateLinkPostDto } from './create-link-post.dto';
 // import { CreatePhotoPostDto } from './create-photo-post.dto';
@@ -45,8 +46,6 @@ export class CreatePostDto {
   @IsOptional()
   repostId?: string;
 
-  //repostAuthorId?: string;
-
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
@@ -54,42 +53,39 @@ export class CreatePostDto {
   @Length(3, 10, { each: true })
   tags?: string[];
 
-  @IsString()
   @ValidateIf((o) => [PostType.Video, PostType.Text].includes(o.postType))
+  @IsString()
   @Length(20, 50)
   name?: string;
 
-  @IsString()
   @ValidateIf((o) =>
     [PostType.Video, PostType.Photo, PostType.Link].includes(o.postType)
   )
-  @IsNotEmpty()
   @IsUrl()
   url?: string;
 
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @IsString()
   @Length(50, 255)
   preview?: string;
 
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @IsString()
   @Length(100, 1024)
   text?: string;
 
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @IsString()
   @Length(20, 300)
   quoteText?: string;
 
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @IsString()
   @Length(3, 50)
   quoteAuthor?: string;
-  //quoteAuthorId?: string;
 
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Link)
+  @IsString()
   @Length(1, 300)
   description?: string;
 }

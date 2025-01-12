@@ -9,7 +9,7 @@ import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
 import { CreatePostDto } from './dto/create-post.dto';
 import { BlogPostQuery } from './blog-post.query';
-import { PaginationResult } from '@project/shared-types';
+import { PaginationResult, PostType } from '@project/shared-types';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { TagSetup } from './blog-post.constant';
 import {
@@ -18,6 +18,14 @@ import {
   BlogCommentRepository,
   CreateCommentDto,
 } from '@project/blog-comment';
+
+const dtoFieldsMissing = {
+  video: ['preview', 'text', 'quoteText', 'quoteAuthor', 'description'],
+  text: ['url', 'quoteText', 'quoteAuthor', 'description'],
+  quote: ['name', 'url', 'preview', 'text', 'description'],
+  photo: ['name', 'preview', 'text', 'quoteText', 'quoteAuthor', 'description'],
+  link: ['name', 'preview', 'text', 'quoteText', 'quoteAuthor'],
+};
 
 @Injectable()
 export class BlogPostService {
@@ -48,6 +56,22 @@ export class BlogPostService {
     return tags;
   }
 
+  private checkDTO(dto: CreatePostDto | UpdatePostDto): void {
+    const { postType } = dto;
+    const errors: string[] = [];
+    dtoFieldsMissing[postType].forEach((field) => {
+      if (dto[field]) {
+        errors.push(field);
+      }
+    });
+
+    if (errors.length > 0) {
+      throw new BadRequestException(
+        `For post type = ${postType} ${errors.join(', ')} is not required`
+      );
+    }
+  }
+
   public async getAllPosts(
     query?: BlogPostQuery
   ): Promise<PaginationResult<BlogPostEntity>> {
@@ -55,6 +79,7 @@ export class BlogPostService {
   }
 
   public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
+    this.checkDTO(dto);
     const newPost = BlogPostFactory.createFromCreatePostDto({
       ...dto,
       tags: this.checkTags(dto.tags),
@@ -85,6 +110,7 @@ export class BlogPostService {
     if (existsPost.postType != dto.postType) {
       throw new NotFoundException('postType cannot be changed');
     }
+    this.checkDTO(dto);
     let hasChanges = false;
     const dtoUpdate = { ...dto, tags: this.checkTags(dto.tags) };
     for (const [key, value] of Object.entries(dtoUpdate)) {
