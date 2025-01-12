@@ -12,25 +12,6 @@ import {
 } from 'class-validator';
 
 import { PostType } from '@project/shared-types';
-import { Optional } from '@nestjs/common';
-
-// import { CreateLinkPostDto } from './create-link-post.dto';
-// import { CreatePhotoPostDto } from './create-photo-post.dto';
-// import { CreateQuotePostDto } from './create-quote-post.dto';
-// import { CreateTextPostDto } from './create-text-post.dto';
-// import { CreateVideoPostDto } from './create-video-post.dto';
-
-// type CreateAllPostDto =
-//   | CreateVideoPostDto
-//   | CreateTextPostDto
-//   | CreateQuotePostDto
-//   | CreatePhotoPostDto
-//   | CreateLinkPostDto;
-
-// export type CreatePostDto = {
-//   postType: PostType;
-//   post: CreateAllPostDto;
-// };
 
 export class CreatePostDto {
   @IsIn(Object.values(PostType))
@@ -42,12 +23,12 @@ export class CreatePostDto {
   @IsNotEmpty()
   authorId: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   repostId?: string;
 
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @IsString({ each: true })
   @ArrayMaxSize(8)
   @Length(3, 10, { each: true })

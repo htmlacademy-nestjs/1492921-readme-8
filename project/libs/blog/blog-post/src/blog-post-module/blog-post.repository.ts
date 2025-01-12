@@ -25,8 +25,8 @@ export class BlogPostRepository extends BasePostgresRepository<
     return tags.map((tag) => tag.name);
   }
 
-  private async getPostCount(where: Prisma.PostWhereInput): Promise<number> {
-    return this.client.post.count({ where });
+  private async getPostCount(where: Prisma.vPostWhereInput): Promise<number> {
+    return this.client.vPost.count({ where });
   }
 
   private calculatePostsPage(totalCount: number, limit: number): number {
@@ -45,7 +45,7 @@ export class BlogPostRepository extends BasePostgresRepository<
       data: {
         ...pojoEntity,
         tags: {
-          connectOrCreate: (pojoEntity.tags ?? []).map((tag) => ({
+          connectOrCreate: pojoEntity.tags.map((tag) => ({
             create: { name: tag },
             where: { name: tag },
           })),
@@ -94,7 +94,7 @@ export class BlogPostRepository extends BasePostgresRepository<
         postType: pojoEntity.postType,
         repostId: pojoEntity.repostId ?? null,
         tags: {
-          connectOrCreate: (pojoEntity.tags ?? []).map((tag) => ({
+          connectOrCreate: pojoEntity.tags.map((tag) => ({
             create: { name: tag },
             where: { name: tag },
           })),
@@ -122,8 +122,8 @@ export class BlogPostRepository extends BasePostgresRepository<
     const skip =
       query?.page && query?.limit ? (query.page - 1) * query.limit : undefined;
     const take = query?.limit;
-    const where: Prisma.PostWhereInput = {};
-    const orderBy: Prisma.PostOrderByWithRelationInput = {};
+    const where: Prisma.vPostWhereInput = {};
+    const orderBy: Prisma.vPostOrderByWithRelationInput = {};
 
     // if (query?.tags) {
     //   where.tags = {
@@ -140,13 +140,12 @@ export class BlogPostRepository extends BasePostgresRepository<
     }
 
     const [records, postCount] = await Promise.all([
-      this.client.post.findMany({
+      this.client.vPost.findMany({
         where,
         orderBy,
         skip,
         take,
         include: {
-          tags: true,
           comments: true,
         },
       }),
@@ -154,12 +153,7 @@ export class BlogPostRepository extends BasePostgresRepository<
     ]);
 
     return {
-      entities: records.map((record) =>
-        this.createEntityFromDocument({
-          ...record,
-          tags: this.prepareTagForEntity(record.tags),
-        })
-      ),
+      entities: records.map((record) => this.createEntityFromDocument(record)),
       currentPage: query?.page,
       totalPages: this.calculatePostsPage(postCount, take),
       itemsPerPage: take,

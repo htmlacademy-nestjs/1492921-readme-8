@@ -4,7 +4,6 @@ import {
   PostState,
   PostType,
   StorableEntity,
-  //Tag,
 } from '@project/shared-types';
 
 import { BlogCommentEntity, BlogCommentFactory } from '@project/blog-comment';
@@ -28,7 +27,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public text: string; // заполняется для Text
   public quoteText: string; // заполняется для Quote
   public quoteAuthor: string; // заполняется для Quote
-  //public quoteAuthorId: string; // заполняется для Quote
   public description: string; // заполняется для Link
   public comments: BlogCommentEntity[];
 
@@ -48,7 +46,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.isRepost = this.repostId ? true : false;
     this.repostId = post.repostId ?? null;
     this.repostAuthorId = post.repostAuthorId ?? null;
-    this.tags = post.tags;
+    this.tags = post.tags ?? [];
     this.state = post.publicationDate ? 'published' : 'draft';
     this.createDate = post.createDate ?? new Date();
     this.publicationDate = post.publicationDate ?? null;
@@ -60,7 +58,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.preview = post.preview ?? null;
     this.text = post.text ?? null;
     this.quoteAuthor = post.quoteAuthor ?? null;
-    //this.quoteAuthorId = post.quoteAuthorId ?? '';
     this.quoteText = post.quoteText ?? null;
     this.description = post.description ?? null;
 
@@ -77,11 +74,11 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       id: this.id,
       postType: this.postType,
       authorId: this.authorId,
-      isRepost: this.isRepost,
+      isRepost: this.repostId ? true : false,
       repostId: this.repostId,
       repostAuthorId: this.repostAuthorId,
       tags: this.tags,
-      state: this.state,
+      state: this.publicationDate ? 'published' : 'draft',
       createDate: this.createDate,
       publicationDate: this.publicationDate,
       likesCount: this.likesCount,
@@ -92,7 +89,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       text: this.text,
       quoteText: this.quoteText,
       quoteAuthor: this.quoteAuthor,
-      //quoteAuthorId: this.quoteAuthorId,
       description: this.description,
       comments: this.comments.map((commentEntity) => commentEntity.toPOJO()),
     };

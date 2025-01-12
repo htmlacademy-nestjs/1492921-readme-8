@@ -1,5 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Body, Controller, Post, Req, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 
 import { LoginUserDto } from '@project/authentication';
 
