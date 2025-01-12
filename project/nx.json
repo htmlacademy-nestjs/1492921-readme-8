@@ -33,14 +33,7 @@
       "plugin": "@nx/jest/plugin",
       "options": {
         "targetName": "test"
-      },
-      "exclude": [
-        "apps/account-e2e/**/*",
-        "apps/blog-e2e/**/*",
-        "apps/file-vault-e2e/**/*",
-        "apps/comment-e2e/**/*",
-        "apps/notify-e2e/**/*"
-      ]
+      }
     }
   ]
 }
