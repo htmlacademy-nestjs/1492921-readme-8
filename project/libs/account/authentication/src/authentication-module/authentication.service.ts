@@ -1,8 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
+import { ConfigType } from '@nestjs/config';
 import {
   ConflictException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -10,10 +12,12 @@ import {
 } from '@nestjs/common';
 
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
+import { Token, TokenPayload, User } from '@project/shared-types';
+import { jwtConfig } from '@project/account-config';
+
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthUserError } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
-import { Token, TokenPayload, User } from '@project/shared-types';
 
 @Injectable()
 export class AuthenticationService {
@@ -21,7 +25,9 @@ export class AuthenticationService {
 
   constructor(
     private readonly blogUserRepository: BlogUserRepository,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtOptions: ConfigType<typeof jwtConfig>
   ) {}
 
   public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
@@ -83,7 +89,12 @@ export class AuthenticationService {
 
     try {
       const accessToken = await this.jwtService.signAsync(payload);
-      return { accessToken };
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: this.jwtOptions.refreshTokenSecret,
+        expiresIn: this.jwtOptions.refreshTokenExpiresIn,
+      });
+
+      return { accessToken, refreshToken };
     } catch (error) {
       this.logger.error('[Token generation error]: ' + error.message);
       throw new HttpException(
