@@ -5,6 +5,8 @@ export { PaginationResult } from './lib/interfaces/pagination.interface';
 export { SortDirection } from './lib/interfaces/sort-direction.interface';
 export { Token } from './lib/interfaces/token.interface';
 export { TokenPayload } from './lib/interfaces/token-payload.interface';
+export { JwtToken } from './lib/interfaces/jwt-token.interface';
+export { RefreshTokenPayload } from './lib/interfaces/refresh-token-payload.interface';
 
 export { User } from './lib/types/user.interface';
 export { AuthUser } from './lib/types/auth-user.interface';
