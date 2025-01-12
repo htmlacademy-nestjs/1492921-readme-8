@@ -69,8 +69,11 @@ export class AuthenticationService {
     return existUser;
   }
 
-  public async getUser(id: string) {
-    const user = await this.blogUserRepository.findById(id);
+  public async getUser(identificator: string) {
+    const user =
+      (await this.blogUserRepository.findById(identificator)) ||
+      (await this.blogUserRepository.findByLogin(identificator)) ||
+      (await this.blogUserRepository.findByEmail(identificator));
 
     if (!user) {
       throw new NotFoundException(AuthUserError.UserNotFound);
