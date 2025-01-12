@@ -24,6 +24,7 @@ import { RequestWithUser } from './request-with-user.interface';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RequestWithTokenPayload } from './request-with-token-payload.interface';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -61,6 +62,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   public async login(@Req() { user }: RequestWithUser) {
+    console.log('user', user);
     const userToken = await this.authService.createUserToken(user);
     return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
@@ -90,5 +92,11 @@ export class AuthenticationController {
   })
   public async refreshToken(@Req() { user }: RequestWithUser) {
     return this.authService.createUserToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
   }
 }
