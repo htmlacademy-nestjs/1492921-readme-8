@@ -37,8 +37,8 @@ export class UpdatePostDto {
   publicationDate?: Date;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => [PostType.Video, PostType.Text].includes(o.postType))
+  @IsString()
   @Length(20, 50)
   name?: string;
 
@@ -46,39 +46,36 @@ export class UpdatePostDto {
   @ValidateIf((o) =>
     [PostType.Video, PostType.Photo, PostType.Link].includes(o.postType)
   )
-  @IsNotEmpty()
-  @IsString()
   @IsUrl()
   url?: string;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @IsString()
   @Length(50, 255)
   preview?: string;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Text)
+  @IsString()
   @Length(100, 1024)
   text?: string;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @IsString()
   @Length(20, 300)
   quoteText?: string;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Quote)
+  @IsString()
   @Length(3, 50)
   quoteAuthor?: string;
-  //quoteAuthorId?: string;
 
   @IsOptional()
-  @IsString()
   @ValidateIf((o) => o.postType === PostType.Link)
+  @IsString()
   @Length(1, 300)
   description?: string;
 }
