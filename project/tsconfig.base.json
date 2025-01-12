@@ -17,12 +17,19 @@
     "baseUrl": ".",
     "paths": {
       "@project/account-config": ["libs/account/config/src/index.ts"],
+      "@project/account-notify": ["libs/account/notify/src/index.ts"],
       "@project/authentication": ["libs/account/authentication/src/index.ts"],
       "@project/blog-comment": ["libs/blog/blog-comment/src/index.ts"],
       "@project/blog-models": ["libs/blog/blog-models/src/index.ts"],
       "@project/blog-post": ["libs/blog/blog-post/src/index.ts"],
       "@project/blog-user": ["libs/account/blog-user/src/index.ts"],
       "@project/data-access": ["libs/data-access/src/index.ts"],
+      "@project/email-subscriber": [
+        "libs/notify/email-subscriber/src/index.ts"
+      ],
+      "@project/file-uploader": ["libs/file-vault/file-uploader/src/index.ts"],
+      "@project/file-vault-config": ["libs/file-vault/config/src/index.ts"],
+      "@project/notify-config": ["libs/notify/config/src/index.ts"],
       "@project/pipes": ["libs/shared/pipes/src/index.ts"],
       "@project/shared-helpers": ["libs/shared/helpers/src/index.ts"],
       "@project/shared-types": ["libs/shared/types/src/index.ts"]

@@ -1,12 +1,5 @@
 import { PostType, PrismaClient } from '@prisma/client';
-
-const POST_UIDS = [
-  '2b7a9322-353a-41e4-b009-4c1a83ad15e5',
-  '7e00699f-5847-45bb-9227-7c59190d0470',
-  'b4c56be0-712f-434f-b304-ff76263c94f1',
-  '925f4a8d-a144-445e-9327-82a507c5ae76',
-  '142cb7ca-cd50-4110-8d2d-deee1ef8f223',
-];
+import { randomUUID } from 'node:crypto';
 
 const USERS = [
   { id: '6766cb736c313811f627c05e', name: 'Alexey Ivanov', avatarUrl: '' },
@@ -14,9 +7,11 @@ const USERS = [
 ];
 
 function getPosts() {
+  const firstUID = randomUUID();
+
   return [
     {
-      id: POST_UIDS[0],
+      id: firstUID,
       postType: PostType.text,
       authorId: USERS[0].id,
       repostId: null,
@@ -35,7 +30,7 @@ function getPosts() {
       comments: [],
     },
     {
-      id: POST_UIDS[1],
+      id: randomUUID(),
       postType: PostType.photo,
       authorId: USERS[1].id,
       repostId: null,
@@ -65,7 +60,7 @@ function getPosts() {
       ],
     },
     {
-      id: POST_UIDS[2],
+      id: randomUUID(),
       postType: PostType.quote,
       authorId: USERS[0].id,
       repostId: null,
@@ -77,7 +72,7 @@ function getPosts() {
       comments: [],
     },
     {
-      id: POST_UIDS[3],
+      id: randomUUID(),
       postType: PostType.link,
       authorId: USERS[1].id,
       repostId: null,
@@ -88,10 +83,10 @@ function getPosts() {
       comments: [],
     },
     {
-      id: POST_UIDS[4],
+      id: randomUUID(),
       postType: PostType.video,
       authorId: USERS[1].id,
-      repostId: POST_UIDS[0],
+      repostId: firstUID,
       tags: {
         connectOrCreate: [
           {

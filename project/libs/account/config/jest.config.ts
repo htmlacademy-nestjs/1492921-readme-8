@@ -1,5 +1,5 @@
 export default {
-  displayName: 'config',
+  displayName: 'account-config',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
