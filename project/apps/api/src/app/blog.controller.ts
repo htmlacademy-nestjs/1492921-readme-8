@@ -27,7 +27,6 @@ export class BlogController {
       `${ApplicationServiceURL.Blog}/`,
       dto
     );
-    console.log('dto', dto);
     return data;
   }
 }
