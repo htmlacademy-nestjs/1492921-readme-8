@@ -88,12 +88,14 @@ export class BlogPostRepository extends BasePostgresRepository<
 
   public async update(entity: BlogPostEntity): Promise<BlogPostEntity> {
     const pojoEntity = entity.toPOJO();
+    const { tags } = await this.findById(pojoEntity.id);
     const record = await this.client.post.update({
       where: { id: entity.id },
       data: {
         postType: pojoEntity.postType,
         repostId: pojoEntity.repostId ?? null,
         tags: {
+          set: [],
           connectOrCreate: pojoEntity.tags.map((tag) => ({
             create: { name: tag },
             where: { name: tag },
