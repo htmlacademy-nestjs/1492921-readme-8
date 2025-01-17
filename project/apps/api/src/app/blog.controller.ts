@@ -14,7 +14,7 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { ApplicationServiceURL } from './app.config';
 
-@Controller('blog')
+@Controller('blogs')
 @UseFilters(AxiosExceptionFilter)
 export class BlogController {
   constructor(private readonly httpService: HttpService) {}
@@ -24,7 +24,7 @@ export class BlogController {
   @Post('/')
   public async create(@Body() dto: CreatePostDto) {
     const { data } = await this.httpService.axiosRef.post(
-      `${ApplicationServiceURL.Blog}/`,
+      `${ApplicationServiceURL.Blogs}/`,
       dto
     );
     return data;

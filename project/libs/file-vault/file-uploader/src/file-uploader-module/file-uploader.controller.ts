@@ -23,6 +23,9 @@ export class FileUploaderController {
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   public async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8'
+    );
     const fileEntity = await this.fileUploaderService.saveFile(file);
     return fillDto(UploadedFileRdo, fileEntity.toPOJO());
   }

@@ -29,3 +29,21 @@ Content-Type: application/json
 }
 
 ###
+
+# Upload some file
+POST http://localhost:3000/api/files/upload HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNjg3NjQzNiwiZXhwIjoxNzM2ODc2NzM2fQ.BfSJ3hzHwZRok02AGhQ-WGJ0ME8m7ITxJsp_nwLJUk8
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="Загруженный файл.txt"
+
+< ./users.controller.ts
+--boundary--
+
+###
+
+# Get file by ID
+GET http://localhost:3000/api/files/677e32f77b3864ac37c95875 HTTP/1.1
+
+###
