@@ -4,20 +4,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { BlogPostRepository } from './blog-post.repository';
-import { BlogPostEntity } from './blog-post.entity';
-import { BlogPostFactory } from './blog-post.factory';
-import { CreatePostDto } from './dto/create-post.dto';
-import { BlogPostQuery } from './blog-post.query';
-import { PaginationResult, PostType } from '@project/shared-types';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { TagSetup } from './blog-post.constant';
+import { PaginationResult } from '@project/shared-types';
 import {
   BlogCommentEntity,
   BlogCommentFactory,
   BlogCommentRepository,
   CreateCommentDto,
 } from '@project/blog-comment';
+
+import { BlogPostRepository } from './blog-post.repository';
+import { BlogPostEntity } from './blog-post.entity';
+import { BlogPostFactory } from './blog-post.factory';
+import { CreatePostDto } from './dto/create-post.dto';
+import { BlogPostQuery } from './blog-post.query';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { TagSetup } from './blog-post.constant';
 
 const dtoFieldsMissing = {
   video: ['preview', 'text', 'quoteText', 'quoteAuthor', 'description'],
@@ -53,7 +54,7 @@ export class BlogPostService {
       });
       return result;
     }
-    return tags;
+    return [];
   }
 
   private checkDTO(dto: CreatePostDto | UpdatePostDto): void {

@@ -28,6 +28,9 @@ export abstract class BaseMongoRepository<
   }
 
   public async findById(id: T['id']): Promise<T> {
+    if (!id) {
+      return null;
+    }
     const document = await this.model.findById(id).exec();
     return this.createEntityFromDocument(document);
   }

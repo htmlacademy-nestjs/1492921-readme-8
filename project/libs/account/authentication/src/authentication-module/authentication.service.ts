@@ -1,8 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
+import { ConfigType } from '@nestjs/config';
 import {
   ConflictException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -10,10 +12,14 @@ import {
 } from '@nestjs/common';
 
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
+import { Token, User } from '@project/shared-types';
+import { jwtConfig } from '@project/account-config';
+import { createJWTPayload } from '@project/shared-helpers';
+
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthUserError } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
-import { Token, TokenPayload, User } from '@project/shared-types';
+import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -21,7 +27,10 @@ export class AuthenticationService {
 
   constructor(
     private readonly blogUserRepository: BlogUserRepository,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenService: RefreshTokenService
   ) {}
 
   public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
@@ -47,8 +56,8 @@ export class AuthenticationService {
   }
 
   public async verifyUser(dto: LoginUserDto) {
-    const { email, password } = dto;
-    const existUser = await this.blogUserRepository.findByEmail(email);
+    const { login, password } = dto;
+    const existUser = await this.blogUserRepository.findByLogin(login);
 
     if (!existUser) {
       throw new NotFoundException(AuthUserError.UserNotFound);
@@ -61,7 +70,7 @@ export class AuthenticationService {
     return existUser;
   }
 
-  public async getUser(id: string) {
+  public async getUserById(id: string) {
     const user = await this.blogUserRepository.findById(id);
 
     if (!user) {
@@ -71,17 +80,44 @@ export class AuthenticationService {
     return user;
   }
 
-  public async createUserToken(user: User): Promise<Token> {
-    const payload: TokenPayload = {
-      sub: user.id,
-      email: user.email,
-      login: user.login,
-      name: user.name,
-    };
+  public async getUserByEmail(email: string) {
+    const user = await this.blogUserRepository.findByEmail(email);
 
+    if (!user) {
+      throw new NotFoundException(AuthUserError.UserNotFound);
+    }
+
+    return user;
+  }
+
+  public async getUserByLogin(login: string) {
+    const user = await this.blogUserRepository.findByLogin(login);
+
+    if (!user) {
+      throw new NotFoundException(AuthUserError.UserNotFound);
+    }
+
+    return user;
+  }
+
+  public async createUserToken(user: User): Promise<Token> {
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = {
+      ...accessTokenPayload,
+      tokenId: crypto.randomUUID(),
+    };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
     try {
-      const accessToken = await this.jwtService.signAsync(payload);
-      return { accessToken };
+      const accessToken = await this.jwtService.signAsync(accessTokenPayload);
+      const refreshToken = await this.jwtService.signAsync(
+        refreshTokenPayload,
+        {
+          secret: this.jwtOptions.refreshTokenSecret,
+          expiresIn: this.jwtOptions.refreshTokenExpiresIn,
+        }
+      );
+
+      return { accessToken, refreshToken };
     } catch (error) {
       this.logger.error('[Token generation error]: ' + error.message);
       throw new HttpException(
