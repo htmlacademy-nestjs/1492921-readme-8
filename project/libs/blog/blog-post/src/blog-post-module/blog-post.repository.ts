@@ -101,6 +101,8 @@ export class BlogPostRepository extends BasePostgresRepository<
           })),
         },
         publicationDate: pojoEntity.publicationDate,
+        likesCount: pojoEntity.likesCount,
+        commentsCount: pojoEntity.commentsCount,
         name: pojoEntity.name,
         url: pojoEntity.url,
         preview: pojoEntity.preview,

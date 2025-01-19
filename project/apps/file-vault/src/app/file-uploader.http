@@ -11,6 +11,7 @@ Content-Disposition: form-data; name="file"; filename="Новость дня.ts"
 ###
 
 # Get file by ID
-GET http://localhost:3335/api/files/677e32f77b3864ac37c95875 HTTP/1.1
+GET http://localhost:3335/api/files/67899ca39e590d7279c026d8
+ HTTP/1.1
 
 ###

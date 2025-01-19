@@ -138,4 +138,15 @@ export class BlogPostService {
 
     return await this.blogCommentRepository.save(newComment);
   }
+
+  public async updateLikeCount(
+    postId: string,
+    diffValue: number
+  ): Promise<void> {
+    const existPost = await this.getPost(postId);
+    console.log('before existPost', existPost);
+    existPost.likesCount += diffValue;
+    console.log('after existPost', existPost);
+    await this.blogPostRepository.update(existPost);
+  }
 }

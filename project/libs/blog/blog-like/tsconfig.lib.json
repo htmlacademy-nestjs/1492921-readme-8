@@ -7,8 +7,5 @@
     "types": ["node"]
   },
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": [
-    "src/**/*.ts",
-    "../blog-like/src/blog-like-module/dto/user-id.dto.ts"
-  ]
+  "include": ["src/**/*.ts", "src/blog-like-module/dto/user-id.dto.ts"]
 }
