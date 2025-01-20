@@ -19,7 +19,7 @@ export class BlogLikeService {
     private readonly blogPostService: BlogPostService
   ) {}
 
-  public async AddLike(like: Like): Promise<void> {
+  public async addLike(like: Like): Promise<void> {
     const isLikeExists = await this.blogLikeRepository.isLikeExists(like);
     if (isLikeExists) {
       throw new ConflictException(BlogLikeResponseMessage.LikeExists);
@@ -35,7 +35,7 @@ export class BlogLikeService {
     await this.blogLikeRepository.save(newLike);
   }
 
-  public async DelLike(like: Like): Promise<void> {
+  public async delLike(like: Like): Promise<void> {
     const isLikeExists = await this.blogLikeRepository.isLikeExists(like);
     if (!isLikeExists) {
       throw new ConflictException(BlogLikeResponseMessage.LikeNotFound);

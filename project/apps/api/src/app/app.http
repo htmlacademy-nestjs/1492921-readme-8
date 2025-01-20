@@ -47,3 +47,16 @@ Content-Disposition: form-data; name="file"; filename="Загруженный ф
 GET http://localhost:3000/api/files/677e32f77b3864ac37c95875 HTTP/1.1
 
 ###
+
+# Set like for post
+POST http://localhost:3000/api/blogs/posts/fbcd1342-86ec-492a-ab51-f67ba760b8a7/likes HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzM5Njk2MSwiZXhwIjoxNzM3Mzk3MjYxfQ._yJNWDgbTaoQ_gM12TshTL2yfQ--6I2btQpnQUdPzgM
+Content-Type: application/json
+
+# Del like for post
+DELETE http://localhost:3000/api/blogs/posts/fbcd1342-86ec-492a-ab51-f67ba760b8a7/likes HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzM5Njk2MSwiZXhwIjoxNzM3Mzk3MjYxfQ._yJNWDgbTaoQ_gM12TshTL2yfQ--6I2btQpnQUdPzgM
+Content-Type: application/json
+
+
+###
