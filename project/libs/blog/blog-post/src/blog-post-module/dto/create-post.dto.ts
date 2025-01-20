@@ -18,10 +18,11 @@ export class CreatePostDto {
   @IsNotEmpty()
   postType: PostType;
 
+  @IsOptional()
   @IsString()
   @IsMongoId()
   @IsNotEmpty()
-  authorId: string;
+  authorId!: string;
 
   @IsOptional()
   @IsString()

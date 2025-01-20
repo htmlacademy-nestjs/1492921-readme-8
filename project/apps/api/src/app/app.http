@@ -16,13 +16,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1M
 ###
 
 # Create a new post
-POST http://localhost:3000/api/blog HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNjcyNTIzOSwiZXhwIjoxNzM2NzI1NTM5fQ.ye7bCfqnzVOlhtOBhgVkXMKjwgjWzQ5VUHtlIGW0Azo
+POST http://localhost:3000/api/blogs/posts HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzM5OTg0MCwiZXhwIjoxNzM3NDAwMTQwfQ.61qkWQO83jK_btZUDnZqXUg8gjngANDe6nhcDMQnxrc
 Content-Type: application/json
 
 {
   "postType": "text",
-  "authorId": "6766fdb720f78014bf83d5a3",
   "name": "Проверка не менее 20 символов",
   "preview": "Превью текста должно быть длинным около 50 символов",
   "text": " Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов"
@@ -50,12 +49,12 @@ GET http://localhost:3000/api/files/677e32f77b3864ac37c95875 HTTP/1.1
 
 # Set like for post
 POST http://localhost:3000/api/blogs/posts/fbcd1342-86ec-492a-ab51-f67ba760b8a7/likes HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzM5Njk2MSwiZXhwIjoxNzM3Mzk3MjYxfQ._yJNWDgbTaoQ_gM12TshTL2yfQ--6I2btQpnQUdPzgM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzQwMTExMCwiZXhwIjoxNzM3NDAxNDEwfQ.KkyMGcPeQU3wem5hRTxukRJgb7OA_9eU4UCQIAQiuGE
 Content-Type: application/json
 
 # Del like for post
 DELETE http://localhost:3000/api/blogs/posts/fbcd1342-86ec-492a-ab51-f67ba760b8a7/likes HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzM5Njk2MSwiZXhwIjoxNzM3Mzk3MjYxfQ._yJNWDgbTaoQ_gM12TshTL2yfQ--6I2btQpnQUdPzgM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzgzZmI1MzhkMzYxNzJkMzNiNWRkYTYiLCJlbWFpbCI6IkFsZXg4QG5tYWlsLnJ1IiwibG9naW4iOiJBbGV4OEBubWFpbC5ydSIsIm5hbWUiOiJBbGV4OCIsImlhdCI6MTczNzQwMTExMCwiZXhwIjoxNzM3NDAxNDEwfQ.KkyMGcPeQU3wem5hRTxukRJgb7OA_9eU4UCQIAQiuGE
 Content-Type: application/json
 
 

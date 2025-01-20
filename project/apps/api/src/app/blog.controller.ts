@@ -20,26 +20,29 @@ import { BlogLikeResponseMessage } from '@project/blog-like';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { ApplicationServiceURL } from './app.config';
+import { CheckPostGuard } from './guards/check-post.guard ';
 
 @ApiTags('Blogs')
-@Controller('blogs/')
+@Controller('blogs')
 @UseFilters(AxiosExceptionFilter)
 export class BlogController {
   constructor(private readonly httpService: HttpService) {}
 
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(UseInterceptors)
-  @Post('/posts/')
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Post('/posts')
   public async create(@Body() dto: CreatePostDto) {
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/`,
-      dto
+      { ...dto, authorId: dto['userId'] }
     );
     return data;
   }
 
   @Post('/posts/:postId/likes')
   @UseGuards(CheckAuthGuard)
+  @UseGuards(CheckPostGuard)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
@@ -75,6 +78,7 @@ export class BlogController {
 
   @Delete('/posts/:postId/likes')
   @UseGuards(CheckAuthGuard)
+  @UseGuards(CheckPostGuard)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)

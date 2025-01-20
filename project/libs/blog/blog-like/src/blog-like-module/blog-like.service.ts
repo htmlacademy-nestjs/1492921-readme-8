@@ -2,7 +2,6 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 
 import { Like, PostState } from '@project/shared-types';
@@ -25,9 +24,6 @@ export class BlogLikeService {
       throw new ConflictException(BlogLikeResponseMessage.LikeExists);
     }
     const post = await this.blogPostService.getPost(like.postId);
-    if (!post) {
-      throw new NotFoundException(BlogLikeResponseMessage.PostNotFound);
-    }
     if (post.state === PostState.Draft) {
       throw new ForbiddenException(BlogLikeResponseMessage.PostIsDraft);
     }
