@@ -11,16 +11,25 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InjectUserIdInterceptor } from '@project/interceptors';
 
 import { CreatePostDto } from '@project/blog-post';
-import { BlogLikeResponseMessage } from '@project/blog-like';
+import {
+  BlogLikeOperationMessage,
+  BlogLikeResponseMessage,
+} from '@project/blog-like';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { ApplicationServiceURL } from './app.config';
 import { CheckPostGuard } from './guards/check-post.guard ';
+import { CheckPublishedPostGuard } from './guards/check-published-post.guard ';
 
 @ApiTags('Blogs')
 @Controller('blogs')
@@ -41,8 +50,9 @@ export class BlogController {
   }
 
   @Post('/posts/:postId/likes')
+  @ApiOperation({ summary: BlogLikeOperationMessage.SetLike })
   @UseGuards(CheckAuthGuard)
-  @UseGuards(CheckPostGuard)
+  @UseGuards(CheckPublishedPostGuard)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
@@ -77,8 +87,9 @@ export class BlogController {
   }
 
   @Delete('/posts/:postId/likes')
+  @ApiOperation({ summary: BlogLikeOperationMessage.DelLike })
   @UseGuards(CheckAuthGuard)
-  @UseGuards(CheckPostGuard)
+  @UseGuards(CheckPublishedPostGuard)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)

@@ -7,13 +7,16 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { BlogPostService } from '@project/blog-post';
 
 import { UserIdDto } from './dto/user-id.dto';
 import { BlogLikeService } from './blog-like.service';
-import { BlogLikeResponseMessage } from './blog-like.constant';
+import {
+  BlogLikeOperationMessage,
+  BlogLikeResponseMessage,
+} from './blog-like.constant';
 
 @ApiTags('Likes')
 @Controller('posts/:id/likes')
@@ -24,6 +27,7 @@ export class BlogLikeController {
   ) {}
 
   @Post('/')
+  @ApiOperation({ summary: BlogLikeOperationMessage.SetLike })
   @ApiResponse({
     status: HttpStatus.OK,
     description: BlogLikeResponseMessage.SetLike,
@@ -50,6 +54,7 @@ export class BlogLikeController {
   }
 
   @Delete('/')
+  @ApiOperation({ summary: BlogLikeOperationMessage.DelLike })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: BlogLikeResponseMessage.DelLike,

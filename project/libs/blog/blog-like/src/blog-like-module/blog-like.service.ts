@@ -1,10 +1,6 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
-import { Like, PostState } from '@project/shared-types';
+import { Like } from '@project/shared-types';
 import { BlogPostService } from '@project/blog-post';
 
 import { BlogLikeEntity } from './blog-like.entity';
@@ -22,10 +18,6 @@ export class BlogLikeService {
     const isLikeExists = await this.blogLikeRepository.isLikeExists(like);
     if (isLikeExists) {
       throw new ConflictException(BlogLikeResponseMessage.LikeExists);
-    }
-    const post = await this.blogPostService.getPost(like.postId);
-    if (post.state === PostState.Draft) {
-      throw new ForbiddenException(BlogLikeResponseMessage.PostIsDraft);
     }
     const newLike = new BlogLikeEntity(like);
     await this.blogLikeRepository.save(newLike);
