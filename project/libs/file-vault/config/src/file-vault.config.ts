@@ -11,6 +11,7 @@ export interface FileVaultConfig {
   environment: string;
   port: number;
   uploadDirectory: string;
+  serveDirectory: string;
   db: {
     host: string;
     port: number;
@@ -27,6 +28,7 @@ const validationSchema = Joi.object({
     .required(),
   port: Joi.number().port().default(DEFAULT_PORT),
   uploadDirectory: Joi.string().required(),
+  serveDirectory: Joi.string().required(),
   db: Joi.object({
     host: Joi.string().valid().hostname(),
     port: Joi.number().port(),
@@ -49,6 +51,7 @@ function getConfig(): FileVaultConfig {
     environment: process.env.NODE_ENV as Environment,
     port: parseInt(process.env.PORT || `${DEFAULT_PORT}`, 10),
     uploadDirectory: process.env.UPLOAD_DIRECTORY_PATH,
+    serveDirectory: process.env.SERVE_ROOT,
     db: {
       host: process.env.MONGO_HOST,
       port: parseInt(
@@ -66,4 +69,4 @@ function getConfig(): FileVaultConfig {
   return config;
 }
 
-export default registerAs('application', getConfig);
+export const fileVaultConfig = registerAs('application', getConfig);

@@ -16,12 +16,6 @@ export class BlogUserModel extends Document implements AuthUser {
 
   @Prop({
     required: true,
-    unique: true,
-  })
-  public login: string;
-
-  @Prop({
-    required: true,
   })
   public name: string;
 
@@ -37,6 +31,12 @@ export class BlogUserModel extends Document implements AuthUser {
     required: true,
   })
   public passwordHash: string;
+
+  @Prop({ required: true, default: 0 })
+  postsCount: number;
+
+  @Prop({ required: true, default: 0 })
+  subscribersCount: number;
 }
 
 export const BlogUserSchema = SchemaFactory.createForClass(BlogUserModel);

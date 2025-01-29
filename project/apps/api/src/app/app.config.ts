@@ -1,3 +1,5 @@
+export const API_PORT = 3000;
+
 export enum ApplicationServiceURL {
   Users = 'http://localhost:3333/api/auth',
   Blogs = 'http://localhost:3334/api/posts',

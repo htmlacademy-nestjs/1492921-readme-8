@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, Length } from 'class-validator';
-import { AuthenticationProperty } from '../authentication-module/authentication.constant';
-import { LoginUserDto } from './login-user.dto';
 
-export class CreateUserDto extends LoginUserDto {
+import { AuthenticationProperty, LoginUserDto } from '@project/authentication';
+
+export class RegisterUserDto extends LoginUserDto {
   @ApiProperty(AuthenticationProperty.Name.Description)
   @IsString()
   @Length(
@@ -15,8 +15,7 @@ export class CreateUserDto extends LoginUserDto {
   )
   public name: string;
 
-  @ApiProperty(AuthenticationProperty.AvatarUrl.Description)
-  @IsString()
+  @ApiProperty(AuthenticationProperty.AvatarFile.Description)
   @IsOptional()
-  public avatarUrl?: string;
+  public avatarFile?: Express.Multer.File;
 }

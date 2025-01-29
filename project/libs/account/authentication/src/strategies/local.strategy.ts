@@ -6,7 +6,7 @@ import { User } from '@project/shared-types';
 
 import { AuthenticationService } from '../authentication-module/authentication.service';
 
-const USERNAME_FIELD_NAME = 'login';
+const USERNAME_FIELD_NAME = 'email';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: USERNAME_FIELD_NAME });
   }
 
-  public async validate(login: string, password: string): Promise<User> {
-    return this.authService.verifyUser({ login, password });
+  public async validate(email: string, password: string): Promise<User> {
+    return this.authService.verifyUser({ email, password });
   }
 }

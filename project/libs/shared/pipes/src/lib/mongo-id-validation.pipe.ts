@@ -14,7 +14,6 @@ export class MongoIdValidationPipe implements PipeTransform {
     if (type !== 'param') {
       throw new Error('This pipe must used only with params!');
     }
-
     if (!Types.ObjectId.isValid(value)) {
       throw new BadRequestException(BAD_MONGO_ID_ERROR);
     }

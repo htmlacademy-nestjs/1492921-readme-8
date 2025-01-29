@@ -9,6 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app/app.module';
+import { BearerAuth, BearerAuthOption } from '@project/shared-types';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,8 @@ async function bootstrap() {
     .setTitle('The «Account» service')
     .setDescription('Account service API')
     .setVersion('1.0')
+    .addBearerAuth(BearerAuthOption, BearerAuth.AccessToken)
+    .addBearerAuth(BearerAuthOption, BearerAuth.RefreshToken)
     .build();
 
   const globalPrefix = 'api';
@@ -36,7 +39,7 @@ async function bootstrap() {
 
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Service ACCOUNT is running on: http://localhost:${port}/${globalPrefix}`
   );
 }
 

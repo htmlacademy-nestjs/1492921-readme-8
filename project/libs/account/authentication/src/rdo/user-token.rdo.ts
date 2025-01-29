@@ -3,15 +3,7 @@ import { Expose } from 'class-transformer';
 
 import { AuthenticationProperty } from '../authentication-module/authentication.constant';
 
-export class LoggedUserRdo {
-  @ApiProperty(AuthenticationProperty.Id.Description)
-  @Expose()
-  public id: string;
-
-  @ApiProperty(AuthenticationProperty.Email.Description)
-  @Expose()
-  public email: string;
-
+export class UserTokenRdo {
   @ApiProperty(AuthenticationProperty.AccessToken.Description)
   @Expose()
   public accessToken: string;

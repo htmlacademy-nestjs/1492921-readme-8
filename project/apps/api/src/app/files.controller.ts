@@ -9,28 +9,27 @@ import {
   Post,
   UploadedFile,
   UseFilters,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { multerFileToFormData } from '@project/shared-helpers';
+import { MongoIdValidationPipe } from '@project/pipes';
 
 import { ApplicationServiceURL } from './app.config';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
-import { MongoIdValidationPipe } from '@project/pipes';
-import { CheckAuthGuard } from './guards/check-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('files')
 @UseFilters(AxiosExceptionFilter)
 export class FilesController {
   constructor(private readonly httpService: HttpService) {}
 
-  //@UseGuards(CheckAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   public async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const filename = Buffer.from(file.originalname, 'latin1').toString('utf8');
     const form = new FormData();
-    form.append('file', file.buffer, { filename });
+    multerFileToFormData(form, file, 'file');
+
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Files}/upload`,
       form

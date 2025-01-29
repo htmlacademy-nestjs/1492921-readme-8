@@ -3,8 +3,10 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { RequestIdInterceptor } from '@project/interceptors';
+import { BearerAuth, BearerAuthOption } from '@project/shared-types';
 
 import { AppModule } from './app/app.module';
+import { API_PORT } from './app/app.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,26 +15,8 @@ async function bootstrap() {
     .setTitle('Readme App')
     .setDescription('Readme App API')
     .setVersion('1.0')
-    .addBearerAuth(
-      {
-        description: `[just text field] Please enter token in following format: Bearer `,
-        name: 'Authorization',
-        bearerFormat: 'Bearer',
-        scheme: 'Bearer',
-        type: 'http',
-      },
-      'accessToken'
-    )
-    .addBearerAuth(
-      {
-        description: `[just text field] Please enter token in following format: Bearer `,
-        name: 'Authorization',
-        bearerFormat: 'Bearer',
-        scheme: 'Bearer',
-        type: 'http',
-      },
-      'refreshToken'
-    )
+    .addBearerAuth(BearerAuthOption, BearerAuth.AccessToken)
+    .addBearerAuth(BearerAuthOption, BearerAuth.RefreshToken)
     .build();
 
   app.setGlobalPrefix(globalPrefix);
@@ -41,7 +25,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new RequestIdInterceptor());
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || API_PORT;
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

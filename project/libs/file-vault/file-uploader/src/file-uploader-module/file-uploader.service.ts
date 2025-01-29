@@ -8,7 +8,7 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
-import { FileVaultConfig } from '@project/file-vault-config';
+import { fileVaultConfig } from '@project/file-vault-config';
 import { StoredFile } from '@project/shared-types';
 import { FileUploaderEntity } from './file-uploader.entity';
 import { FileUploaderRepository } from './file-uploader.repository';
@@ -20,8 +20,8 @@ export class FileUploaderService {
   private readonly DATE_FORMAT = 'YYYY MM';
 
   constructor(
-    @Inject(FileVaultConfig.KEY)
-    private readonly config: ConfigType<typeof FileVaultConfig>,
+    @Inject(fileVaultConfig.KEY)
+    private readonly config: ConfigType<typeof fileVaultConfig>,
     private readonly fileRepository: FileUploaderRepository
   ) {}
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import fileVaultConfig from './file-vault.config';
+import { fileVaultConfig } from './file-vault.config';
 
 const ENV_FILE_PATH = 'apps/file-vault/.env';
 

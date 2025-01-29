@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { MongoIdValidationPipe } from '@project/pipes';
 import { fillDto } from '@project/shared-helpers';
@@ -17,14 +17,19 @@ import { NotifyService } from '@project/account-notify';
 
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { AuthenticationResponseMessage } from './authentication.constant';
+import { AuthenticationParam } from './authentication.constant';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
-import { UserRdo } from '../rdo/user.rdo';
 import { RequestWithUser } from './request-with-user.interface';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RequestWithTokenPayload } from './request-with-token-payload.interface';
+import { UpdatePasswordDto } from '../dto/update-password.dto';
+import { TokenPayloadRdo } from '../rdo/token-payload.rdo';
+import { LoginUserDto } from '../dto/login-user.dto';
+import { UpdatePassword } from '@project/shared-types';
+import { UserRdo } from '../rdo/user.rdo';
+import { UserTokenRdo } from '../rdo/user-token.rdo';
+import { AuthenticationResponse } from './authentication-response';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -34,15 +39,10 @@ export class AuthenticationController {
     private readonly notifyService: NotifyService
   ) {}
 
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: AuthenticationResponseMessage.UserCreated,
-  })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description: AuthenticationResponseMessage.UserExist,
-  })
   @Post('register')
+  @ApiResponse(AuthenticationResponse.UserCreated)
+  @ApiResponse(AuthenticationResponse.UserExist)
+  @ApiResponse(AuthenticationResponse.BadRequest)
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
     const { email, name } = newUser;
@@ -50,52 +50,66 @@ export class AuthenticationController {
     return newUser.toPOJO();
   }
 
-  @ApiResponse({
-    type: LoggedUserRdo,
-    status: HttpStatus.OK,
-    description: AuthenticationResponseMessage.LoggedSuccess,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: AuthenticationResponseMessage.LoggedError,
-  })
-  @UseGuards(LocalAuthGuard)
+  @Post('change-password')
+  @ApiResponse(AuthenticationResponse.PasswordUpdated)
+  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(AuthenticationResponse.BadRequest)
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  public async updatePassword(
+    @Body() dto: UpdatePasswordDto,
+    @Req() { user: payload }: RequestWithTokenPayload
+  ) {
+    const dtoUpdatePassword: UpdatePassword = { ...dto, userId: payload.sub };
+    await this.authService.updatePassword(dtoUpdatePassword);
+  }
+
   @Post('login')
-  public async login(@Req() { user }: RequestWithUser) {
-    const userToken = await this.authService.createUserToken(user);
-    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+  @ApiResponse(AuthenticationResponse.LoggedSuccess)
+  @ApiResponse(AuthenticationResponse.LoggedError)
+  @ApiResponse(AuthenticationResponse.BadRequest)
+  @ApiResponse(AuthenticationResponse.UserNotFound)
+  public async login(
+    @Body() dto: LoginUserDto,
+    @Req() { user }: RequestWithUser
+  ) {
+    user = await this.authService.verifyUser(dto);
+    if (user) {
+      const userToken = await this.authService.createUserToken(user);
+
+      return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+    }
   }
 
-  @ApiResponse({
-    type: UserRdo,
-    status: HttpStatus.OK,
-    description: AuthenticationResponseMessage.UserFound,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: AuthenticationResponseMessage.UserNotFound,
-  })
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  public async show(@Param('id', MongoIdValidationPipe) id: string) {
-    const existUser = await this.authService.getUserById(id);
-    return existUser.toPOJO();
+  @Get(':userId')
+  @ApiResponse(AuthenticationResponse.UserFound)
+  @ApiResponse(AuthenticationResponse.UserNotFound)
+  @ApiResponse(AuthenticationResponse.BadRequest)
+  @ApiParam(AuthenticationParam.UserId)
+  public async show(
+    @Param(AuthenticationParam.UserId.name, MongoIdValidationPipe)
+    userId: string
+  ) {
+    const existUser = await this.authService.getUserById(userId);
+    return fillDto(UserRdo, existUser.toPOJO());
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Get a new access/refresh tokens',
-  })
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh')
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse(AuthenticationResponse.GetTokens)
+  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiBearerAuth('refreshToken')
+  @UseGuards(JwtRefreshGuard)
   public async refreshToken(@Req() { user }: RequestWithUser) {
-    return this.authService.createUserToken(user);
+    return fillDto(UserTokenRdo, this.authService.createUserToken(user));
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('check')
+  @ApiResponse(AuthenticationResponse.CheckSuccess)
+  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
-    return payload;
+    return fillDto(TokenPayloadRdo, payload);
   }
 }

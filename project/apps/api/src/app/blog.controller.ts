@@ -13,6 +13,7 @@ import {
 import { HttpService } from '@nestjs/axios';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -23,6 +24,7 @@ import { CreatePostDto } from '@project/blog-post';
 import {
   BlogLikeOperationMessage,
   BlogLikeResponseMessage,
+  UserIdDto,
 } from '@project/blog-like';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
@@ -49,7 +51,7 @@ export class BlogController {
     return data;
   }
 
-  @Post('/posts/:postId/likes')
+  @Post('posts/:postId/likes')
   @ApiOperation({ summary: BlogLikeOperationMessage.SetLike })
   @UseGuards(CheckAuthGuard)
   @UseGuards(CheckPublishedPostGuard)
@@ -86,7 +88,7 @@ export class BlogController {
     return data;
   }
 
-  @Delete('/posts/:postId/likes')
+  @Delete('posts/:postId/likes')
   @ApiOperation({ summary: BlogLikeOperationMessage.DelLike })
   @UseGuards(CheckAuthGuard)
   @UseGuards(CheckPublishedPostGuard)
@@ -110,10 +112,10 @@ export class BlogController {
     description: BlogLikeResponseMessage.LikeNotFound,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteLike(@Param('postId') postId: string, @Body() body) {
+  public async deleteLike(@Param('postId') postId: string, @Body() dto) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blogs}/${postId}/likes`,
-      { data: body }
+      { data: dto }
     );
     return data;
   }
