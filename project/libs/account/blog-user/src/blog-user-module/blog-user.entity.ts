@@ -26,7 +26,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
     this.id = user.id ?? '';
     this.email = user.email;
     this.name = user.name;
-    this.avatarUrl = user.avatarUrl ?? DEFAULT_AVATAR;
+    this.avatarUrl = user.avatarUrl || DEFAULT_AVATAR;
     this.registerDate = user.registerDate;
     this.passwordHash = user.passwordHash;
     this.postsCount = user.postsCount ?? 0;
@@ -38,7 +38,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
       id: this.id,
       email: this.email,
       name: this.name,
-      avatarUrl: this.avatarUrl,
+      avatarUrl: this.avatarUrl || DEFAULT_AVATAR,
       registerDate: this.registerDate,
       passwordHash: this.passwordHash,
       postsCount: this.postsCount,

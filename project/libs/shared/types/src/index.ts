@@ -7,6 +7,7 @@ export { Token } from './lib/interfaces/token.interface';
 export { TokenPayload } from './lib/interfaces/token-payload.interface';
 export { JwtToken } from './lib/interfaces/jwt-token.interface';
 export { RefreshTokenPayload } from './lib/interfaces/refresh-token-payload.interface';
+export { FileValidateOptions } from './lib/interfaces/file-validate-options.interface';
 
 export { User } from './lib/types/user.interface';
 export { UpdatePassword } from './lib/types/update-password.interface';

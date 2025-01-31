@@ -119,7 +119,7 @@ export const AuthenticationParam = {
   UserId: {
     name: 'userId',
     type: String,
-    schema: AuthenticationProperty.Id.Description,
+    schema: AuthenticationProperty.Id,
   },
 } as const;
 

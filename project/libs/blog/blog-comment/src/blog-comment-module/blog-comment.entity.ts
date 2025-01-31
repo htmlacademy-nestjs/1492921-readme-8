@@ -18,7 +18,7 @@ export class BlogCommentEntity
     if (!comment) {
       return;
     }
-    this.id = comment.id ?? undefined;
+    this.id = comment.id || undefined;
     this.postId = comment.postId;
     this.userId = comment.userId;
     this.text = comment.text;

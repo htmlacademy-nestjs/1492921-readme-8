@@ -4,14 +4,13 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CommentRdo, CreateCommentDto } from '@project/blog-comment';
 import { fillDto } from '@project/shared-helpers';
 
 import { BlogPostService } from './blog-post.service';
@@ -21,17 +20,25 @@ import { BlogPostQuery } from './blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { UpdatePostDto } from './dto/update-post.dto';
 
+import { BlogPostResponse } from './swagger/blog-post-response';
+import { BlogPostParam } from './swagger/blog-post-param';
+import { BlogPostBody } from './swagger/blog-post-request';
+
+@ApiTags('Posts')
 @Controller('posts')
 export class BlogPostController {
   constructor(private readonly blogPostService: BlogPostService) {}
 
-  @Get('/:id')
-  public async show(@Param('id') id: string) {
-    const post = await this.blogPostService.getPost(id);
+  @Get(':postId')
+  @ApiResponse(BlogPostResponse.PostFound)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiParam(BlogPostParam.PostId)
+  public async show(@Param(BlogPostParam.PostId.name) postId: string) {
+    const post = await this.blogPostService.getPost(postId);
     return fillDto(BlogPostRdo, post.toPOJO());
   }
 
-  @Get('/')
+  @Get('')
   public async index(@Query() query: BlogPostQuery) {
     const postsWithPagination = await this.blogPostService.getAllPosts(query);
     const result = {
@@ -41,30 +48,37 @@ export class BlogPostController {
     return fillDto(BlogPostWithPaginationRdo, result);
   }
 
-  @Post('/')
+  @Post('')
+  @ApiResponse(BlogPostResponse.PostCreated)
+  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiBody(BlogPostBody.create)
+  //@ApiHeader(BlogPostHeader.RequestId)
   public async create(@Body() dto: CreatePostDto) {
     const newPost = await this.blogPostService.createPost(dto);
     return fillDto(BlogPostRdo, newPost.toPOJO());
   }
 
-  @Delete('/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  public async destroy(@Param('id') id: string) {
-    await this.blogPostService.deletePost(id);
-  }
-
-  @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-    const updatedPost = await this.blogPostService.updatePost(id, dto);
+  @Patch(':postId')
+  @ApiResponse(BlogPostResponse.PostUpdated)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiBody(BlogPostBody.update)
+  public async update(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Body() dto: UpdatePostDto
+  ) {
+    const updatedPost = await this.blogPostService.updatePost(postId, dto);
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
   }
 
-  @Post('/:id/comments')
-  public async createComment(
-    @Param('id') postId: string,
-    @Body() dto: CreateCommentDto
-  ) {
-    const newComment = await this.blogPostService.addComment(postId, dto);
-    return fillDto(CommentRdo, newComment.toPOJO());
+  @Delete(':postId')
+  @ApiResponse(BlogPostResponse.PostDeleted)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiParam(BlogPostParam.PostId)
+  @HttpCode(BlogPostResponse.PostDeleted.status)
+  public async delete(
+    @Param(BlogPostParam.PostId.name) postId: string
+  ): Promise<void> {
+    await this.blogPostService.deletePost(postId);
   }
 }

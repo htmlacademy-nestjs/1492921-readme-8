@@ -49,8 +49,8 @@ export class AuthenticationService {
     if (await this.blogUserRepository.findByEmail(email)) {
       throw new ConflictException(AuthenticationMessage.EmailExists);
     }
-
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
+    console.log('userEntity', userEntity);
     return await this.blogUserRepository.save(userEntity);
   }
 

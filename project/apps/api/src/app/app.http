@@ -6,7 +6,7 @@ Content-Type: multipart/form-data; boundary=boundary
 --boundary
 Content-Disposition: form-data; name="email"
 
-user4@local.local
+user33334@local.local
 --boundary
 Content-Disposition: form-data; name="name"
 
@@ -15,11 +15,6 @@ Keks4
 Content-Disposition: form-data; name="password"
 
 123456
---boundary
-Content-Disposition: form-data; name="avatarFile"; filename="Алексей.jpg"
-Content-Type: image/jpeg
-
-< /home/oem/EDU/1492921-readme-8/project/static/Алексей.jpg
 --boundary--
 
 ###

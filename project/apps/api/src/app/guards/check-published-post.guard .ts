@@ -7,7 +7,7 @@ import {
 import { HttpService } from '@nestjs/axios';
 
 import { Post, PostState } from '@project/shared-types';
-import { BlogLikeResponseMessage } from '@project/blog-like';
+import { BlogPostError } from '@project/blog-post';
 
 import { ApplicationServiceURL } from '../app.config';
 
@@ -22,7 +22,7 @@ export class CheckPublishedPostGuard implements CanActivate {
     );
 
     if (data.state === PostState.Draft) {
-      throw new ForbiddenException(BlogLikeResponseMessage.PostIsDraft);
+      throw new ForbiddenException(BlogPostError.PostIsDraft);
     }
     return true;
   }

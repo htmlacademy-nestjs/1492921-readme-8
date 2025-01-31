@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { BlogPostService } from '@project/blog-post';
+import { BlogPostError, BlogPostService } from '@project/blog-post';
 
 import { UserIdDto } from './dto/user-id.dto';
 import { BlogLikeService } from './blog-like.service';
@@ -42,7 +42,7 @@ export class BlogLikeController {
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
-    description: BlogLikeResponseMessage.PostIsDraft,
+    description: BlogPostError.PostIsDraft,
   })
   @HttpCode(HttpStatus.OK)
   public async addLike(

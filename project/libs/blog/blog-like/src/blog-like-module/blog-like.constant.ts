@@ -5,7 +5,6 @@ export const BlogLikeResponseMessage = {
   PostNotFound: 'postId not found',
   LikeExists: 'User has already liked this post',
   LikeNotFound: 'User not liked this post',
-  PostIsDraft: 'Post state is not is published',
 } as const;
 
 export const BlogLikeOperationMessage = {

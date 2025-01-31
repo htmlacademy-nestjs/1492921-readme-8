@@ -2,10 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -33,7 +31,7 @@ import {
   UpdatePasswordDto,
   AuthenticationOperation,
 } from '@project/authentication';
-import { multerFileToFormData } from '@project/shared-helpers';
+import { ImageFileInterceptor, multerFileToFormData } from '@project/shared-helpers';
 import { UploadedFileRdo } from '@project/file-uploader';
 
 import { ApplicationServiceURL } from './app.config';
@@ -56,48 +54,29 @@ export class UsersController {
   @ApiResponse(AuthenticationResponse.UserAuthForbidden)
   @ApiConsumes('multipart/form-data')
   @UseGuards(CheckNoAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('avatarFile', {
-      fileFilter: (request, file, callback) => {
-        if (
-          !file.originalname.match(
-            AuthenticationProperty.AvatarFile.Validate.FileExtRegExp
-          )
-        ) {
-          return callback(
-            new ForbiddenException(
-              AuthenticationProperty.AvatarFile.Validate.Message
-            ),
-            false
-          );
-        }
-        callback(null, true);
-      },
-      limits: { fileSize: AuthenticationProperty.AvatarFile.Validate.MaxSize },
-    })
-  )
+  @UseInterceptors(ImageFileInterceptor(AuthenticationProperty.AvatarFile.Validate, 'avatarFile'))
   public async create(
     @Body() dto: RegisterUserDto,
     @UploadedFile() avatarFile?: Express.Multer.File
   ) {
+    const dtoWithFile = {
+        ...dto,
+        avatarUrl: ``,
+      }
     const form = new FormData();
 
     if (avatarFile) {
       multerFileToFormData(form, avatarFile, 'file');
-    }
-
-    const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
+      const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
       `${ApplicationServiceURL.Files}/upload`,
       form
     );
-
+    dtoWithFile.avatarUrl =`${data.subDirectory}/${data.hashName}`;
+    }
     const user = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Users}/register`,
-      {
-        ...dto,
-        avatarUrl: `${data.subDirectory}/${data.hashName}`,
-      }
-    );
+      dtoWithFile
+     );
     return user.data;
   }
 
@@ -175,7 +154,7 @@ export class UsersController {
   @ApiResponse(AuthenticationResponse.CheckSuccess)
   @ApiResponse(AuthenticationResponse.UserNotAuth)
   @ApiBearerAuth('accessToken')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(AuthenticationResponse.CheckSuccess.status)
   public async checkAuth(@Req() req: Request) {
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Users}/check`,

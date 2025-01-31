@@ -92,7 +92,7 @@ export class BlogPostRepository extends BasePostgresRepository<
       where: { id: entity.id },
       data: {
         postType: pojoEntity.postType,
-        repostId: pojoEntity.repostId ?? null,
+        repostId: pojoEntity.repostId || null,
         tags: {
           set: [],
           connectOrCreate: pojoEntity.tags.map((tag) => ({

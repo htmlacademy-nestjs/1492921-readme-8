@@ -22,7 +22,6 @@ export interface Post {
   text?: string;
   quoteText?: string;
   quoteAuthor?: string;
-  //quoteAuthorId?: string;
   description?: string;
   comments?: Comment[];
 }

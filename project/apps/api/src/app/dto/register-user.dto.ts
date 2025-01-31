@@ -1,20 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, Length } from 'class-validator';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
-import { AuthenticationProperty, LoginUserDto } from '@project/authentication';
+import { AuthenticationProperty, CreateUserDto } from '@project/authentication';
 
-export class RegisterUserDto extends LoginUserDto {
-  @ApiProperty(AuthenticationProperty.Name.Description)
-  @IsString()
-  @Length(
-    AuthenticationProperty.Name.Validate.MinLength,
-    AuthenticationProperty.Name.Validate.MaxLength,
-    {
-      message: AuthenticationProperty.Name.Validate.Message,
-    }
-  )
-  public name: string;
-
+export class RegisterUserDto extends OmitType(CreateUserDto, [
+  'avatarUrl',
+] as const) {
   @ApiProperty(AuthenticationProperty.AvatarFile.Description)
   @IsOptional()
   public avatarFile?: Express.Multer.File;

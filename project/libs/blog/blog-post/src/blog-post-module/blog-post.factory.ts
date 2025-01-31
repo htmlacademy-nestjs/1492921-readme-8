@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-//import { Post, EntityFactory, PostState } from '@project/shared-types';
 import { Post, EntityFactory } from '@project/shared-types';
 import { BlogPostEntity } from './blog-post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,11 +15,8 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     const entity = new BlogPostEntity();
     entity.postType = dto.postType;
     entity.authorId = dto.authorId;
-    //entity.isRepost = dto.repostId ? true : false;
     entity.repostId = dto.repostId;
-    //entity.repostAuthorId = dto.repostAuthorId;
-    entity.tags = dto.tags ?? []; //(dto.tags ?? []).map((tag) => ({ name: tag }));
-    //entity.state = PostState.Published;
+    entity.tags = dto.tags ?? [];
     entity.createDate = dayjs().toDate();
     entity.publicationDate = dayjs().toDate();
     entity.likesCount = 0;
@@ -32,7 +28,6 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     entity.quoteText = dto.quoteText;
     entity.quoteAuthor = dto.quoteAuthor;
     entity.description = dto.description;
-    entity.comments = [];
 
     return entity;
   }
