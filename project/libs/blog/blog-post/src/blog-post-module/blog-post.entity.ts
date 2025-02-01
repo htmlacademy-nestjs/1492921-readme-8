@@ -4,7 +4,7 @@ import {
   PostState,
   PostType,
   StorableEntity,
-} from '@project/shared-types';
+} from '@project/shared-core';
 
 //import { BlogCommentEntity, BlogCommentFactory } from '@project/blog-comment';
 

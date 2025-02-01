@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { PaginationResult, Post, Tag } from '@project/shared-types';
+import { PaginationResult, Post, Tag } from '@project/shared-core';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from '@project/blog-models';
 

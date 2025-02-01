@@ -1,4 +1,4 @@
-import { Entity, StorableEntity, Subscriber } from '@project/shared-types';
+import { Entity, StorableEntity, Subscriber } from '@project/shared-core';
 
 export class EmailSubscriberEntity
   extends Entity

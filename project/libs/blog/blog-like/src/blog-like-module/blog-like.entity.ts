@@ -1,4 +1,4 @@
-import { Entity, Like, StorableEntity } from '@project/shared-types';
+import { Entity, Like, StorableEntity } from '@project/shared-core';
 
 export class BlogLikeEntity extends Entity implements StorableEntity<Like> {
   public userId!: string;

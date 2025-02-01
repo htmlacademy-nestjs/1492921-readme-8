@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { PaginationResult, PostState } from '@project/shared-types';
+import { PaginationResult, PostState } from '@project/shared-core';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';

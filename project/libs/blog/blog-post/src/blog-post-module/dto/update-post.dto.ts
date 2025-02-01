@@ -9,7 +9,7 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
-import { PostType } from '@project/shared-types';
+import { PostType } from '@project/shared-core';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { BlogPostProperty } from '../swagger/blog-post-property';

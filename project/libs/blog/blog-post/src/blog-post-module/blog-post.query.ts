@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsIn, IsNumber, IsOptional } from 'class-validator';
 
-import { SortDirection } from '@project/shared-types';
+import { SortDirection } from '@project/shared-core';
 
 import {
   DEFAULT_POST_COUNT_LIMIT,

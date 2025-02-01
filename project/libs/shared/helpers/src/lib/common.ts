@@ -1,6 +1,6 @@
 import { ClassTransformOptions, plainToInstance } from 'class-transformer';
 
-import { StoredFile } from '@project/shared-types';
+import { StoredFile } from '@project/shared-core';
 
 export type DateTimeUnit = 's' | 'h' | 'd' | 'm' | 'y';
 export type TimeAndUnit = { value: number; unit: DateTimeUnit };

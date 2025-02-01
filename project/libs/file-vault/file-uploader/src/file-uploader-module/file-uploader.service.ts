@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
 import { fileVaultConfig } from '@project/file-vault-config';
-import { StoredFile } from '@project/shared-types';
+import { StoredFile } from '@project/shared-core';
 import { FileUploaderEntity } from './file-uploader.entity';
 import { FileUploaderRepository } from './file-uploader.repository';
 import { FileUploaderFactory } from './file-uploader.factory';

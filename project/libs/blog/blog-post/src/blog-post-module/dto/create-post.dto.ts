@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { PostType } from '@project/shared-types';
+import { PostType } from '@project/shared-core';
 import { BlogPostProperty } from '../swagger/blog-post-property';
 
 export class CreatePostDto {

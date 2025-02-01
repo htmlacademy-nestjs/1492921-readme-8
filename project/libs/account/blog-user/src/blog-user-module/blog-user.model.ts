@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-import { AuthUser } from '@project/shared-types';
+import { AuthUser } from '@project/shared-core';
 
 @Schema({
   collection: 'accounts',

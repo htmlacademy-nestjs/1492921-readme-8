@@ -26,7 +26,7 @@ import { RequestWithTokenPayload } from './request-with-token-payload.interface'
 import { UpdatePasswordDto } from '../dto/update-password.dto';
 import { TokenPayloadRdo } from '../rdo/token-payload.rdo';
 import { LoginUserDto } from '../dto/login-user.dto';
-import { UpdatePassword } from '@project/shared-types';
+import { UpdatePassword } from '@project/shared-core';
 import { UserRdo } from '../rdo/user.rdo';
 import { UserTokenRdo } from '../rdo/user-token.rdo';
 import { AuthenticationResponse } from './authentication-response';

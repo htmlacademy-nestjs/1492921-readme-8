@@ -1,4 +1,4 @@
-import { Entity, File, StorableEntity } from '@project/shared-types';
+import { Entity, File, StorableEntity } from '@project/shared-core';
 
 export class FileUploaderEntity extends Entity implements StorableEntity<File> {
   public originalName: string;

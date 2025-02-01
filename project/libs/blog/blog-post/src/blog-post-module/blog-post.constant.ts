@@ -1,4 +1,4 @@
-import { SortDirection } from '@project/shared-types';
+import { SortDirection } from '@project/shared-core';
 
 export const BlogPostError = {
   PostNotFound: 'Post not found',

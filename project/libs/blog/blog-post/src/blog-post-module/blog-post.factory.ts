@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-import { Post, EntityFactory } from '@project/shared-types';
+import { Post, EntityFactory } from '@project/shared-core';
 import { BlogPostEntity } from './blog-post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 

@@ -1,7 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 
-import { Entity } from '@project/shared-types';
-import { StorableEntity, AuthUser } from '@project/shared-types';
+import { Entity } from '@project/shared-core';
+import { StorableEntity, AuthUser } from '@project/shared-core';
 
 import { DEFAULT_AVATAR, SALT_ROUNDS } from './blog-user.constant';
 

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
-import { AuthUser, Token, UpdatePassword, User } from '@project/shared-types';
+import { AuthUser, Token, UpdatePassword, User } from '@project/shared-core';
 import { jwtConfig } from '@project/account-config';
 import { createJWTPayload, fillDto } from '@project/shared-helpers';
 

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 
-import { Like } from '@project/shared-types';
+import { Like } from '@project/shared-core';
 
 import { BlogLikeEntity } from './blog-like.entity';
 import { BlogLikeRepository } from './blog-like.repository';

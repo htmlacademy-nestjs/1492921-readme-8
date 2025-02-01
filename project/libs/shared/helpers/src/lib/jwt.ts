@@ -1,4 +1,4 @@
-import { User, TokenPayload } from '@project/shared-types';
+import { User, TokenPayload } from '@project/shared-core';
 
 export function createJWTPayload(user: User): TokenPayload {
   return {

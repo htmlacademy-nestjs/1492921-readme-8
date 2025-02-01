@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Subscriber } from '@project/shared-types';
+import { Subscriber } from '@project/shared-core';
 
 @Schema({
   collection: 'email-subscribers',

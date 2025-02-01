@@ -1,4 +1,4 @@
-import { PostState, PostType } from '@project/shared-types';
+import { PostState, PostType } from '@project/shared-core';
 
 export const BlogPostProperty = {
   UserId: {

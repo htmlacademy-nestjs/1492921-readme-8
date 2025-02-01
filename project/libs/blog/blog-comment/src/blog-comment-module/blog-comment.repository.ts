@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaClientService } from '@project/blog-models';
-import { Comment } from '@project/shared-types';
+import { Comment } from '@project/shared-core';
 
 import { BlogCommentEntity } from './blog-comment.entity';
 import { BlogCommentFactory } from './blog-comment.factory';
