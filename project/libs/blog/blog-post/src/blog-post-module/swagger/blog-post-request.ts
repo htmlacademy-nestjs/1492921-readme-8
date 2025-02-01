@@ -2,10 +2,27 @@ import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 
 export const BlogPostBody = {
+  createPhoto: {
+    schema: {
+      type: 'object',
+      properties: {
+        photoFile: {
+          type: 'string',
+          format: 'binary',
+          description: 'The photo file to upload',
+        },
+        tags: {
+          type: 'string',
+          description: 'Comma-separated list of post tags',
+          example: 'tag-1, tag-2',
+        },
+      },
+    },
+  },
   create: {
     type: CreatePostDto,
     examples: {
-      v: {
+      video: {
         summary: 'postType = "video"',
         value: {
           postType: 'video',
@@ -15,27 +32,28 @@ export const BlogPostBody = {
           url: 'https://www.youtube.com/watch?v=Cvp41PCQKOs',
         },
       },
-      t: {
+      text: {
         summary: 'postType = "text"',
         value: {
           postType: 'text',
           authorId: '6766fdb720f78014bf83d5a3',
           name: 'Первый пост не менее 20 символов',
-          preview: 'Превью текста должно быть длинным около 50 символов',
+          preview:
+            'Анонс текста, который должен быть длинной около 50 символов',
           text: 'Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов Текст поста нужно чтобы был аж 100 символов',
         },
       },
-      q: {
+      quote: {
         summary: 'postType = "quote"',
         value: {
-          postType: 'text',
+          postType: 'quote',
           authorId: '6766fdb720f78014bf83d5a3',
           quoteText:
             'Кто хочет, тот ищет возможности, кто не хочет — ищет причины.',
           quoteAuthor: 'Сократ',
         },
       },
-      p: {
+      photo: {
         summary: 'postType = "photo"',
         value: {
           postType: 'photo',
@@ -44,7 +62,7 @@ export const BlogPostBody = {
           url: '/images/photo.jpeg',
         },
       },
-      l: {
+      link: {
         summary: 'postType = "link"',
         value: {
           postType: 'link',
@@ -55,21 +73,51 @@ export const BlogPostBody = {
       },
     },
   },
+  updatePhoto: {
+    schema: {
+      type: 'object',
+      properties: {
+        photoFile: {
+          type: 'string',
+          format: 'binary',
+          description: 'The photo file to upload',
+        },
+        publicationDate: {
+          type: 'date',
+          description: 'The post publish date (empty -> state=draft)',
+          example: '2024-07-09',
+        },
+        tags: {
+          type: 'string',
+          description: 'Comma-separated list of post tags',
+          example: 'tag-1, tag-2',
+        },
+      },
+    },
+  },
   update: {
     type: UpdatePostDto,
     examples: {
-      v: {
+      draft: {
         summary: 'state = "draft"',
         value: {
           postType: 'video',
           publicationDate: null,
         },
       },
-      t: {
+      tag: {
         summary: 'add tags"',
         value: {
           postType: 'photo',
           tags: ['tagq', 'tag2', 'tag3'],
+        },
+      },
+      text: {
+        summary: 'update text post',
+        value: {
+          postType: 'text',
+          preview:
+            'Измененный анонс текста, который должен быть длинной около 50 символов',
         },
       },
     },

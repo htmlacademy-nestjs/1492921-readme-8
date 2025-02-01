@@ -27,10 +27,8 @@ export class CheckMyPostGuard implements CanActivate {
         },
       }
     );
-    const { user } = request[data];
-    const userId = user['sub'];
 
-    console.log('user', user);
+    const userId = data['sub'];
     // Проверка на совпадение автора поста и авторизованного пользователя
     const { data: post } = await this.httpService.axiosRef.get<Post>(
       `${ApplicationServiceURL.Blogs}/${request.params.postId}`
@@ -39,6 +37,7 @@ export class CheckMyPostGuard implements CanActivate {
     if (post.authorId !== userId) {
       throw new ForbiddenException(BlogPostError.NotAllow);
     }
+    request['user'] = data;
     return true;
   }
 }

@@ -163,4 +163,12 @@ export class BlogPostRepository extends BasePostgresRepository<
       totalItems: postCount,
     };
   }
+
+  public async existsRepost(postId: string, userId: string): Promise<boolean> {
+    const count = await this.client.post.count({
+      where: { repostId: postId, authorId: userId },
+    });
+
+    return count > 0;
+  }
 }

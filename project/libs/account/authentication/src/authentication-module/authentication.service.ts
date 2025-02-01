@@ -14,13 +14,14 @@ import {
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
 import { AuthUser, Token, UpdatePassword, User } from '@project/shared-types';
 import { jwtConfig } from '@project/account-config';
-import { createJWTPayload } from '@project/shared-helpers';
+import { createJWTPayload, fillDto } from '@project/shared-helpers';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthenticationMessage } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
 import { AuthenticationResponse } from './authentication-response';
+import { UserRdo } from '../rdo/user.rdo';
 
 @Injectable()
 export class AuthenticationService {

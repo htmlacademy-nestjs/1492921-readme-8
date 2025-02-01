@@ -4,7 +4,9 @@ import { BlogCommentService } from './blog-comment.service';
 import { CommentRdo } from './rdo/comment.rdo';
 import { fillDto } from '@project/shared-helpers';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Comments')
 @Controller('posts/:postId/comments')
 export class BlogCommentController {
   constructor(private readonly blogCommentService: BlogCommentService) {}

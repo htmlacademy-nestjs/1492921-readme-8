@@ -47,7 +47,7 @@ export class AuthenticationController {
     const newUser = await this.authService.register(dto);
     const { email, name } = newUser;
     await this.notifyService.registerSubscriber({ email, name });
-    return newUser.toPOJO();
+    return fillDto(UserRdo, newUser.toPOJO());
   }
 
   @Post('change-password')

@@ -24,18 +24,10 @@ export class CreatePostDto {
   @IsMongoId({ message: BlogPostProperty.AuthorId.Validate.Message })
   authorId!: string;
 
-  @ApiProperty(BlogPostProperty.RepostId.Description)
-  @IsOptional()
-  @IsString()
-  repostId?: string;
-
   @ApiProperty(BlogPostProperty.Tags.Description)
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  // Проверки в сервисе
-  // @ArrayMaxSize(8)
-  // @Length(3, 10, { each: true })
   tags?: string[];
 
   @ApiProperty(BlogPostProperty.Name.Description)
@@ -91,6 +83,10 @@ export class CreatePostDto {
   @ApiProperty(BlogPostProperty.Description.Description)
   @ValidateIf((o) => o.postType === PostType.Link)
   @IsString()
-  @Length(BlogPostProperty.Description.Validate.MaxLength)
+  @IsOptional()
+  @Length(
+    BlogPostProperty.Description.Validate.MinLength,
+    BlogPostProperty.Description.Validate.MaxLength
+  )
   description?: string;
 }

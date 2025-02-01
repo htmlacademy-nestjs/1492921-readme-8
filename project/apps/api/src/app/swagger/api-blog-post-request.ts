@@ -37,6 +37,7 @@ export const ApiBlogPostBody = {
       },
       p: {
         summary: 'postType = "photo"',
+        type: [String],
         value: {
           postType: 'photo',
           authorId: '6766fdb720f78014bf83d5a3',

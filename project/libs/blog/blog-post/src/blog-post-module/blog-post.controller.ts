@@ -23,6 +23,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostResponse } from './swagger/blog-post-response';
 import { BlogPostParam } from './swagger/blog-post-param';
 import { BlogPostBody } from './swagger/blog-post-request';
+import { UserIdDto } from './dto/user-id.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -39,6 +40,7 @@ export class BlogPostController {
   }
 
   @Get('')
+  @ApiResponse(BlogPostResponse.PostsList)
   public async index(@Query() query: BlogPostQuery) {
     const postsWithPagination = await this.blogPostService.getAllPosts(query);
     const result = {
@@ -80,5 +82,19 @@ export class BlogPostController {
     @Param(BlogPostParam.PostId.name) postId: string
   ): Promise<void> {
     await this.blogPostService.deletePost(postId);
+  }
+
+  @Post(':postId/repost')
+  @ApiResponse(BlogPostResponse.PostCreated)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiParam(BlogPostParam.PostId)
+  public async createRepost(
+    @Param('postId') postId: string,
+    @Body() { userId }: UserIdDto
+  ) {
+    const newPost = await this.blogPostService.createRepost(postId, userId);
+
+    return fillDto(BlogPostRdo, newPost.toPOJO());
   }
 }

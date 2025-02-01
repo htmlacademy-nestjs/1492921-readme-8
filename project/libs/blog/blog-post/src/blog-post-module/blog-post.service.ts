@@ -1,10 +1,12 @@
 import {
   BadRequestException,
+  ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 
-import { PaginationResult } from '@project/shared-types';
+import { PaginationResult, PostState } from '@project/shared-types';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
@@ -13,6 +15,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { BlogPostQuery } from './blog-post.query';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostProperty } from './swagger/blog-post-property';
+import { BlogPostError } from './blog-post.constant';
 
 const dtoFieldsMissing = {
   video: ['preview', 'text', 'quoteText', 'quoteAuthor', 'description'],
@@ -27,15 +30,19 @@ export class BlogPostService {
   constructor(private blogPostRepository: BlogPostRepository) {}
 
   private checkTags(tags: string[]): string[] {
+    console.log('tags', tags);
     if (tags && tags.length > 0) {
       const uniqueTags = [...new Set(tags)];
+      console.log('length', uniqueTags.length);
       if (uniqueTags.length > BlogPostProperty.Tags.Validate.MaxCount) {
         throw new BadRequestException(
           BlogPostProperty.Tags.Validate.MessageCount
         );
       }
       const result = uniqueTags.map((tag): string => {
+        console.log('tag', tag);
         if (!BlogPostProperty.Tags.Validate.RegExp.test(tag)) {
+          console.log('test tag', tag);
           throw new BadRequestException(BlogPostProperty.Tags.Validate.Message);
         }
         return tag.toLowerCase();
@@ -69,7 +76,7 @@ export class BlogPostService {
 
   public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
     this.checkDTO(dto);
-    const newPost = BlogPostFactory.createFromCreatePostDto({
+    const newPost = BlogPostFactory.createNewPost({
       ...dto,
       tags: this.checkTags(dto.tags),
     });
@@ -121,5 +128,26 @@ export class BlogPostService {
     const existPost = await this.getPost(postId);
     existPost.likesCount += diffValue;
     await this.blogPostRepository.update(existPost);
+  }
+
+  public async createRepost(
+    postId: string,
+    userId: string
+  ): Promise<BlogPostEntity> {
+    const existsPost = await this.getPost(postId);
+
+    const existsRepost = await this.blogPostRepository.existsRepost(
+      postId,
+      userId
+    );
+
+    if (existsRepost) {
+      throw new ConflictException(BlogPostError.RepostExist);
+    }
+
+    const newPost = BlogPostFactory.createRepost(existsPost.toPOJO(), userId);
+    await this.blogPostRepository.save(newPost);
+
+    return newPost;
   }
 }

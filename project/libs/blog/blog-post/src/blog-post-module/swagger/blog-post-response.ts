@@ -2,11 +2,12 @@ import { HttpStatus } from '@nestjs/common';
 
 import { BlogPostRdo } from '../rdo/blog-post.rdo';
 import { BlogPostError } from '../blog-post.constant';
+import { BlogPostWithPaginationRdo } from '../rdo/blog-post-with-pagination.rdo';
 
 export const BlogPostResponse = {
   BadRequest: {
     status: HttpStatus.BAD_REQUEST,
-    description: 'Bad request.',
+    description: 'Bad request',
   },
   PostCreated: {
     type: BlogPostRdo,
@@ -44,11 +45,11 @@ export const BlogPostResponse = {
     status: HttpStatus.CONFLICT,
     description: BlogPostError.RepostExist,
   },
-  // PostsFound: {
-  //   type: PostWithUserIdAndPaginationRdo,
-  //   status: HttpStatus.OK,
-  //   description: 'Posts found',
-  // },
+  PostsList: {
+    type: BlogPostWithPaginationRdo,
+    status: HttpStatus.OK,
+    description: 'Post list has been received',
+  },
 
   NotAllow: {
     status: HttpStatus.FORBIDDEN,

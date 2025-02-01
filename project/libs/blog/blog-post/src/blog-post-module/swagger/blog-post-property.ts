@@ -73,16 +73,16 @@ export const BlogPostProperty = {
   },
   Tags: {
     Description: {
-      description: 'The post tags',
-      example: ['tag1', 'tag2'],
+      description: 'Array of post tags',
+      example: ['tag-1', 'tag-2'],
       required: false,
     },
     Validate: {
       MaxCount: 8,
-      RegExp: /^[a-zA-Zа-юА-Ю][a-zA-Zа-юА-Ю0-9-]{2,9}$/,
+      RegExp: /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9-]{2,9}$/,
       MessageCount: 'The number of tags should be no more than 8',
       Message:
-        'The tag must start with a letter and be at least 3 and no more than 10 characters long',
+        'The tag must contain letters, numbers, and dashes, start with a letter, and contain at least 3 and no more than 10 characters.',
     },
   },
   Name: {
@@ -178,6 +178,7 @@ export const BlogPostProperty = {
       example: 'link description',
     },
     Validate: {
+      MinLength: 1,
       MaxLength: 300,
       Message: 'The field "description" be at no more than 300 characters long',
     },
@@ -213,10 +214,35 @@ export const BlogPostProperty = {
   //     example: 5,
   //   },
   // },
-  // Entities: {
-  //   Description: {
-  //     description: 'The posts',
-  //     isArray: true,
-  //   },
-  // },
+  PostList: {
+    Description: {
+      description: 'Post list',
+      example: '[{postObject1}, {postObject2}]',
+      isArray: true,
+    },
+  },
+  TotalPages: {
+    Description: {
+      description: 'Total pages',
+      example: 10,
+    },
+  },
+  TotalItems: {
+    Description: {
+      description: 'Total items',
+      example: 100,
+    },
+  },
+  CurrentPage: {
+    Description: {
+      description: 'Current page',
+      example: 2,
+    },
+  },
+  ItemsPerPage: {
+    Description: {
+      description: 'Items count per page',
+      example: 10,
+    },
+  },
 } as const;
