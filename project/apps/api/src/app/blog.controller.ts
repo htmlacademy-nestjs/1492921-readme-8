@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -33,23 +32,21 @@ import * as url from 'node:url';
 import {
   BlogPostBody,
   BlogPostEntity,
-  BlogPostError,
   BlogPostOperation,
   BlogPostParam,
   BlogPostProperty,
   BlogPostResponse,
   CreatePostDto,
 } from '@project/blog-post';
-import {
-  BlogLikeOperationMessage,
-  BlogLikeResponseMessage,
-} from '@project/blog-like';
+import { BlogLikeOperation, BlogLikeResponse } from '@project/blog-like';
 import { AuthenticationResponse } from '@project/authentication';
 import {
   ImageFileInterceptor,
   multerFileToFormData,
 } from '@project/shared-helpers';
 import { UploadedFileRdo } from '@project/file-uploader';
+import { BlogUserEntity } from '@project/blog-user';
+import { PaginationResult, PostType } from '@project/shared-core';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
@@ -58,10 +55,8 @@ import { CheckPublishedPostGuard } from './guards/check-published-post.guard ';
 import { CheckMyPostGuard } from './guards/check-my-post.guard';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
 import { CreatePhotoPostDto } from './dto/create-photo-post.dto';
-import { PaginationResult, PostType } from '@project/shared-core';
 import { InjectUserIdQueryInterceptor } from './interceptors/inject-user-id-query.interceptor';
 import { ApiBlogPostQuery } from './dto/api-blog-post-query';
-import { BlogUserEntity } from '@project/blog-user';
 
 function updateApiBodyOptions(
   apiBodyOptions: typeof BlogPostBody.create
@@ -194,7 +189,7 @@ export class BlogController {
   )
   @UseGuards(CheckMyPostGuard)
   public async updatePhoto(
-    @Param('postId') postId: string,
+    @Param(BlogPostParam.PostId.name) postId: string,
     @Body() dto: UpdateBlogPostDto,
     @UploadedFile() photoFile?: Express.Multer.File
   ) {
@@ -251,7 +246,7 @@ export class BlogController {
   )
   @UseGuards(CheckMyPostGuard)
   public async update(
-    @Param('postId') postId: string,
+    @Param(BlogPostParam.PostId.name) postId: string,
     @Body() dto: UpdateBlogPostDto,
     @UploadedFile() photoFile?: Express.Multer.File
   ) {
@@ -282,7 +277,7 @@ export class BlogController {
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckMyPostGuard)
-  public async delete(@Param('postId') postId: string) {
+  public async delete(@Param(BlogPostParam.PostId.name) postId: string) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blogs}/${postId}`,
       null
@@ -294,7 +289,7 @@ export class BlogController {
   @ApiOperation(BlogPostOperation.View)
   @ApiResponse(BlogPostResponse.PostFound)
   @ApiResponse(BlogPostResponse.PostNotFound)
-  public async show(@Param('postId') postId: string) {
+  public async show(@Param(BlogPostParam.PostId.name) postId: string) {
     const post = await this.httpService.axiosRef.get(
       `${ApplicationServiceURL.Blogs}/${postId}`,
       null
@@ -307,6 +302,7 @@ export class BlogController {
   }
 
   @Post('posts/:postId/repost')
+  @ApiOperation(BlogPostOperation.Repost)
   @ApiResponse(BlogPostResponse.PostCreated)
   @ApiResponse(BlogPostResponse.BadRequest)
   @ApiResponse(BlogPostResponse.PostNotFound)
@@ -317,7 +313,10 @@ export class BlogController {
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckAuthGuard)
   @UseGuards(CheckPublishedPostGuard)
-  public async createRepost(@Param('postId') postId: string, @Body() body) {
+  public async createRepost(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Body() body
+  ) {
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/${postId}/repost`,
       body
@@ -327,34 +326,22 @@ export class BlogController {
   }
 
   @Post('posts/:postId/likes')
-  @ApiOperation({ summary: BlogLikeOperationMessage.SetLike })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: BlogLikeResponseMessage.SetLike,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: BlogLikeResponseMessage.Unauthorized,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.PostNotFound,
-  })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description: BlogLikeResponseMessage.LikeExists,
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: BlogPostError.PostIsDraft,
-  })
-  @HttpCode(HttpStatus.OK)
+  @ApiOperation(BlogLikeOperation.SetLike)
+  @ApiResponse(BlogLikeResponse.SetLike)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogLikeResponse.LikeExists)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiResponse(AuthenticationResponse.UserNotAuth)
   @ApiBearerAuth('accessToken')
+  @HttpCode(BlogLikeResponse.SetLike.status)
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckAuthGuard)
   @UseGuards(CheckPublishedPostGuard)
-  public async addLike(@Param('postId') postId: string, @Body() body) {
+  public async addLike(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Body() body
+  ) {
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/${postId}/likes`,
       body
@@ -364,30 +351,20 @@ export class BlogController {
   }
 
   @Delete('posts/:postId/likes')
-  @ApiOperation({ summary: BlogLikeOperationMessage.DelLike })
-  @UseGuards(CheckAuthGuard)
-  @UseGuards(CheckPublishedPostGuard)
+  @ApiOperation(BlogLikeOperation.DelLike)
+  @ApiResponse(BlogLikeResponse.DelLike)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogLikeResponse.LikeNotFound)
+  @ApiResponse(AuthenticationResponse.UserNotAuth)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: BlogLikeResponseMessage.DelLike,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: BlogLikeResponseMessage.Unauthorized,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.PostNotFound,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.LikeNotFound,
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteLike(@Param('postId') postId: string, @Body() dto) {
+  @UseGuards(CheckAuthGuard)
+  @UseGuards(CheckPublishedPostGuard)
+  public async deleteLike(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Body() dto
+  ) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blogs}/${postId}/likes`,
       { data: dto }

@@ -1,25 +1,19 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { BlogPostError, BlogPostService } from '@project/blog-post';
-
-import { UserIdDto } from './dto/user-id.dto';
-import { BlogLikeService } from './blog-like.service';
 import {
-  BlogLikeOperationMessage,
-  BlogLikeResponseMessage,
-} from './blog-like.constant';
+  BlogPostParam,
+  BlogPostResponse,
+  BlogPostService,
+  UserIdDto,
+} from '@project/blog-post';
+
+import { BlogLikeService } from './blog-like.service';
+import { BlogLikeOperation } from './swagger/blog-like-operation';
+import { BlogLikeResponse } from './swagger/blog-like-response';
 
 @ApiTags('Likes')
-@Controller('posts/:id/likes')
+@Controller('posts/:postId/likes')
 export class BlogLikeController {
   constructor(
     private readonly blogLikeService: BlogLikeService,
@@ -27,26 +21,13 @@ export class BlogLikeController {
   ) {}
 
   @Post('/')
-  @ApiOperation({ summary: BlogLikeOperationMessage.SetLike })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: BlogLikeResponseMessage.SetLike,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.PostNotFound,
-  })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description: BlogLikeResponseMessage.LikeExists,
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: BlogPostError.PostIsDraft,
-  })
-  @HttpCode(HttpStatus.OK)
+  @ApiOperation(BlogLikeOperation.SetLike)
+  @ApiResponse(BlogLikeResponse.SetLike)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogLikeResponse.LikeExists)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
   public async addLike(
-    @Param('id') postId: string,
+    @Param(BlogPostParam.PostId.name) postId: string,
     @Body() { userId }: UserIdDto
   ) {
     await this.blogLikeService.addLike({ postId, userId });
@@ -54,22 +35,12 @@ export class BlogLikeController {
   }
 
   @Delete('/')
-  @ApiOperation({ summary: BlogLikeOperationMessage.DelLike })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: BlogLikeResponseMessage.DelLike,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.PostNotFound,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: BlogLikeResponseMessage.LikeNotFound,
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation(BlogLikeOperation.DelLike)
+  @ApiResponse(BlogLikeResponse.DelLike)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogLikeResponse.LikeNotFound)
   public async deleteLike(
-    @Param('id') postId: string,
+    @Param(BlogPostParam.PostId.name) postId: string,
     @Body() { userId }: UserIdDto
   ) {
     await this.blogLikeService.delLike({ postId, userId });

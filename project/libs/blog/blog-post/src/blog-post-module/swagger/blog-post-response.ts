@@ -50,10 +50,13 @@ export const BlogPostResponse = {
     status: HttpStatus.OK,
     description: 'Post list has been received',
   },
-
   NotAllow: {
     status: HttpStatus.FORBIDDEN,
     description: BlogPostError.NotAllow,
+  },
+  PostIsDraft: {
+    status: HttpStatus.FORBIDDEN,
+    description: BlogPostError.PostIsDraft,
   },
 
   // SearchPosts: {

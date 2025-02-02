@@ -4,7 +4,7 @@ import { Like } from '@project/shared-core';
 
 import { BlogLikeEntity } from './blog-like.entity';
 import { BlogLikeRepository } from './blog-like.repository';
-import { BlogLikeResponseMessage } from './blog-like.constant';
+import { BlogLikeError } from './blog-like.constant';
 
 @Injectable()
 export class BlogLikeService {
@@ -13,7 +13,7 @@ export class BlogLikeService {
   public async addLike(like: Like): Promise<void> {
     const isLikeExists = await this.blogLikeRepository.isLikeExists(like);
     if (isLikeExists) {
-      throw new ConflictException(BlogLikeResponseMessage.LikeExists);
+      throw new ConflictException(BlogLikeError.LikeExists);
     }
     const newLike = new BlogLikeEntity(like);
     await this.blogLikeRepository.save(newLike);
@@ -22,7 +22,7 @@ export class BlogLikeService {
   public async delLike(like: Like): Promise<void> {
     const isLikeExists = await this.blogLikeRepository.isLikeExists(like);
     if (!isLikeExists) {
-      throw new ConflictException(BlogLikeResponseMessage.LikeNotFound);
+      throw new ConflictException(BlogLikeError.LikeNotFound);
     }
     await this.blogLikeRepository.deleteByIds(like);
   }

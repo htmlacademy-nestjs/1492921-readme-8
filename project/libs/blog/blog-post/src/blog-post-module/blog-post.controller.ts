@@ -91,7 +91,7 @@ export class BlogPostController {
   @ApiResponse(BlogPostResponse.BadRequest)
   @ApiParam(BlogPostParam.PostId)
   public async createRepost(
-    @Param('postId') postId: string,
+    @Param(BlogPostParam.PostId.name) postId: string,
     @Body() { userId }: UserIdDto
   ) {
     const newPost = await this.blogPostService.createRepost(postId, userId);
