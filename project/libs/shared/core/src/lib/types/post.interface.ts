@@ -1,7 +1,6 @@
 import { PostState } from './post-state.enum';
 import { PostType } from './post-type.enum';
 import { Comment } from './comment.interface';
-//import { Tag } from './tag.interface';
 
 export interface Post {
   id?: string;

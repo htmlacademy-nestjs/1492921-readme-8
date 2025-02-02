@@ -1,12 +1,11 @@
 import {
   BadRequestException,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 
-import { PaginationResult, PostState } from '@project/shared-core';
+import { PaginationResult } from '@project/shared-core';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
@@ -30,19 +29,15 @@ export class BlogPostService {
   constructor(private blogPostRepository: BlogPostRepository) {}
 
   private checkTags(tags: string[]): string[] {
-    console.log('tags', tags);
     if (tags && tags.length > 0) {
       const uniqueTags = [...new Set(tags)];
-      console.log('length', uniqueTags.length);
       if (uniqueTags.length > BlogPostProperty.Tags.Validate.MaxCount) {
         throw new BadRequestException(
           BlogPostProperty.Tags.Validate.MessageCount
         );
       }
       const result = uniqueTags.map((tag): string => {
-        console.log('tag', tag);
         if (!BlogPostProperty.Tags.Validate.RegExp.test(tag)) {
-          console.log('test tag', tag);
           throw new BadRequestException(BlogPostProperty.Tags.Validate.Message);
         }
         return tag.toLowerCase();

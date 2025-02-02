@@ -2,16 +2,16 @@
 import { BlogPostProperty } from './blog-post-property';
 
 export const BlogPostParam = {
-  // UserId: {
-  //   name: 'userId',
-  //   type: String,
-  //   schema: AuthenticationProperty.Id,
-  // },
   PostId: {
     name: 'postId',
     type: String,
     schema: BlogPostProperty.Id,
   },
+  // UserId: {
+  //   name: 'userId',
+  //   type: String,
+  //   schema: AuthenticationProperty.Id,
+  // },
   // CommentId: {
   //   name: 'commentId',
   //   type: String,

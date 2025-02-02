@@ -13,6 +13,7 @@ import { PostType } from '@project/shared-core';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { BlogPostProperty } from '../swagger/blog-post-property';
+import { Transform } from 'class-transformer';
 
 export class UpdatePostDto {
   @ApiProperty(BlogPostProperty.PostType.Description)
@@ -32,8 +33,8 @@ export class UpdatePostDto {
   tags?: string[];
 
   @ApiProperty(BlogPostProperty.PublicationDate.Description)
+  @Transform(({ value }) => (value ? new Date(value) : null))
   @IsOptional()
-  @IsISO8601()
   publicationDate?: Date;
 
   @ApiProperty(BlogPostProperty.Name.Description)

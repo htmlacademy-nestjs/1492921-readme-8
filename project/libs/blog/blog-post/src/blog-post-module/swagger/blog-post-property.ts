@@ -1,10 +1,17 @@
-import { PostState, PostType } from '@project/shared-core';
+import {
+  PostState,
+  PostType,
+  SortDirection,
+  SortType,
+} from '@project/shared-core';
+import { PaginationDefault, SortDefault } from '../blog-post.constant';
 
 export const BlogPostProperty = {
   UserId: {
     Description: {
       description: 'ID of logged user',
       example: '6766fdb720f78014bf83d5a3',
+      required: false,
     },
     Validate: {
       Message: 'UserId should be valid MongoId',
@@ -21,12 +28,14 @@ export const BlogPostProperty = {
       description: 'The post type',
       enum: PostType,
       example: PostType.Video,
+      required: false,
     },
   },
   AuthorId: {
     Description: {
       description: 'User ID of post author',
       example: '6766fdb720f78014bf83d5a3',
+      required: false,
     },
     Validate: {
       Message: 'AuthorId should be valid MongoId',
@@ -202,18 +211,6 @@ export const BlogPostProperty = {
     },
   },
 
-  // PostsCount: {
-  //   Description: {
-  //     description: 'The user posts count',
-  //     example: 5,
-  //   },
-  // },
-  // SubscriptionsCount: {
-  //   Description: {
-  //     description: 'The user subscriptions count',
-  //     example: 5,
-  //   },
-  // },
   PostList: {
     Description: {
       description: 'Post list',
@@ -236,7 +233,7 @@ export const BlogPostProperty = {
   CurrentPage: {
     Description: {
       description: 'Current page',
-      example: 2,
+      example: PaginationDefault.PageCurrent,
     },
   },
   ItemsPerPage: {
@@ -245,4 +242,50 @@ export const BlogPostProperty = {
       example: 10,
     },
   },
+
+  SortDirection: {
+    Description: {
+      description: 'Sorting direction',
+      enum: SortDirection,
+      enumName: 'SortDirection',
+      example: SortDefault.Direction,
+      required: false,
+    },
+  },
+  SortType: {
+    Description: {
+      description: 'Sorting type',
+      enum: SortType,
+      enumName: 'SortType',
+      example: SortDefault.Type,
+      required: false,
+    },
+  },
+  PageCurrent: {
+    Description: {
+      description: 'Current page',
+      example: 1,
+      required: false,
+    },
+  },
+  MyDraft: {
+    Description: {
+      required: false,
+      description: 'Show my draft posts',
+      example: false,
+    },
+  },
+
+  // PostsCount: {
+  //   Description: {
+  //     description: 'The user posts count',
+  //     example: 5,
+  //   },
+  // },
+  // SubscriptionsCount: {
+  //   Description: {
+  //     description: 'The user subscriptions count',
+  //     example: 5,
+  //   },
+  // },
 } as const;

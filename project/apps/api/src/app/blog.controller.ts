@@ -1,7 +1,5 @@
 import {
-  BadRequestException,
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -10,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseFilters,
@@ -29,9 +28,11 @@ import {
 } from '@nestjs/swagger';
 import { InjectUserIdInterceptor } from '@project/interceptors';
 import FormData from 'form-data';
+import * as url from 'node:url';
 
 import {
   BlogPostBody,
+  BlogPostEntity,
   BlogPostError,
   BlogPostOperation,
   BlogPostParam,
@@ -56,11 +57,11 @@ import { ApplicationServiceURL } from './app.config';
 import { CheckPublishedPostGuard } from './guards/check-published-post.guard ';
 import { CheckMyPostGuard } from './guards/check-my-post.guard';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
-import { CreateBlogPostDto } from './dto/create-blog-post.dto';
-import { ApiBlogPostBody } from './swagger/api-blog-post-request';
-import { CreateVideoPostDto } from './dto/create-video-post.dto';
 import { CreatePhotoPostDto } from './dto/create-photo-post.dto';
-import { PostType } from '@project/shared-types';
+import { PaginationResult, PostType } from '@project/shared-core';
+import { InjectUserIdQueryInterceptor } from './interceptors/inject-user-id-query.interceptor';
+import { ApiBlogPostQuery } from './dto/api-blog-post-query';
+import { BlogUserEntity } from '@project/blog-user';
 
 function updateApiBodyOptions(
   apiBodyOptions: typeof BlogPostBody.create
@@ -95,11 +96,48 @@ export class BlogController {
   @Get('posts')
   @ApiOperation(BlogPostOperation.Index)
   @ApiResponse(BlogPostResponse.PostsList)
-  public async index() {
-    const post = await this.httpService.axiosRef.get(
-      `${ApplicationServiceURL.Blogs}`,
-      null
-    );
+  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiBearerAuth('accessToken')
+  @UseInterceptors(UseInterceptors)
+  @UseInterceptors(InjectUserIdQueryInterceptor)
+  public async index(@Query() query: ApiBlogPostQuery, @Req() req: Request) {
+    const userId = query['userId'];
+    const queryString = url.parse(req.url).query;
+    const queryParams = userId
+      ? `${queryString}&userId=${userId}`
+      : queryString;
+    const post = await this.httpService.axiosRef.get<
+      PaginationResult<BlogPostEntity>
+    >(`${ApplicationServiceURL.Blogs}?${queryParams}`, {});
+
+    // Добавляем информацию об авторах к постам
+    // По-хорошему я думаю нужно в сервисе блогов хранить минимальные данные об авторах постов
+    // и синхронизировать их с сервисом авторизации через RabbitMQ
+    for (const postEntity of post.data.entities) {
+      try {
+        // Получаем информацию об авторе
+        const authorResponse =
+          await this.httpService.axiosRef.get<BlogUserEntity>(
+            `${ApplicationServiceURL.Users}/${postEntity.authorId}`,
+            {}
+          );
+
+        // Добавляем информацию об авторе к посту
+        postEntity['author'] = {
+          name: authorResponse.data.name,
+          email: authorResponse.data.email,
+        };
+      } catch (error) {
+        postEntity['author'] = {
+          name: '--Not found--',
+          email: '--Not found--',
+        };
+        console.error(
+          `Failed to fetch author (id = ${postEntity.authorId}) for post ${postEntity.id}:`,
+          error.data
+        );
+      }
+    }
     return post.data;
   }
 
@@ -111,7 +149,6 @@ export class BlogController {
   @ApiBody(BlogPostBody.createPhoto)
   @ApiBearerAuth('accessToken')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseInterceptors(
@@ -172,11 +209,6 @@ export class BlogController {
       dto.url = `${data.subDirectory}/${data.hashName}`;
     }
 
-    if (dto.publicationDate) {
-      dto.publicationDate = new Date(dto.publicationDate);
-    } else {
-      dto.publicationDate = null;
-    }
     const post = await this.httpService.axiosRef.patch(
       `${ApplicationServiceURL.Blogs}/${postId}`,
       { ...dto, postType: PostType.Photo }
@@ -195,7 +227,6 @@ export class BlogController {
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckAuthGuard)
   public async create(@Body() dto: CreatePostDto) {
-    console.log('dto', dto);
     const post = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/`,
       { ...dto, authorId: dto['userId'] }

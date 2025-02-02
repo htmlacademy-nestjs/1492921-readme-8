@@ -21,8 +21,6 @@ export class EmailSubscriberController {
   })
   public async create(subscriber: CreateSubscriberDto) {
     this.subscriberService.addSubscriber(subscriber);
-    console.log('addSubscriber');
     this.mailService.sendNotifyNewSubscriber(subscriber);
-    console.log('sendNotifyNewSubscriber');
   }
 }

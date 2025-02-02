@@ -30,17 +30,9 @@ import { UserIdDto } from './dto/user-id.dto';
 export class BlogPostController {
   constructor(private readonly blogPostService: BlogPostService) {}
 
-  @Get(':postId')
-  @ApiResponse(BlogPostResponse.PostFound)
-  @ApiResponse(BlogPostResponse.PostNotFound)
-  @ApiParam(BlogPostParam.PostId)
-  public async show(@Param(BlogPostParam.PostId.name) postId: string) {
-    const post = await this.blogPostService.getPost(postId);
-    return fillDto(BlogPostRdo, post.toPOJO());
-  }
-
   @Get('')
   @ApiResponse(BlogPostResponse.PostsList)
+  @ApiResponse(BlogPostResponse.BadRequest)
   public async index(@Query() query: BlogPostQuery) {
     const postsWithPagination = await this.blogPostService.getAllPosts(query);
     const result = {
@@ -48,6 +40,15 @@ export class BlogPostController {
       entities: postsWithPagination.entities.map((post) => post.toPOJO()),
     };
     return fillDto(BlogPostWithPaginationRdo, result);
+  }
+
+  @Get(':postId')
+  @ApiResponse(BlogPostResponse.PostFound)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiParam(BlogPostParam.PostId)
+  public async show(@Param(BlogPostParam.PostId.name) postId: string) {
+    const post = await this.blogPostService.getPost(postId);
+    return fillDto(BlogPostRdo, post.toPOJO());
   }
 
   @Post('')

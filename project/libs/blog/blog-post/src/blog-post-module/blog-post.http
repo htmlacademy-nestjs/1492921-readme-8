@@ -5,9 +5,16 @@ GET http://localhost:3334/api/posts HTTP/1.1
 
 # Get posts with filter
 
-GET http://localhost:3334/api/posts?limit=2&sortDirection=desc&categories[]=39614113-7ad5-45b6-8093-06455437e1e2&page=1 HTTP/1.1
+GET http://localhost:3334/api/posts?sortDirection=desc&sortBy=publicationDate&page=1&postType=video&tags=ford&tags=tag1 HTTP/1.1
 
 ###
+
+# Get posts with filter= MyDraft
+
+GET http://localhost:3334/api/posts?sortDirection=desc&sortBy=publicationDate&page=1&myDraft=true&userId=6766fdb720f78014bf83d5a3 HTTP/1.1
+
+###
+
 
 # Get post by id
 GET http://localhost:3334/api/posts/2cebdbca-1bba-4716-b398-aeb62368bb9c HTTP/1.1

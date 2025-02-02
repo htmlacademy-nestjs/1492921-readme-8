@@ -128,20 +128,25 @@ export class BlogPostRepository extends BasePostgresRepository<
     const where: Prisma.vPostWhereInput = {};
     const orderBy: Prisma.vPostOrderByWithRelationInput = {};
 
-    // if (query?.tags) {
-    //   where.tags = {
-    //     some: {
-    //       name: {
-    //         in: query.tags,
-    //       },
-    //     },
-    //   };
-    // }
-
-    if (query?.sortDirection) {
-      orderBy.createDate = query.sortDirection;
+    if (query?.tags) {
+      where.tags = {
+        hasSome: query.tags,
+      };
     }
 
+    if (query?.postType) {
+      where.postType = query.postType;
+    }
+
+    if (query?.myDraft) {
+      where.authorId = query?.userId ?? '-';
+      where.publicationDate = { equals: null };
+    } else {
+      where.publicationDate = { not: null };
+      if (query?.authorId) {
+        where.authorId = query.authorId;
+      }
+    }
     const [records, postCount] = await Promise.all([
       this.client.vPost.findMany({
         where,
