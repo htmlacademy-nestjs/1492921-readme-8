@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
-import { Post } from '@project/shared-types';
+import { Post } from '@project/shared-core';
 import { BlogPostError } from '@project/blog-post';
 
 import { ApplicationServiceURL } from '../app.config';

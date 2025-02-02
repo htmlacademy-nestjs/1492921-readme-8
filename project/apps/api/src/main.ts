@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { RequestIdInterceptor } from '@project/interceptors';
-import { BearerAuth, BearerAuthOption } from '@project/shared-types';
+import { BearerAuth, BearerAuthOption } from '@project/shared-core';
 
 import { AppModule } from './app/app.module';
 import { API_PORT } from './app/app.config';

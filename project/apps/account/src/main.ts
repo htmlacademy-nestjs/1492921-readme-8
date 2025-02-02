@@ -9,7 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app/app.module';
-import { BearerAuth, BearerAuthOption } from '@project/shared-types';
+import { BearerAuth, BearerAuthOption } from '@project/shared-core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
