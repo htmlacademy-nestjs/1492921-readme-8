@@ -11,7 +11,7 @@ import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
 import { CreatePostDto } from './dto/create-post.dto';
-import { BlogPostQuery } from './blog-post.query';
+import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostProperty } from './swagger/blog-post-property';
 import { BlogPostError } from './blog-post.constant';
@@ -153,5 +153,9 @@ export class BlogPostService {
     const existPost = await this.getPost(postId);
     existPost.commentsCount += diffValue;
     await this.blogPostRepository.update(existPost);
+  }
+
+  public async findByName(query?: BlogPostSearch): Promise<BlogPostEntity[]> {
+    return await this.blogPostRepository.search(query);
   }
 }

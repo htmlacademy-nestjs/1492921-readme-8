@@ -51,12 +51,12 @@ export const BlogPostResponse = {
     description: BlogPostError.PostIsDraft,
   },
 
-  // SearchPosts: {
-  //   type: PostWithUserIdRdo,
-  //   isArray: true,
-  //   status: HttpStatus.OK,
-  //   description: 'Posts found.',
-  // },
+  SearchPosts: {
+    type: BlogPostRdo,
+    isArray: true,
+    status: HttpStatus.OK,
+    description: 'Posts found.',
+  },
 
   // UserPostsCount: {
   //   type: UserPostsCountRdo,

@@ -137,3 +137,9 @@ Content-Type: application/json
 }
 
 ###
+
+# Find posts by name
+GET http://localhost:3334/api/posts/search?name=Node.js HTTP/1.1
+
+
+###

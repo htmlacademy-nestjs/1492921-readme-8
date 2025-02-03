@@ -22,7 +22,7 @@ import { fillDto } from '@project/shared-helpers';
 import { BlogPostService } from './blog-post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { BlogPostRdo } from './rdo/blog-post.rdo';
-import { BlogPostQuery } from './blog-post.query';
+import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { UpdatePostDto } from './dto/update-post.dto';
 
@@ -49,6 +49,18 @@ export class BlogPostController {
       entities: postsWithPagination.entities.map((post) => post.toPOJO()),
     };
     return fillDto(BlogPostWithPaginationRdo, result);
+  }
+
+  @Get('search')
+  @ApiOperation(BlogPostOperation.Search)
+  @ApiResponse(BlogPostResponse.SearchPosts)
+  @ApiResponse(CommonResponse.BadRequest)
+  public async search(@Query() query: BlogPostSearch): Promise<BlogPostRdo[]> {
+    const postEntities = await this.blogPostService.findByName(query);
+
+    return postEntities.map((postEntity) =>
+      fillDto(BlogPostRdo, postEntity.toPOJO())
+    );
   }
 
   @Get(':postId')

@@ -4,9 +4,7 @@ import {
   SortDirection,
   SortType,
 } from '@project/shared-core';
-import {
-  BlogPostSortDefault,
-} from '../blog-post.constant';
+import { BlogPostSortDefault } from '../blog-post.constant';
 
 export const BlogPostProperty = {
   Id: {
@@ -227,6 +225,13 @@ export const BlogPostProperty = {
       required: false,
       description: 'Show my draft posts',
       example: false,
+    },
+  },
+  Search: {
+    Description: {
+      description: 'Search by publication title',
+      required: true,
+      example: 'text you are looking for',
     },
   },
 

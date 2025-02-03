@@ -10,6 +10,7 @@ export const BlogPostError = {
 export const BlogPostPaginationDefault = {
   PostCountLimit: 25,
   PageCurrent: 1,
+  PostCountSearch: 20,
 } as const;
 
 export const BlogPostSortDefault = {

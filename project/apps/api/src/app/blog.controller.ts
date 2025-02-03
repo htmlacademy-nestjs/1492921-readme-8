@@ -35,19 +35,20 @@ import {
   BlogPostOperation,
   BlogPostParam,
   BlogPostProperty,
+  BlogPostRdo,
   BlogPostResponse,
+  BlogPostSearch,
   CreatePostDto,
 } from '@project/blog-post';
 import {
   BlogCommentEntity,
   BlogCommentOperation,
   BlogCommentParam,
-  BlogCommentProperty,
   BlogCommentQuery,
   BlogCommentResponse,
 } from '@project/blog-comment';
 import { BlogLikeOperation, BlogLikeResponse } from '@project/blog-like';
-import { AuthenticationResponse } from '@project/authentication';
+
 import {
   ImageFileInterceptor,
   multerFileToFormData,
@@ -149,6 +150,22 @@ export class BlogController {
         );
       }
     }
+    return post.data;
+  }
+
+  @Get('search')
+  @ApiOperation(BlogPostOperation.Search)
+  @ApiResponse(BlogPostResponse.SearchPosts)
+  @ApiResponse(CommonResponse.BadRequest)
+  public async search(
+    @Query() query: BlogPostSearch,
+    @Req() req: Request
+  ): Promise<BlogPostRdo[]> {
+    const queryString = url.parse(req.url).query;
+    const post = await this.httpService.axiosRef.get(
+      `${ApplicationServiceURL.Blogs}/search?${queryString}`,
+      {}
+    );
     return post.data;
   }
 

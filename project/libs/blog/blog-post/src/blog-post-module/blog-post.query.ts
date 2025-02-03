@@ -36,7 +36,7 @@ export class BlogPostQuery {
     ({ value }) => parseInt(value, 10) || BlogPostPaginationDefault.PageCurrent
   )
   @IsOptional()
-  public page: number = BlogPostPaginationDefault.PageCurrent;
+  public page?: number = BlogPostPaginationDefault.PageCurrent;
 
   @ApiProperty(BlogPostProperty.PostType.Description)
   @IsIn(Object.values(PostType))
@@ -70,4 +70,12 @@ export class BlogPostQuery {
   @IsMongoId()
   @IsOptional()
   userId?: string;
+}
+
+export class BlogPostSearch {
+  public limit: number = BlogPostPaginationDefault.PostCountSearch;
+
+  @ApiProperty(BlogPostProperty.Search.Description)
+  @IsString()
+  public name: string;
 }

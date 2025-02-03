@@ -7,7 +7,7 @@ import { PrismaClientService } from '@project/blog-models';
 
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
-import { BlogPostQuery } from './blog-post.query';
+import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
 import { calculatePage } from '@project/shared-helpers';
 
 @Injectable()
@@ -140,11 +140,12 @@ export class BlogPostRepository extends BasePostgresRepository<
       where.authorId = query?.userId ?? '-';
       where.publicationDate = { equals: null };
     } else {
-     where.publicationDate = { not: null, lt: currentDate };
+      where.publicationDate = { not: null, lt: currentDate };
       if (query?.authorId) {
         where.authorId = query.authorId;
       }
     }
+
     const [records, postCount] = await Promise.all([
       this.client.vPost.findMany({
         where,
@@ -165,6 +166,20 @@ export class BlogPostRepository extends BasePostgresRepository<
       itemsPerPage: take,
       totalItems: postCount,
     };
+  }
+
+  public async search(query: BlogPostSearch): Promise<BlogPostEntity[]> {
+    const posts = await this.client.vPost.findMany({
+      where: {
+        OR: [
+          { name: { contains: query.name, mode: 'insensitive' } },
+          { quoteText: { contains: query.name, mode: 'insensitive' } },
+          { description: { contains: query.name, mode: 'insensitive' } },
+        ],
+      },
+      take: query.limit,
+    });
+    return posts.map((post) => this.createEntityFromDocument(post));
   }
 
   public async existsRepost(postId: string, userId: string): Promise<boolean> {
