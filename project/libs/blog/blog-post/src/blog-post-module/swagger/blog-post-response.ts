@@ -55,12 +55,10 @@ export const BlogPostResponse = {
     type: BlogPostRdo,
     isArray: true,
     status: HttpStatus.OK,
-    description: 'Posts found.',
+    description: 'Posts searching complete',
   },
-
-  // UserPostsCount: {
-  //   type: UserPostsCountRdo,
-  //   status: HttpStatus.OK,
-  //   description: 'User posts count.',
-  // },
+  PostsCount: {
+    status: HttpStatus.OK,
+    description: 'Posts counted',
+  },
 } as const;

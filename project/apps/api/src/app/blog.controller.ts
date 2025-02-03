@@ -37,7 +37,7 @@ import {
   BlogPostProperty,
   BlogPostRdo,
   BlogPostResponse,
-  BlogPostSearch,
+  BlogPostSearchQuery,
   CreatePostDto,
 } from '@project/blog-post';
 import {
@@ -158,7 +158,7 @@ export class BlogController {
   @ApiResponse(BlogPostResponse.SearchPosts)
   @ApiResponse(CommonResponse.BadRequest)
   public async search(
-    @Query() query: BlogPostSearch,
+    @Query() query: BlogPostSearchQuery,
     @Req() req: Request
   ): Promise<BlogPostRdo[]> {
     const queryString = url.parse(req.url).query;

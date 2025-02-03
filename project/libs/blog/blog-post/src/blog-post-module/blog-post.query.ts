@@ -66,16 +66,21 @@ export class BlogPostQuery {
   myDraft?: boolean = false;
 
   @ApiProperty(CommonProperty.UserId.Description)
-  @IsString()
   @IsMongoId()
   @IsOptional()
   userId?: string;
 }
 
-export class BlogPostSearch {
+export class BlogPostSearchQuery {
   public limit: number = BlogPostPaginationDefault.PostCountSearch;
 
   @ApiProperty(BlogPostProperty.Search.Description)
   @IsString()
   public name: string;
+}
+
+export class BlogPostCountQuery {
+  @ApiProperty(CommonProperty.UserIdNotNull.Description)
+  @IsMongoId()
+  public userId: string;
 }

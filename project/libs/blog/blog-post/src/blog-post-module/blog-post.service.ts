@@ -11,7 +11,11 @@ import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
 import { CreatePostDto } from './dto/create-post.dto';
-import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
+import {
+  BlogPostCountQuery,
+  BlogPostQuery,
+  BlogPostSearchQuery,
+} from './blog-post.query';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostProperty } from './swagger/blog-post-property';
 import { BlogPostError } from './blog-post.constant';
@@ -155,7 +159,13 @@ export class BlogPostService {
     await this.blogPostRepository.update(existPost);
   }
 
-  public async findByName(query?: BlogPostSearch): Promise<BlogPostEntity[]> {
+  public async findByName(
+    query?: BlogPostSearchQuery
+  ): Promise<BlogPostEntity[]> {
     return await this.blogPostRepository.search(query);
+  }
+
+  public async postsCount(query: BlogPostCountQuery): Promise<number> {
+    return await this.blogPostRepository.postsCount(query);
   }
 }

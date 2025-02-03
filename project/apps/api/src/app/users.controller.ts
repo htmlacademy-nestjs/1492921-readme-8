@@ -30,8 +30,12 @@ import {
   LoginUserDto,
   UpdatePasswordDto,
   AuthenticationOperation,
+  UserRdo,
 } from '@project/authentication';
-import { ImageFileInterceptor, multerFileToFormData } from '@project/shared-helpers';
+import {
+  ImageFileInterceptor,
+  multerFileToFormData,
+} from '@project/shared-helpers';
 import { UploadedFileRdo } from '@project/file-uploader';
 
 import { ApplicationServiceURL } from './app.config';
@@ -54,29 +58,34 @@ export class UsersController {
   @ApiResponse(AuthenticationResponse.UserAuthForbidden)
   @ApiConsumes('multipart/form-data')
   @UseGuards(CheckNoAuthGuard)
-  @UseInterceptors(ImageFileInterceptor(AuthenticationProperty.AvatarFile.Validate, 'avatarFile'))
+  @UseInterceptors(
+    ImageFileInterceptor(
+      AuthenticationProperty.AvatarFile.Validate,
+      'avatarFile'
+    )
+  )
   public async create(
     @Body() dto: RegisterUserDto,
     @UploadedFile() avatarFile?: Express.Multer.File
   ) {
     const dtoWithFile = {
-        ...dto,
-        avatarUrl: ``,
-      }
+      ...dto,
+      avatarUrl: ``,
+    };
     const form = new FormData();
 
     if (avatarFile) {
       multerFileToFormData(form, avatarFile, 'file');
       const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
-      `${ApplicationServiceURL.Files}/upload`,
-      form
-    );
-    dtoWithFile.avatarUrl =`${data.subDirectory}/${data.hashName}`;
+        `${ApplicationServiceURL.Files}/upload`,
+        form
+      );
+      dtoWithFile.avatarUrl = `${data.subDirectory}/${data.hashName}`;
     }
     const user = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Users}/register`,
       dtoWithFile
-     );
+    );
     return user.data;
   }
 
@@ -124,11 +133,15 @@ export class UsersController {
   @ApiResponse(AuthenticationResponse.BadRequest)
   @ApiParam(AuthenticationParam.UserId)
   public async show(@Param('userId') userId: string) {
-    const { data } = await this.httpService.axiosRef.get(
+    const { data } = await this.httpService.axiosRef.get<UserRdo>(
       `${ApplicationServiceURL.Users}/${userId}`,
-      null
+      {}
     );
-    return data;
+    const countResponse = await this.httpService.axiosRef.get(
+      `${ApplicationServiceURL.Blogs}/count/?userId=${userId}`,
+      {}
+    );
+    return { ...data, postsCount: countResponse.data };
   }
 
   @Post('refresh')

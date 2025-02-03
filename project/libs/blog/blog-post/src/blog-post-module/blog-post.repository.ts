@@ -7,7 +7,11 @@ import { PrismaClientService } from '@project/blog-models';
 
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
-import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
+import {
+  BlogPostCountQuery,
+  BlogPostQuery,
+  BlogPostSearchQuery,
+} from './blog-post.query';
 import { calculatePage } from '@project/shared-helpers';
 
 @Injectable()
@@ -168,7 +172,7 @@ export class BlogPostRepository extends BasePostgresRepository<
     };
   }
 
-  public async search(query: BlogPostSearch): Promise<BlogPostEntity[]> {
+  public async search(query: BlogPostSearchQuery): Promise<BlogPostEntity[]> {
     const posts = await this.client.vPost.findMany({
       where: {
         OR: [
@@ -188,5 +192,15 @@ export class BlogPostRepository extends BasePostgresRepository<
     });
 
     return count > 0;
+  }
+
+  public async postsCount(query: BlogPostCountQuery): Promise<number> {
+    const currentDate = new Date();
+    return await this.client.post.count({
+      where: {
+        authorId: query.userId,
+        publicationDate: { not: null, lt: currentDate },
+      },
+    });
   }
 }

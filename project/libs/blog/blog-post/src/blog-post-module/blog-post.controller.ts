@@ -22,7 +22,11 @@ import { fillDto } from '@project/shared-helpers';
 import { BlogPostService } from './blog-post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { BlogPostRdo } from './rdo/blog-post.rdo';
-import { BlogPostQuery, BlogPostSearch } from './blog-post.query';
+import {
+  BlogPostCountQuery,
+  BlogPostQuery,
+  BlogPostSearchQuery,
+} from './blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { UpdatePostDto } from './dto/update-post.dto';
 
@@ -55,12 +59,22 @@ export class BlogPostController {
   @ApiOperation(BlogPostOperation.Search)
   @ApiResponse(BlogPostResponse.SearchPosts)
   @ApiResponse(CommonResponse.BadRequest)
-  public async search(@Query() query: BlogPostSearch): Promise<BlogPostRdo[]> {
+  public async search(
+    @Query() query: BlogPostSearchQuery
+  ): Promise<BlogPostRdo[]> {
     const postEntities = await this.blogPostService.findByName(query);
 
     return postEntities.map((postEntity) =>
       fillDto(BlogPostRdo, postEntity.toPOJO())
     );
+  }
+
+  @Get('count')
+  @ApiOperation(BlogPostOperation.Count)
+  @ApiResponse(BlogPostResponse.PostsCount)
+  @ApiResponse(CommonResponse.BadRequest)
+  public async postCount(@Query() query: BlogPostCountQuery): Promise<number> {
+    return await this.blogPostService.postsCount(query);
   }
 
   @Get(':postId')
