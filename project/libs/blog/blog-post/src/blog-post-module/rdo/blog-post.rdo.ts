@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { PostState, PostType } from '@project/shared-core';
+import { CommonProperty, PostState, PostType } from '@project/shared-core';
 import { BlogPostProperty } from '../swagger/blog-post-property';
 export class BlogPostRdo {
   @ApiProperty(BlogPostProperty.Id.Description)
@@ -32,7 +32,7 @@ export class BlogPostRdo {
   @Expose()
   public tags: string[];
 
-  @ApiProperty(BlogPostProperty.CreateDate.Description)
+  @ApiProperty(CommonProperty.CreateDate.Description)
   @Expose()
   public createDate: Date;
 

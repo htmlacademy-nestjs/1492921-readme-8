@@ -9,4 +9,4 @@ export const BearerAuthOption = {
 export const BearerAuth = {
   AccessToken: 'accessToken',
   RefreshToken: 'refreshToken',
-};
+} as const;

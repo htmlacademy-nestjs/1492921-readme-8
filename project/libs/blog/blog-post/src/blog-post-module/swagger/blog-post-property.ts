@@ -4,19 +4,11 @@ import {
   SortDirection,
   SortType,
 } from '@project/shared-core';
-import { PaginationDefault, SortDefault } from '../blog-post.constant';
+import {
+  BlogPostSortDefault,
+} from '../blog-post.constant';
 
 export const BlogPostProperty = {
-  UserId: {
-    Description: {
-      description: 'ID of logged user',
-      example: '6766fdb720f78014bf83d5a3',
-      required: false,
-    },
-    Validate: {
-      Message: 'UserId should be valid MongoId',
-    },
-  },
   Id: {
     Description: {
       description: 'The unique post ID',
@@ -65,12 +57,6 @@ export const BlogPostProperty = {
       description: 'The post state',
       enum: PostState,
       example: PostState.Published,
-    },
-  },
-  CreateDate: {
-    Description: {
-      description: 'The post created date',
-      example: '2025-01-19',
     },
   },
   PublicationDate: {
@@ -192,7 +178,6 @@ export const BlogPostProperty = {
       Message: 'The field "description" be at no more than 300 characters long',
     },
   },
-  //
   LikesCount: {
     Description: {
       description: 'The post likes count',
@@ -218,37 +203,13 @@ export const BlogPostProperty = {
       isArray: true,
     },
   },
-  TotalPages: {
-    Description: {
-      description: 'Total pages',
-      example: 10,
-    },
-  },
-  TotalItems: {
-    Description: {
-      description: 'Total items',
-      example: 100,
-    },
-  },
-  CurrentPage: {
-    Description: {
-      description: 'Current page',
-      example: PaginationDefault.PageCurrent,
-    },
-  },
-  ItemsPerPage: {
-    Description: {
-      description: 'Items count per page',
-      example: 10,
-    },
-  },
 
   SortDirection: {
     Description: {
       description: 'Sorting direction',
       enum: SortDirection,
       enumName: 'SortDirection',
-      example: SortDefault.Direction,
+      example: BlogPostSortDefault.Direction,
       required: false,
     },
   },
@@ -257,14 +218,7 @@ export const BlogPostProperty = {
       description: 'Sorting type',
       enum: SortType,
       enumName: 'SortType',
-      example: SortDefault.Type,
-      required: false,
-    },
-  },
-  PageCurrent: {
-    Description: {
-      description: 'Current page',
-      example: 1,
+      example: BlogPostSortDefault.Type,
       required: false,
     },
   },

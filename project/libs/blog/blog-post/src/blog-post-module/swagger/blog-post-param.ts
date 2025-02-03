@@ -1,4 +1,3 @@
-//import { CommentProperty } from '@project/blog-comment';
 import { BlogPostProperty } from './blog-post-property';
 
 export const BlogPostParam = {
@@ -7,14 +6,4 @@ export const BlogPostParam = {
     type: String,
     schema: BlogPostProperty.Id,
   },
-  // UserId: {
-  //   name: 'userId',
-  //   type: String,
-  //   schema: AuthenticationProperty.Id,
-  // },
-  // CommentId: {
-  //   name: 'commentId',
-  //   type: String,
-  //   schema: CommentProperty.Id,
-  // },
 } as const;

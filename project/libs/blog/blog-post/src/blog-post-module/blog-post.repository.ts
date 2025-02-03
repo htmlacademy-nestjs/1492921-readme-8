@@ -8,6 +8,7 @@ import { PrismaClientService } from '@project/blog-models';
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
 import { BlogPostQuery } from './blog-post.query';
+import { calculatePage } from '@project/shared-helpers';
 
 @Injectable()
 export class BlogPostRepository extends BasePostgresRepository<
@@ -27,10 +28,6 @@ export class BlogPostRepository extends BasePostgresRepository<
 
   private async getPostCount(where: Prisma.vPostWhereInput): Promise<number> {
     return this.client.vPost.count({ where });
-  }
-
-  private calculatePostsPage(totalCount: number, limit: number): number {
-    return Math.ceil(totalCount / limit);
   }
 
   public async save(entity: BlogPostEntity): Promise<BlogPostEntity> {
@@ -138,11 +135,12 @@ export class BlogPostRepository extends BasePostgresRepository<
       where.postType = query.postType;
     }
 
+    const currentDate = new Date();
     if (query?.myDraft) {
       where.authorId = query?.userId ?? '-';
       where.publicationDate = { equals: null };
     } else {
-      where.publicationDate = { not: null };
+     where.publicationDate = { not: null, lt: currentDate };
       if (query?.authorId) {
         where.authorId = query.authorId;
       }
@@ -163,7 +161,7 @@ export class BlogPostRepository extends BasePostgresRepository<
     return {
       entities: records.map((record) => this.createEntityFromDocument(record)),
       currentPage: query?.page,
-      totalPages: this.calculatePostsPage(postCount, take),
+      totalPages: calculatePage(postCount, take),
       itemsPerPage: take,
       totalItems: postCount,
     };

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Comment, EntityFactory } from '@project/shared-core';
 import { BlogCommentEntity } from './blog-comment.entity';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateBlogCommentDto } from './dto/create-blog-comment.dto';
 
 @Injectable()
 export class BlogCommentFactory implements EntityFactory<BlogCommentEntity> {
@@ -11,7 +11,7 @@ export class BlogCommentFactory implements EntityFactory<BlogCommentEntity> {
   }
 
   public createFromDto(
-    dto: CreateCommentDto,
+    dto: CreateBlogCommentDto,
     postId: string
   ): BlogCommentEntity {
     return new BlogCommentEntity({

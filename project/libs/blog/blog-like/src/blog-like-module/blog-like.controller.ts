@@ -11,6 +11,7 @@ import {
 import { BlogLikeService } from './blog-like.service';
 import { BlogLikeOperation } from './swagger/blog-like-operation';
 import { BlogLikeResponse } from './swagger/blog-like-response';
+import { CommonResponse } from '@project/shared-core';
 
 @ApiTags('Likes')
 @Controller('posts/:postId/likes')
@@ -25,7 +26,7 @@ export class BlogLikeController {
   @ApiResponse(BlogLikeResponse.SetLike)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogLikeResponse.LikeExists)
-  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiResponse(CommonResponse.BadRequest)
   public async addLike(
     @Param(BlogPostParam.PostId.name) postId: string,
     @Body() { userId }: UserIdDto
@@ -39,6 +40,7 @@ export class BlogLikeController {
   @ApiResponse(BlogLikeResponse.DelLike)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogLikeResponse.LikeNotFound)
+  @ApiResponse(CommonResponse.BadRequest)
   public async deleteLike(
     @Param(BlogPostParam.PostId.name) postId: string,
     @Body() { userId }: UserIdDto

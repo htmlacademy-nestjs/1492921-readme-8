@@ -1,8 +1,3 @@
-// export enum PostState {
-//   Published = 'published',
-//   Draft = 'draft',
-// }
-
 export const PostState = {
   Published: 'published',
   Draft: 'draft',

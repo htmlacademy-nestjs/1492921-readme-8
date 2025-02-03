@@ -9,7 +9,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { fillDto } from '@project/shared-helpers';
 
@@ -24,6 +30,8 @@ import { BlogPostResponse } from './swagger/blog-post-response';
 import { BlogPostParam } from './swagger/blog-post-param';
 import { BlogPostBody } from './swagger/blog-post-request';
 import { UserIdDto } from './dto/user-id.dto';
+import { BlogPostOperation } from './swagger/blog-post-operation';
+import { CommonResponse } from '@project/shared-core';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -31,8 +39,9 @@ export class BlogPostController {
   constructor(private readonly blogPostService: BlogPostService) {}
 
   @Get('')
-  @ApiResponse(BlogPostResponse.PostsList)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiOperation(BlogPostOperation.Index)
+  @ApiResponse(BlogPostResponse.PostList)
+  @ApiResponse(CommonResponse.BadRequest)
   public async index(@Query() query: BlogPostQuery) {
     const postsWithPagination = await this.blogPostService.getAllPosts(query);
     const result = {
@@ -43,6 +52,7 @@ export class BlogPostController {
   }
 
   @Get(':postId')
+  @ApiOperation(BlogPostOperation.View)
   @ApiResponse(BlogPostResponse.PostFound)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiParam(BlogPostParam.PostId)
@@ -52,8 +62,9 @@ export class BlogPostController {
   }
 
   @Post('')
+  @ApiOperation(BlogPostOperation.Create)
   @ApiResponse(BlogPostResponse.PostCreated)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiBody(BlogPostBody.create)
   //@ApiHeader(BlogPostHeader.RequestId)
   public async create(@Body() dto: CreatePostDto) {
@@ -62,9 +73,10 @@ export class BlogPostController {
   }
 
   @Patch(':postId')
+  @ApiOperation(BlogPostOperation.Update)
   @ApiResponse(BlogPostResponse.PostUpdated)
   @ApiResponse(BlogPostResponse.PostNotFound)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiBody(BlogPostBody.update)
   public async update(
     @Param(BlogPostParam.PostId.name) postId: string,
@@ -75,6 +87,7 @@ export class BlogPostController {
   }
 
   @Delete(':postId')
+  @ApiOperation(BlogPostOperation.Delete)
   @ApiResponse(BlogPostResponse.PostDeleted)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiParam(BlogPostParam.PostId)
@@ -86,9 +99,10 @@ export class BlogPostController {
   }
 
   @Post(':postId/repost')
+  @ApiOperation(BlogPostOperation.Repost)
   @ApiResponse(BlogPostResponse.PostCreated)
   @ApiResponse(BlogPostResponse.PostNotFound)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiParam(BlogPostParam.PostId)
   public async createRepost(
     @Param(BlogPostParam.PostId.name) postId: string,

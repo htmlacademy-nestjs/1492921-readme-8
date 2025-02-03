@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId } from 'class-validator';
 
-import { BlogPostProperty } from '../swagger/blog-post-property';
+import { CommonProperty } from '@project/shared-core';
 
 export class UserIdDto {
-  @ApiProperty(BlogPostProperty.UserId.Description)
-  @IsMongoId({ message: BlogPostProperty.UserId.Validate.Message })
+  @ApiProperty(CommonProperty.UserIdNotNull.Description)
+  @IsMongoId()
   userId: string;
 }

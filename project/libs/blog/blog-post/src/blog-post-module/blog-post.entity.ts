@@ -47,7 +47,10 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.repostId = post.repostId || null;
     this.repostAuthorId = post.repostAuthorId || null;
     this.tags = post.tags ?? [];
-    this.state = post.publicationDate ? 'published' : 'draft';
+    this.state =
+      !post.publicationDate || post.publicationDate > new Date()
+        ? 'draft'
+        : 'published';
     this.createDate = post.createDate ?? new Date();
     this.publicationDate = post.publicationDate ?? null;
     this.likesCount = post.likesCount ?? 0;
@@ -78,7 +81,10 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       repostId: this.repostId,
       repostAuthorId: this.repostAuthorId,
       tags: this.tags,
-      state: this.publicationDate ? 'published' : 'draft',
+      state:
+        !this.publicationDate || this.publicationDate > new Date()
+          ? 'draft'
+          : 'published',
       createDate: this.createDate,
       publicationDate: this.publicationDate,
       likesCount: this.likesCount,

@@ -1,6 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PostType } from '@prisma/client';
-import { SortDirection, SortType } from '@project/shared-core';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -11,28 +9,34 @@ import {
   IsString,
 } from 'class-validator';
 
-import { PaginationDefault, SortDefault } from './blog-post.constant';
+import { PostType } from '@prisma/client';
+import { CommonProperty, SortDirection, SortType } from '@project/shared-core';
+
+import {
+  BlogPostPaginationDefault,
+  BlogPostSortDefault,
+} from './blog-post.constant';
 import { BlogPostProperty } from './swagger/blog-post-property';
 
 export class BlogPostQuery {
-  public limit: number = PaginationDefault.PostCountLimit;
+  public limit: number = BlogPostPaginationDefault.PostCountLimit;
 
   @ApiProperty(BlogPostProperty.SortDirection.Description)
   @IsIn(Object.values(SortDirection))
   @IsOptional()
-  public sortDirection?: SortDirection = SortDefault.Direction;
+  public sortDirection?: SortDirection = BlogPostSortDefault.Direction;
 
   @ApiProperty(BlogPostProperty.SortType.Description)
   @IsIn(Object.values(SortType))
   @IsOptional()
-  public sortBy?: SortType = SortDefault.Type;
+  public sortBy?: SortType = BlogPostSortDefault.Type;
 
-  @ApiProperty(BlogPostProperty.PageCurrent.Description)
+  @ApiProperty(CommonProperty.CurrentPage.Description)
   @Transform(
-    ({ value }) => parseInt(value, 10) || PaginationDefault.PageCurrent
+    ({ value }) => parseInt(value, 10) || BlogPostPaginationDefault.PageCurrent
   )
   @IsOptional()
-  public page: number = PaginationDefault.PageCurrent;
+  public page: number = BlogPostPaginationDefault.PageCurrent;
 
   @ApiProperty(BlogPostProperty.PostType.Description)
   @IsIn(Object.values(PostType))
@@ -61,17 +65,9 @@ export class BlogPostQuery {
   @IsOptional()
   myDraft?: boolean = false;
 
-  @ApiProperty(BlogPostProperty.UserId.Description)
+  @ApiProperty(CommonProperty.UserId.Description)
   @IsString()
   @IsMongoId()
   @IsOptional()
   userId?: string;
-
-  // @IsString()
-  // @IsOptional()
-  // @ApiProperty({
-  //   description: 'search',
-  //   required: false,
-  // })
-  // public search?: string;
 }

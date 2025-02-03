@@ -1,19 +1,19 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { CommonProperty } from '@project/shared-core';
 
-import { BlogPostRdo } from './blog-post.rdo';
-import { ApiProperty } from '@nestjs/swagger';
-import { BlogPostProperty } from '../swagger/blog-post-property';
+import { BlogCommentProperty } from '../swagger/blog-comment-property';
+import { BlogCommentRdo } from '../rdo/blog-comment.rdo';
 
 
-export class BlogPostWithPaginationRdo {
-  @ApiProperty(BlogPostProperty.PostList.Description)
-  @Type(() => BlogPostRdo)
+export class BlogCommentWithPaginationRdo {
+  @ApiProperty(BlogCommentProperty.CommentList.Description)
+  @Type(() => BlogCommentRdo)
   @ValidateNested({ always: true })
   @Expose()
-  public entities: BlogPostRdo[];
+  public entities: BlogCommentRdo[];
 
   @ApiProperty(CommonProperty.TotalPages.Description)
   @Expose()

@@ -4,12 +4,9 @@ import { BlogPostModule } from '@project/blog-post';
 import { BlogCommentModule } from '@project/blog-comment';
 import { BlogLikeModule } from '@project/blog-like';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 @Module({
   imports: [BlogPostModule, BlogCommentModule, BlogLikeModule],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

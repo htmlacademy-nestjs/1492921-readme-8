@@ -5,10 +5,6 @@ import { BlogPostError } from '../blog-post.constant';
 import { BlogPostWithPaginationRdo } from '../rdo/blog-post-with-pagination.rdo';
 
 export const BlogPostResponse = {
-  BadRequest: {
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Bad request',
-  },
   PostCreated: {
     type: BlogPostRdo,
     status: HttpStatus.CREATED,
@@ -22,10 +18,6 @@ export const BlogPostResponse = {
   PostDeleted: {
     status: HttpStatus.OK,
     description: 'The post has been successfully deleted',
-  },
-  UserNotAuth: {
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'User not Auth',
   },
   PostFound: {
     type: BlogPostRdo,
@@ -45,7 +37,7 @@ export const BlogPostResponse = {
     status: HttpStatus.CONFLICT,
     description: BlogPostError.RepostExist,
   },
-  PostsList: {
+  PostList: {
     type: BlogPostWithPaginationRdo,
     status: HttpStatus.OK,
     description: 'Post list has been received',

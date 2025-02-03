@@ -1,27 +1,20 @@
 import { ClassTransformOptions, plainToInstance } from 'class-transformer';
 
-import { StoredFile } from '@project/shared-core';
-
 export type DateTimeUnit = 's' | 'h' | 'd' | 'm' | 'y';
 export type TimeAndUnit = { value: number; unit: DateTimeUnit };
 
-//type PlainObject = Record<string, unknown>;
-
-//export function fillDto<T, V extends PlainObject>(
 export function fillDto<T, V>(
   DtoClass: new () => T,
   plainObject: V,
   options?: ClassTransformOptions
 ): T;
 
-//export function fillDto<T, V extends PlainObject[]>(
 export function fillDto<T, V>(
   DtoClass: new () => T,
   plainObject: V,
   options?: ClassTransformOptions
 ): T[];
 
-//export function fillDto<T, V extends PlainObject>(
 export function fillDto<T, V>(
   DtoClass: new () => T,
   plainObject: V,
@@ -70,4 +63,8 @@ export function parseTime(time: string): TimeAndUnit {
   }
 
   return { value, unit };
+}
+
+export function calculatePage(totalCount: number, limit: number): number {
+  return Math.ceil(totalCount / limit);
 }

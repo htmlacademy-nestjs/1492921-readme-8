@@ -24,5 +24,6 @@ export { StoredFile } from './lib/types/stored-file.interface';
 export { Subscriber } from './lib/types/subscriber.interface';
 export { RabbitRouting } from './lib/types/rabbit-routing.enum';
 
-export { BearerAuthOption } from './lib/constants/bearer-auth';
-export { BearerAuth } from './lib/constants/bearer-auth';
+export { BearerAuth, BearerAuthOption } from './lib/constants/bearer-auth';
+export { CommonResponse } from './lib/constants/common-response';
+export { CommonProperty} from './lib/constants/common-property';

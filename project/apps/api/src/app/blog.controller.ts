@@ -38,6 +38,14 @@ import {
   BlogPostResponse,
   CreatePostDto,
 } from '@project/blog-post';
+import {
+  BlogCommentEntity,
+  BlogCommentOperation,
+  BlogCommentParam,
+  BlogCommentProperty,
+  BlogCommentQuery,
+  BlogCommentResponse,
+} from '@project/blog-comment';
 import { BlogLikeOperation, BlogLikeResponse } from '@project/blog-like';
 import { AuthenticationResponse } from '@project/authentication';
 import {
@@ -46,7 +54,11 @@ import {
 } from '@project/shared-helpers';
 import { UploadedFileRdo } from '@project/file-uploader';
 import { BlogUserEntity } from '@project/blog-user';
-import { PaginationResult, PostType } from '@project/shared-core';
+import {
+  CommonResponse,
+  PaginationResult,
+  PostType,
+} from '@project/shared-core';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
@@ -57,6 +69,7 @@ import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
 import { CreatePhotoPostDto } from './dto/create-photo-post.dto';
 import { InjectUserIdQueryInterceptor } from './interceptors/inject-user-id-query.interceptor';
 import { ApiBlogPostQuery } from './dto/api-blog-post-query';
+import { AddBlogCommentDto } from './dto/add-blog-comment.dto';
 
 function updateApiBodyOptions(
   apiBodyOptions: typeof BlogPostBody.create
@@ -90,12 +103,15 @@ export class BlogController {
 
   @Get('posts')
   @ApiOperation(BlogPostOperation.Index)
-  @ApiResponse(BlogPostResponse.PostsList)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(BlogPostResponse.PostList)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdQueryInterceptor)
-  public async index(@Query() query: ApiBlogPostQuery, @Req() req: Request) {
+  public async indexPost(
+    @Query() query: ApiBlogPostQuery,
+    @Req() req: Request
+  ) {
     const userId = query['userId'];
     const queryString = url.parse(req.url).query;
     const queryParams = userId
@@ -139,8 +155,8 @@ export class BlogController {
   @Post('posts/photo')
   @ApiOperation(BlogPostOperation.CreatePhoto)
   @ApiResponse(BlogPostResponse.PostCreated)
-  @ApiResponse(BlogPostResponse.BadRequest)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.BadRequest)
+  @ApiResponse(CommonResponse.UserNotAuth)
   @ApiBody(BlogPostBody.createPhoto)
   @ApiBearerAuth('accessToken')
   @ApiConsumes('multipart/form-data')
@@ -174,10 +190,10 @@ export class BlogController {
   @Patch('posts/photo/:postId')
   @ApiOperation(BlogPostOperation.UpdatePhoto)
   @ApiResponse(BlogPostResponse.PostUpdated)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogPostResponse.NotAllow)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.UserNotAuth)
   @ApiBody(BlogPostBody.updatePhoto)
   @ApiBearerAuth('accessToken')
   @ApiConsumes('multipart/form-data')
@@ -214,14 +230,14 @@ export class BlogController {
   @Post('posts')
   @ApiOperation(BlogPostOperation.Create)
   @ApiResponse(BlogPostResponse.PostCreated)
-  @ApiResponse(BlogPostResponse.BadRequest)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.BadRequest)
+  @ApiResponse(CommonResponse.UserNotAuth)
   @ApiBody(updateApiBodyOptions(BlogPostBody.create))
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckAuthGuard)
-  public async create(@Body() dto: CreatePostDto) {
+  public async createPost(@Body() dto: CreatePostDto) {
     const post = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/`,
       { ...dto, authorId: dto['userId'] }
@@ -232,10 +248,10 @@ export class BlogController {
   @Patch('posts/:postId')
   @ApiOperation(BlogPostOperation.Update)
   @ApiResponse(BlogPostResponse.PostUpdated)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogPostResponse.NotAllow)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.UserNotAuth)
   @ApiBody(BlogPostBody.update)
   @ApiBearerAuth('accessToken')
   @ApiParam(BlogPostParam.PostId)
@@ -245,7 +261,7 @@ export class BlogController {
     ImageFileInterceptor(BlogPostProperty.PhotoFile.Validate, 'photoFile')
   )
   @UseGuards(CheckMyPostGuard)
-  public async update(
+  public async updatePost(
     @Param(BlogPostParam.PostId.name) postId: string,
     @Body() dto: UpdateBlogPostDto,
     @UploadedFile() photoFile?: Express.Multer.File
@@ -277,7 +293,7 @@ export class BlogController {
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckMyPostGuard)
-  public async delete(@Param(BlogPostParam.PostId.name) postId: string) {
+  public async deletePost(@Param(BlogPostParam.PostId.name) postId: string) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blogs}/${postId}`,
       null
@@ -304,9 +320,10 @@ export class BlogController {
   @Post('posts/:postId/repost')
   @ApiOperation(BlogPostOperation.Repost)
   @ApiResponse(BlogPostResponse.PostCreated)
-  @ApiResponse(BlogPostResponse.BadRequest)
+  @ApiResponse(CommonResponse.BadRequest)
   @ApiResponse(BlogPostResponse.PostNotFound)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.UserNotAuth)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
   @ApiBearerAuth('accessToken')
   @ApiParam(BlogPostParam.PostId)
   @UseInterceptors(UseInterceptors)
@@ -331,7 +348,8 @@ export class BlogController {
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogLikeResponse.LikeExists)
   @ApiResponse(BlogPostResponse.PostIsDraft)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.UserNotAuth)
+  @ApiParam(BlogPostParam.PostId)
   @ApiBearerAuth('accessToken')
   @HttpCode(BlogLikeResponse.SetLike.status)
   @UseInterceptors(UseInterceptors)
@@ -355,19 +373,116 @@ export class BlogController {
   @ApiResponse(BlogLikeResponse.DelLike)
   @ApiResponse(BlogPostResponse.PostNotFound)
   @ApiResponse(BlogLikeResponse.LikeNotFound)
-  @ApiResponse(AuthenticationResponse.UserNotAuth)
+  @ApiResponse(CommonResponse.UserNotAuth)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiParam(BlogPostParam.PostId)
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
   @UseGuards(CheckAuthGuard)
   @UseGuards(CheckPublishedPostGuard)
-  public async deleteLike(
+  public async delLike(
     @Param(BlogPostParam.PostId.name) postId: string,
     @Body() dto
   ) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blogs}/${postId}/likes`,
       { data: dto }
+    );
+    return data;
+  }
+
+  @Get('posts/:postId/comments')
+  @ApiOperation(BlogCommentOperation.Index)
+  @ApiResponse(BlogCommentResponse.CommentList)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiParam(BlogPostParam.PostId)
+  @UseGuards(CheckPublishedPostGuard)
+  public async indexComment(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Query() query: BlogCommentQuery,
+    @Req() req: Request
+  ) {
+    const queryString = url.parse(req.url).query;
+    const comments = await this.httpService.axiosRef.get<
+      PaginationResult<BlogCommentEntity>
+    >(`${ApplicationServiceURL.Blogs}/${postId}/comments?${queryString}`, {});
+
+    // Добавляем информацию об авторах комментариев
+    // По-хорошему я думаю нужно в сервисе блогов хранить минимальные данные об авторах комментариев
+    // и синхронизировать их с сервисом авторизации через RabbitMQ
+    for (const commentsEntity of comments.data.entities) {
+      try {
+        // Получаем информацию об авторе
+        const authorResponse =
+          await this.httpService.axiosRef.get<BlogUserEntity>(
+            `${ApplicationServiceURL.Users}/${commentsEntity.userId}`,
+            {}
+          );
+
+        // Добавляем информацию об авторе к комментарию
+        commentsEntity['user'] = {
+          name: authorResponse.data.name,
+          email: authorResponse.data.email,
+        };
+      } catch (error) {
+        commentsEntity['user'] = {
+          name: '--Not found--',
+          email: '--Not found--',
+        };
+        console.error(
+          `Failed to fetch author (id = ${commentsEntity.userId}) for comment ${commentsEntity.id}:`,
+          error.data
+        );
+      }
+    }
+    return comments.data;
+  }
+
+  @Post('posts/:postId/comments')
+  @ApiOperation(BlogCommentOperation.AddComment)
+  @ApiResponse(BlogCommentResponse.AddComment)
+  @ApiResponse(BlogPostResponse.PostNotFound)
+  @ApiResponse(CommonResponse.BadRequest)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiResponse(CommonResponse.UserNotAuth)
+  @ApiParam(BlogPostParam.PostId)
+  @ApiBearerAuth('accessToken')
+  @UseInterceptors(UseInterceptors)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @UseGuards(CheckAuthGuard)
+  public async addComment(
+    @Param(BlogPostParam.PostId.name) postId: string,
+    @Body() dto: AddBlogCommentDto
+  ) {
+    const { data } = await this.httpService.axiosRef.post(
+      `${ApplicationServiceURL.Blogs}/${postId}/comments`,
+      dto
+    );
+
+    return data;
+  }
+
+  @Delete('posts/comments/:commentId')
+  @ApiOperation(BlogCommentOperation.DelComment)
+  @ApiResponse(BlogCommentResponse.DelComment)
+  @ApiResponse(BlogCommentResponse.CommentNotFound)
+  @ApiResponse(BlogCommentResponse.NotAllow)
+  @ApiResponse(CommonResponse.UserNotAuth)
+  @ApiResponse(BlogPostResponse.PostIsDraft)
+  @ApiParam(BlogCommentParam.CommentId)
+  @ApiBearerAuth('accessToken')
+  @UseInterceptors(UseInterceptors)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @UseGuards(CheckAuthGuard)
+  public async delComment(
+    @Param(BlogCommentParam.CommentId.name) commentId: string,
+    @Body() body
+  ) {
+    const { data } = await this.httpService.axiosRef.delete(
+      `${ApplicationServiceURL.Blogs}/comments/${commentId}`,
+      { data: body }
     );
     return data;
   }

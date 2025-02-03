@@ -7,12 +7,12 @@ export const BlogPostError = {
   PostIsDraft: 'Post state is not is published',
 } as const;
 
-export const PaginationDefault = {
+export const BlogPostPaginationDefault = {
   PostCountLimit: 25,
   PageCurrent: 1,
 } as const;
 
-export const SortDefault = {
+export const BlogPostSortDefault = {
   Direction: SortDirection.Desc,
   Type: SortType.PublicationDate,
 } as const;
