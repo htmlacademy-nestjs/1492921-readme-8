@@ -18,6 +18,8 @@ import {
 } from '@nestjs/swagger';
 
 import { fillDto } from '@project/shared-helpers';
+import { BlogNotifyDto, BlogNotifyService } from '@project/blog-notify';
+import { CommonResponse } from '@project/shared-core';
 
 import { BlogPostService } from './blog-post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -26,6 +28,7 @@ import {
   BlogPostCountQuery,
   BlogPostQuery,
   BlogPostSearchQuery,
+  BlogSendUpdatesQuery,
 } from './blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -35,12 +38,14 @@ import { BlogPostParam } from './swagger/blog-post-param';
 import { BlogPostBody } from './swagger/blog-post-request';
 import { UserIdDto } from './dto/user-id.dto';
 import { BlogPostOperation } from './swagger/blog-post-operation';
-import { CommonResponse } from '@project/shared-core';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class BlogPostController {
-  constructor(private readonly blogPostService: BlogPostService) {}
+  constructor(
+    private readonly blogPostService: BlogPostService,
+    private readonly blogNotifyService: BlogNotifyService
+  ) {}
 
   @Get('')
   @ApiOperation(BlogPostOperation.Index)
@@ -57,7 +62,7 @@ export class BlogPostController {
 
   @Get('search')
   @ApiOperation(BlogPostOperation.Search)
-  @ApiResponse(BlogPostResponse.SearchPosts)
+  @ApiResponse(BlogPostResponse.GetPosts)
   @ApiResponse(CommonResponse.BadRequest)
   public async search(
     @Query() query: BlogPostSearchQuery
@@ -137,5 +142,27 @@ export class BlogPostController {
     const newPost = await this.blogPostService.createRepost(postId, userId);
 
     return fillDto(BlogPostRdo, newPost.toPOJO());
+  }
+
+  @Post('send-updates')
+  @ApiOperation(BlogPostOperation.SendUpdates)
+  @ApiResponse(BlogPostResponse.NotifyCreated)
+  @ApiResponse(CommonResponse.BadRequest)
+  public async getUpdates(@Query() query: BlogSendUpdatesQuery) {
+    // Получаем список постов для рассылки
+    const postEntities =
+      await this.blogPostService.getPublishedPostslaterDate(query);
+    const count = postEntities.length;
+    if (count > 0) {
+      const posts = postEntities.map((postEntity) =>
+        fillDto(BlogNotifyDto, postEntity.toPOJO())
+      );
+
+      // Отправка списка постов в очередь для рассылки
+      if (!(await this.blogNotifyService.sendPostUpdatesNotify(posts))) {
+        return { count: null };
+      }
+    }
+    return { count };
   }
 }

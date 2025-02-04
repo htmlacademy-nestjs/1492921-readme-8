@@ -16,7 +16,7 @@ import { CommonResponse } from '@project/shared-core';
 import { BlogCommentParam } from './swagger/blog-comment-param';
 import { BlogCommentOperation } from './swagger/blog-comment-operation';
 import { BlogCommentResponse } from './swagger/blog-comment-response';
-import { CreateBlogCommentDto } from './dto/create-blog-comment.dto';
+import { CreateBlogCommentDto } from './dto/create-comment.dto';
 import { BlogCommentService } from './blog-comment.service';
 import { BlogCommentRdo } from './rdo/blog-comment.rdo';
 import { BlogCommentQuery } from './blog-comment.query';

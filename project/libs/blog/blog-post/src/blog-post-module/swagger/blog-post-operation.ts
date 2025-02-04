@@ -17,7 +17,7 @@ export const BlogPostOperation = {
   View: { summary: 'Просмотр публикации' },
   Repost: { summary: 'Репост публикации' },
   Search: { summary: 'Поиск публикаций по названию' },
-  MyPosts: { summary: 'Получения списка моих публикаций' },
   Count: { summary: 'Количество публикации пользователя' },
+  SendUpdates: { summary: 'Рассылка уведомлений о новых публикациях' },
   MyFeed: { summary: 'Лента пользователя' },
 } as const;

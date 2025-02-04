@@ -234,13 +234,23 @@ export const BlogPostProperty = {
       example: 'text you are looking for',
     },
   },
-
-  // PostsCount: {
-  //   Description: {
-  //     description: 'The user posts count',
-  //     example: 5,
-  //   },
-  // },
+  SendPostUserId: {
+    Description: {
+      description:
+        'The ID of the author of the sending publications (empty - to send publications of any authors)',
+      example: '6766fdb720f78014bf83d5a3',
+      required: false,
+    },
+    Validate: {
+      Message: 'UserId should be valid MongoId',
+    },
+  },
+  SendingCount: {
+    Description: {
+      description: 'Number of posts send',
+      example: '25',
+    },
+  },
   // SubscriptionsCount: {
   //   Description: {
   //     description: 'The user subscriptions count',

@@ -9,6 +9,7 @@ export { BlogPostRdo } from './blog-post-module/rdo/blog-post.rdo';
 export {
   BlogPostQuery,
   BlogPostSearchQuery,
+  BlogSendUpdatesQuery,
 } from './blog-post-module/blog-post.query';
 export { BlogPostError } from './blog-post-module/blog-post.constant';
 export { BlogPostResponse } from './blog-post-module/swagger/blog-post-response';

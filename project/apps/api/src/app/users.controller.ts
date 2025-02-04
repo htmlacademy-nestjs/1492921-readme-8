@@ -21,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import FormData from 'form-data';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 import {
   AuthenticationParam,

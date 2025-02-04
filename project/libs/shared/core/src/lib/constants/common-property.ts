@@ -25,6 +25,13 @@ export const CommonProperty = {
       example: '2025-02-03 05:47:56.814',
     },
   },
+  StartDate: {
+    Description: {
+      description: 'Start date of the period',
+      example: '2025-01-21 05:47',
+      required: false,
+    },
+  },
 
   TotalPages: {
     Description: {
@@ -50,5 +57,5 @@ export const CommonProperty = {
       description: 'Items count per page',
       example: 20,
     },
-  }
+  },
 } as const;

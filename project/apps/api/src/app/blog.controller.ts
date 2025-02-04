@@ -71,6 +71,8 @@ import { CreatePhotoPostDto } from './dto/create-photo-post.dto';
 import { InjectUserIdQueryInterceptor } from './interceptors/inject-user-id-query.interceptor';
 import { ApiBlogPostQuery } from './dto/api-blog-post-query';
 import { AddBlogCommentDto } from './dto/add-blog-comment.dto';
+import { FilesService } from './files.service';
+import { ApiBlogSendUpdatesQuery } from './dto/api-blog-send-updates-query copy';
 
 function updateApiBodyOptions(
   apiBodyOptions: typeof BlogPostBody.create
@@ -87,10 +89,14 @@ function updateApiBodyOptions(
 @Controller('blogs')
 @UseFilters(AxiosExceptionFilter)
 export class BlogController {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly fileService: FilesService
+    // private readonly notifyService: BlogNo
+  ) {}
 
   // Преобразуем tags в массив, предполагая, что разные тэги разделены запятой
-  // это из-зи кривости сваггера, которые некорректно работает с массивами
+  // это из-за "кривости" сваггера, который некорректно передает массив
   private tagsToArray(dto) {
     if (typeof dto['tags'] === 'string') {
       const tags: string = dto['tags'];
@@ -100,6 +106,19 @@ export class BlogController {
         dto.tags = [];
       }
     }
+  }
+
+  private async uploadFile(file: Express.Multer.File): Promise<string | null> {
+    const form = new FormData();
+    if (file) {
+      multerFileToFormData(form, file, 'file');
+      const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
+        `${ApplicationServiceURL.Files}/upload`,
+        form
+      );
+      return `${data.subDirectory}/${data.hashName}`;
+    }
+    return null;
   }
 
   @Get('posts')
@@ -153,9 +172,9 @@ export class BlogController {
     return post.data;
   }
 
-  @Get('search')
+  @Get('posts/search')
   @ApiOperation(BlogPostOperation.Search)
-  @ApiResponse(BlogPostResponse.SearchPosts)
+  @ApiResponse(BlogPostResponse.GetPosts)
   @ApiResponse(CommonResponse.BadRequest)
   public async search(
     @Query() query: BlogPostSearchQuery,
@@ -188,14 +207,8 @@ export class BlogController {
     @UploadedFile() photoFile?: Express.Multer.File
   ) {
     this.tagsToArray(dto);
-    const form = new FormData();
     if (photoFile) {
-      multerFileToFormData(form, photoFile, 'file');
-      const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
-        `${ApplicationServiceURL.Files}/upload`,
-        form
-      );
-      dto['url'] = `${data.subDirectory}/${data.hashName}`;
+      dto['url'] = await this.uploadFile(photoFile);
     }
     const post = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/`,
@@ -227,16 +240,9 @@ export class BlogController {
     @UploadedFile() photoFile?: Express.Multer.File
   ) {
     this.tagsToArray(dto);
-    const form = new FormData();
     if (photoFile) {
-      multerFileToFormData(form, photoFile, 'file');
-      const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
-        `${ApplicationServiceURL.Files}/upload`,
-        form
-      );
-      dto.url = `${data.subDirectory}/${data.hashName}`;
+      dto['url'] = await this.uploadFile(photoFile);
     }
-
     const post = await this.httpService.axiosRef.patch(
       `${ApplicationServiceURL.Blogs}/${postId}`,
       { ...dto, postType: PostType.Photo }
@@ -253,8 +259,17 @@ export class BlogController {
   @ApiBearerAuth('accessToken')
   @UseInterceptors(UseInterceptors)
   @UseInterceptors(InjectUserIdInterceptor)
+  @UseInterceptors(
+    ImageFileInterceptor(BlogPostProperty.PhotoFile.Validate, 'photoFile')
+  )
   @UseGuards(CheckAuthGuard)
-  public async createPost(@Body() dto: CreatePostDto) {
+  public async createPost(
+    @Body() dto: CreatePostDto,
+    @UploadedFile() photoFile?: Express.Multer.File
+  ) {
+    if (photoFile) {
+      dto['url'] = await this.uploadFile(photoFile);
+    }
     const post = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blogs}/`,
       { ...dto, authorId: dto['userId'] }
@@ -283,14 +298,8 @@ export class BlogController {
     @Body() dto: UpdateBlogPostDto,
     @UploadedFile() photoFile?: Express.Multer.File
   ) {
-    const form = new FormData();
     if (photoFile) {
-      multerFileToFormData(form, photoFile, 'file');
-      const { data } = await this.httpService.axiosRef.post<UploadedFileRdo>(
-        `${ApplicationServiceURL.Files}/upload`,
-        form
-      );
-      dto.url = `${data.subDirectory}/${data.hashName}`;
+      dto['url'] = await this.uploadFile(photoFile);
     }
     const post = await this.httpService.axiosRef.patch(
       `${ApplicationServiceURL.Blogs}/${postId}`,
@@ -502,5 +511,32 @@ export class BlogController {
       { data: body }
     );
     return data;
+  }
+
+  @Post('posts/send-updates')
+  @ApiOperation(BlogPostOperation.SendUpdates)
+  @ApiResponse(BlogPostResponse.NotifyCreated)
+  @ApiResponse(CommonResponse.BadRequest)
+  public async sendNewPostNotify(
+    @Query() query: ApiBlogSendUpdatesQuery,
+    @Req() req: Request
+  ) {
+    let queryString = url.parse(req.url).query;
+    // Считываем дату последней рассылки из файла
+
+    const lastDate = this.fileService.readDate();
+    if (lastDate) {
+      queryString = `${queryString}&startDate=${lastDate}`;
+    }
+    // Рассылка списка постов, опубликованных позднее считанной даты
+    const result = await this.httpService.axiosRef.post(
+      `${ApplicationServiceURL.Blogs}/send-updates?${queryString}`,
+      {}
+    );
+    if (result.data) {
+      // Записываем в файл дату рассылки
+      this.fileService.writeCurrentDate();
+    }
+    return result.data;
   }
 }

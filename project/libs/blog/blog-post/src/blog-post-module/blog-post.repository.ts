@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { PaginationResult, Post, Tag } from '@project/shared-core';
+import {
+  PaginationResult,
+  Post,
+  SortDirection,
+  Tag,
+} from '@project/shared-core';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from '@project/blog-models';
 
@@ -149,6 +154,9 @@ export class BlogPostRepository extends BasePostgresRepository<
         where.authorId = query.authorId;
       }
     }
+    if (query?.sortBy) {
+      orderBy[query.sortBy] = query.sortDirection;
+    }
 
     const [records, postCount] = await Promise.all([
       this.client.vPost.findMany({
@@ -173,6 +181,7 @@ export class BlogPostRepository extends BasePostgresRepository<
   }
 
   public async search(query: BlogPostSearchQuery): Promise<BlogPostEntity[]> {
+    const currentDate = new Date();
     const posts = await this.client.vPost.findMany({
       where: {
         OR: [
@@ -180,6 +189,7 @@ export class BlogPostRepository extends BasePostgresRepository<
           { quoteText: { contains: query.name, mode: 'insensitive' } },
           { description: { contains: query.name, mode: 'insensitive' } },
         ],
+        publicationDate: { not: null, lt: currentDate },
       },
       take: query.limit,
     });
@@ -202,5 +212,30 @@ export class BlogPostRepository extends BasePostgresRepository<
         publicationDate: { not: null, lt: currentDate },
       },
     });
+  }
+
+  public async findPublishedPostsLaterDate(
+    startDate: Date,
+    userId?: string
+  ): Promise<BlogPostEntity[]> {
+    const where: Prisma.vPostWhereInput = {};
+    const orderBy: Prisma.vPostOrderByWithRelationInput = {};
+    const currentDate = new Date();
+    if (startDate !== null) {
+      where.publicationDate = { not: null, gte: startDate, lt: currentDate };
+    } else {
+      // Если startDate null, то выбираем все записи до текущей даты
+      where.publicationDate = { not: null, lt: currentDate };
+    }
+    if (userId) {
+      where.authorId = userId;
+    }
+    orderBy.publicationDate = SortDirection.Asc;
+    console.log('where', where);
+    const posts = await this.client.vPost.findMany({
+      where,
+      orderBy,
+    });
+    return posts.map((post) => this.createEntityFromDocument(post));
   }
 }

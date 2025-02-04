@@ -1,6 +1,6 @@
 import { PostState } from './post-state.enum';
 import { PostType } from './post-type.enum';
-import { Comment } from './comment.interface';
+//import { Comment } from './comment.interface';
 
 export interface Post {
   id?: string;
@@ -22,7 +22,7 @@ export interface Post {
   quoteText?: string;
   quoteAuthor?: string;
   description?: string;
-  comments?: Comment[];
+  //comments?: Comment[];
 }
 
 // export interface BasePost {

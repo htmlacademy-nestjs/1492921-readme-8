@@ -10,7 +10,7 @@ import { PaginationResult, PostState } from '@project/shared-core';
 
 import { BlogCommentRepository } from './blog-comment.repository';
 import { BlogCommentEntity } from './blog-comment.entity';
-import { CreateBlogCommentDto } from './dto/create-blog-comment.dto';
+import { CreateBlogCommentDto } from './dto/create-comment.dto';
 import { BlogCommentFactory } from './blog-comment.factory';
 import { BlogCommentError } from './blog-comment.constant';
 import { BlogCommentQuery } from './blog-comment.query';

@@ -84,3 +84,14 @@ export class BlogPostCountQuery {
   @IsMongoId()
   public userId: string;
 }
+
+export class BlogSendUpdatesQuery {
+  @ApiProperty(CommonProperty.StartDate.Description)
+  @Transform(({ value }) => (value ? new Date(value) : null))
+  public startDate?: Date;
+
+  @ApiProperty(BlogPostProperty.SendPostUserId.Description)
+  @IsMongoId()
+  @IsOptional()
+  public userId?: string;
+}

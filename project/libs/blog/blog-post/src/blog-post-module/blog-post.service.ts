@@ -15,6 +15,7 @@ import {
   BlogPostCountQuery,
   BlogPostQuery,
   BlogPostSearchQuery,
+  BlogSendUpdatesQuery,
 } from './blog-post.query';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostProperty } from './swagger/blog-post-property';
@@ -167,5 +168,15 @@ export class BlogPostService {
 
   public async postsCount(query: BlogPostCountQuery): Promise<number> {
     return await this.blogPostRepository.postsCount(query);
+  }
+
+  public async getPublishedPostslaterDate({
+    startDate,
+    userId,
+  }: BlogSendUpdatesQuery): Promise<BlogPostEntity[]> {
+    return await this.blogPostRepository.findPublishedPostsLaterDate(
+      startDate,
+      userId
+    );
   }
 }

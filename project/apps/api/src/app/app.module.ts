@@ -6,6 +6,7 @@ import { UsersController } from './users.controller';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { BlogController } from './blog.controller';
 import { FilesController } from './files.controller';
+import { FilesService } from './files.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { FilesController } from './files.controller';
     }),
   ],
   controllers: [UsersController, BlogController, FilesController],
-  providers: [CheckAuthGuard],
+  providers: [CheckAuthGuard, FilesService],
 })
 export class AppModule {}
