@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-//import { Post, EntityFactory, PostState } from '@project/shared-types';
-import { Post, EntityFactory } from '@project/shared-types';
+import { Post, EntityFactory } from '@project/shared-core';
 import { BlogPostEntity } from './blog-post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 
@@ -12,28 +11,39 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     return new BlogPostEntity(entityPlainData);
   }
 
-  public static createFromCreatePostDto(dto: CreatePostDto): BlogPostEntity {
-    const entity = new BlogPostEntity();
-    entity.postType = dto.postType;
-    entity.authorId = dto.authorId;
-    //entity.isRepost = dto.repostId ? true : false;
-    entity.repostId = dto.repostId;
-    //entity.repostAuthorId = dto.repostAuthorId;
-    entity.tags = dto.tags ?? []; //(dto.tags ?? []).map((tag) => ({ name: tag }));
-    //entity.state = PostState.Published;
-    entity.createDate = dayjs().toDate();
-    entity.publicationDate = dayjs().toDate();
-    entity.likesCount = 0;
-    entity.commentsCount = 0;
-    entity.name = dto.name;
-    entity.url = dto.url;
-    entity.preview = dto.preview;
-    entity.text = dto.text;
-    entity.quoteText = dto.quoteText;
-    entity.quoteAuthor = dto.quoteAuthor;
-    entity.description = dto.description;
-    entity.comments = [];
+  public static createNewPost(dto: CreatePostDto): BlogPostEntity {
+    const newPost = new BlogPostEntity();
+    newPost.postType = dto.postType;
+    newPost.authorId = dto.authorId;
+    newPost.tags = dto.tags ?? [];
+    newPost.createDate = dayjs().toDate();
+    newPost.publicationDate = dayjs().toDate();
+    newPost.likesCount = 0;
+    newPost.commentsCount = 0;
+    newPost.name = dto.name;
+    newPost.url = dto.url;
+    newPost.preview = dto.preview;
+    newPost.text = dto.text;
+    newPost.quoteText = dto.quoteText;
+    newPost.quoteAuthor = dto.quoteAuthor;
+    newPost.description = dto.description;
 
-    return entity;
+    return newPost;
+  }
+
+  public static createRepost(
+    originalPost: Post,
+    userId: string
+  ): BlogPostEntity {
+    const newPost = new BlogPostEntity(originalPost);
+
+    newPost.authorId = userId;
+    newPost.repostId = originalPost.id;
+    newPost.createDate = dayjs().toDate();
+    newPost.publicationDate = dayjs().toDate();
+    newPost.likesCount = 0;
+    newPost.commentsCount = 0;
+
+    return newPost;
   }
 }

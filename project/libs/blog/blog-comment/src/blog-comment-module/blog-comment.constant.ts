@@ -1,6 +1,9 @@
-export const MAX_COMMENTS_COUNT = 50;
+export const BlogCommentPaginationDefault = {
+  PostCountLimit: 50,
+  PageCurrent: 1,
+} as const;
 
-export const BlogCommentValidateMessage = {
-  MessageIsEmpty: 'The message is empty',
-  InvalidID: 'Invalid author id',
+export const BlogCommentError = {
+  CommentNotFound: 'Comment not found',
+  NotAllow: 'Comment is not yours',
 } as const;

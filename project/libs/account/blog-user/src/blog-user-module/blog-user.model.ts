@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-import { AuthUser } from '@project/shared-types';
+import { AuthUser } from '@project/shared-core';
 
 @Schema({
   collection: 'accounts',
@@ -13,12 +13,6 @@ export class BlogUserModel extends Document implements AuthUser {
     unique: true,
   })
   public email: string;
-
-  @Prop({
-    required: true,
-    unique: true,
-  })
-  public login: string;
 
   @Prop({
     required: true,
@@ -37,6 +31,12 @@ export class BlogUserModel extends Document implements AuthUser {
     required: true,
   })
   public passwordHash: string;
+
+  @Prop({ required: true, default: 0 })
+  postsCount: number;
+
+  @Prop({ required: true, default: 0 })
+  subscribersCount: number;
 }
 
 export const BlogUserSchema = SchemaFactory.createForClass(BlogUserModel);

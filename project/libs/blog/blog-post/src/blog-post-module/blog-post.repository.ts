@@ -1,13 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { PaginationResult, Post, Tag } from '@project/shared-types';
+import {
+  PaginationResult,
+  Post,
+  SortDirection,
+  Tag,
+} from '@project/shared-core';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from '@project/blog-models';
 
 import { BlogPostEntity } from './blog-post.entity';
 import { BlogPostFactory } from './blog-post.factory';
-import { BlogPostQuery } from './blog-post.query';
+import {
+  BlogPostCountQuery,
+  BlogPostQuery,
+  BlogPostSearchQuery,
+} from './blog-post.query';
+import { calculatePage } from '@project/shared-helpers';
 
 @Injectable()
 export class BlogPostRepository extends BasePostgresRepository<
@@ -27,10 +37,6 @@ export class BlogPostRepository extends BasePostgresRepository<
 
   private async getPostCount(where: Prisma.vPostWhereInput): Promise<number> {
     return this.client.vPost.count({ where });
-  }
-
-  private calculatePostsPage(totalCount: number, limit: number): number {
-    return Math.ceil(totalCount / limit);
   }
 
   public async save(entity: BlogPostEntity): Promise<BlogPostEntity> {
@@ -92,7 +98,7 @@ export class BlogPostRepository extends BasePostgresRepository<
       where: { id: entity.id },
       data: {
         postType: pojoEntity.postType,
-        repostId: pojoEntity.repostId ?? null,
+        repostId: pojoEntity.repostId || null,
         tags: {
           set: [],
           connectOrCreate: pojoEntity.tags.map((tag) => ({
@@ -101,6 +107,8 @@ export class BlogPostRepository extends BasePostgresRepository<
           })),
         },
         publicationDate: pojoEntity.publicationDate,
+        likesCount: pojoEntity.likesCount,
+        commentsCount: pojoEntity.commentsCount,
         name: pojoEntity.name,
         url: pojoEntity.url,
         preview: pojoEntity.preview,
@@ -109,10 +117,6 @@ export class BlogPostRepository extends BasePostgresRepository<
         quoteAuthor: pojoEntity.quoteAuthor,
         description: pojoEntity.description,
       },
-      // include: {
-      //   comments: true,
-      //   tags: true,
-      // },
     });
     return await this.findById(record.id);
   }
@@ -126,18 +130,28 @@ export class BlogPostRepository extends BasePostgresRepository<
     const where: Prisma.vPostWhereInput = {};
     const orderBy: Prisma.vPostOrderByWithRelationInput = {};
 
-    // if (query?.tags) {
-    //   where.tags = {
-    //     some: {
-    //       name: {
-    //         in: query.tags,
-    //       },
-    //     },
-    //   };
-    // }
+    if (query?.tags) {
+      where.tags = {
+        hasSome: query.tags,
+      };
+    }
 
-    if (query?.sortDirection) {
-      orderBy.createDate = query.sortDirection;
+    if (query?.postType) {
+      where.postType = query.postType;
+    }
+
+    const currentDate = new Date();
+    if (query?.myDraft) {
+      where.authorId = query?.userId ?? '-';
+      where.publicationDate = { equals: null };
+    } else {
+      where.publicationDate = { not: null, lt: currentDate };
+      if (query?.authorId) {
+        where.authorId = query.authorId;
+      }
+    }
+    if (query?.sortBy) {
+      orderBy[query.sortBy] = query.sortDirection;
     }
 
     const [records, postCount] = await Promise.all([
@@ -156,9 +170,68 @@ export class BlogPostRepository extends BasePostgresRepository<
     return {
       entities: records.map((record) => this.createEntityFromDocument(record)),
       currentPage: query?.page,
-      totalPages: this.calculatePostsPage(postCount, take),
+      totalPages: calculatePage(postCount, take),
       itemsPerPage: take,
       totalItems: postCount,
     };
+  }
+
+  public async search(query: BlogPostSearchQuery): Promise<BlogPostEntity[]> {
+    const currentDate = new Date();
+    const posts = await this.client.vPost.findMany({
+      where: {
+        OR: [
+          { name: { contains: query.name, mode: 'insensitive' } },
+          { quoteText: { contains: query.name, mode: 'insensitive' } },
+          { description: { contains: query.name, mode: 'insensitive' } },
+        ],
+        publicationDate: { not: null, lt: currentDate },
+      },
+      take: query.limit,
+    });
+    return posts.map((post) => this.createEntityFromDocument(post));
+  }
+
+  public async existsRepost(postId: string, userId: string): Promise<boolean> {
+    const count = await this.client.post.count({
+      where: { repostId: postId, authorId: userId },
+    });
+
+    return count > 0;
+  }
+
+  public async postsCount(query: BlogPostCountQuery): Promise<number> {
+    const currentDate = new Date();
+    return await this.client.post.count({
+      where: {
+        authorId: query.userId,
+        publicationDate: { not: null, lt: currentDate },
+      },
+    });
+  }
+
+  public async findPublishedPostsLaterDate(
+    startDate: Date,
+    userId?: string
+  ): Promise<BlogPostEntity[]> {
+    const where: Prisma.vPostWhereInput = {};
+    const orderBy: Prisma.vPostOrderByWithRelationInput = {};
+    const currentDate = new Date();
+    if (startDate !== null) {
+      where.publicationDate = { not: null, gte: startDate, lt: currentDate };
+    } else {
+      // Если startDate null, то выбираем все записи до текущей даты
+      where.publicationDate = { not: null, lt: currentDate };
+    }
+    if (userId) {
+      where.authorId = userId;
+    }
+    orderBy.publicationDate = SortDirection.Asc;
+    console.log('where', where);
+    const posts = await this.client.vPost.findMany({
+      where,
+      orderBy,
+    });
+    return posts.map((post) => this.createEntityFromDocument(post));
   }
 }

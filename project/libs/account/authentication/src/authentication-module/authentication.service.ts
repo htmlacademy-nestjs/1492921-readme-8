@@ -12,14 +12,16 @@ import {
 } from '@nestjs/common';
 
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
-import { Token, User } from '@project/shared-types';
+import { AuthUser, Token, UpdatePassword, User } from '@project/shared-core';
 import { jwtConfig } from '@project/account-config';
-import { createJWTPayload } from '@project/shared-helpers';
+import { createJWTPayload, fillDto } from '@project/shared-helpers';
 
 import { CreateUserDto } from '../dto/create-user.dto';
-import { AuthUserError } from './authentication.constant';
+import { AuthenticationMessage } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
+import { AuthenticationResponse } from './authentication-response';
+import { UserRdo } from '../rdo/user.rdo';
 
 @Injectable()
 export class AuthenticationService {
@@ -34,39 +36,34 @@ export class AuthenticationService {
   ) {}
 
   public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
-    const { email, login, name, avatarUrl, password } = dto;
+    const { email, name, avatarUrl, password } = dto;
 
-    const blogUser = {
+    const blogUser: AuthUser = {
       email,
-      login,
       name,
       avatarUrl,
       passwordHash: '',
+      postsCount: 0,
+      subscribersCount: 0,
     };
 
     if (await this.blogUserRepository.findByEmail(email)) {
-      throw new ConflictException(AuthUserError.EmailExists);
+      throw new ConflictException(AuthenticationMessage.EmailExists);
     }
-    if (await this.blogUserRepository.findByLogin(login)) {
-      throw new ConflictException(AuthUserError.LoginExists);
-    }
-
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
     return await this.blogUserRepository.save(userEntity);
   }
 
   public async verifyUser(dto: LoginUserDto) {
-    const { login, password } = dto;
-    const existUser = await this.blogUserRepository.findByLogin(login);
-
+    const { email, password } = dto;
+    const existUser = await this.blogUserRepository.findByEmail(email);
     if (!existUser) {
-      throw new NotFoundException(AuthUserError.UserNotFound);
+      throw new NotFoundException(AuthenticationMessage.UserNotFound);
     }
 
     if (!(await existUser.comparePassword(password))) {
-      throw new UnauthorizedException(AuthUserError.PasswordWrong);
+      throw new UnauthorizedException(AuthenticationMessage.PasswordWrong);
     }
-
     return existUser;
   }
 
@@ -74,7 +71,7 @@ export class AuthenticationService {
     const user = await this.blogUserRepository.findById(id);
 
     if (!user) {
-      throw new NotFoundException(AuthUserError.UserNotFound);
+      throw new NotFoundException(AuthenticationMessage.UserNotFound);
     }
 
     return user;
@@ -84,20 +81,33 @@ export class AuthenticationService {
     const user = await this.blogUserRepository.findByEmail(email);
 
     if (!user) {
-      throw new NotFoundException(AuthUserError.UserNotFound);
+      throw new NotFoundException(AuthenticationMessage.UserNotFound);
     }
 
     return user;
   }
 
-  public async getUserByLogin(login: string) {
-    const user = await this.blogUserRepository.findByLogin(login);
-
-    if (!user) {
-      throw new NotFoundException(AuthUserError.UserNotFound);
+  public async updatePassword(dto: UpdatePassword) {
+    if (!dto.userId) {
+      throw new UnauthorizedException(
+        AuthenticationResponse.UserNotAuth.description
+      );
     }
-
-    return user;
+    const existUser = await this.blogUserRepository.findById(dto.userId);
+    if (!existUser) {
+      throw new NotFoundException(
+        AuthenticationResponse.UserNotFound.description
+      );
+    }
+    const login: LoginUserDto = {
+      email: existUser.email,
+      password: dto.oldPassword,
+    };
+    if (await this.verifyUser(login)) {
+      const userEntity = await existUser.setPassword(dto.newPassword);
+      this.blogUserRepository.update(userEntity);
+      return userEntity;
+    }
   }
 
   public async createUserToken(user: User): Promise<Token> {
@@ -116,7 +126,6 @@ export class AuthenticationService {
           expiresIn: this.jwtOptions.refreshTokenExpiresIn,
         }
       );
-
       return { accessToken, refreshToken };
     } catch (error) {
       this.logger.error('[Token generation error]: ' + error.message);

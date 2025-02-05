@@ -31,5 +31,6 @@ import { EmailSubscriberController } from './email-subscriber.controller';
     EmailSubscriberRepository,
     EmailSubscriberFactory,
   ],
+  exports: [EmailSubscriberService],
 })
 export class EmailSubscriberModule {}

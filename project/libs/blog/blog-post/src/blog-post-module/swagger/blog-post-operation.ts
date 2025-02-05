@@ -1,0 +1,23 @@
+export const BlogPostOperation = {
+  CreateVideo: { summary: 'Добавление новой публикации с типом "Видео"' },
+  CreateText: { summary: 'Добавление новой публикации с типом "Текст"' },
+  CreateQuote: { summary: 'Добавление новой публикации с типом "Цитаты' },
+  CreatePhoto: { summary: 'Добавление новой публикации с типом "Фото"' },
+  CreateLink: { summary: 'Добавление новой публикации с типом "Ссылка"' },
+  UpdateVideo: { summary: 'Изменение публикации с типом "Видео"' },
+  UpdateText: { summary: 'Изменение публикации с типом "Текст"' },
+  UpdateQuote: { summary: 'Изменение публикации с типом "Цитаты' },
+  UpdatePhoto: { summary: 'Изменение публикации с типом "Фото"' },
+  UpdateLink: { summary: 'Изменение публикации с типом "Ссылка"' },
+
+  Create: { summary: 'Добавление новой публикации' },
+  Update: { summary: 'Редактирование публикации' },
+  Delete: { summary: 'Удаление публикации' },
+  Index: { summary: 'Получение списка публикаций' },
+  View: { summary: 'Просмотр публикации' },
+  Repost: { summary: 'Репост публикации' },
+  Search: { summary: 'Поиск публикаций по названию' },
+  Count: { summary: 'Количество публикации пользователя' },
+  SendUpdates: { summary: 'Рассылка уведомлений о новых публикациях' },
+  MyFeed: { summary: 'Лента пользователя' },
+} as const;

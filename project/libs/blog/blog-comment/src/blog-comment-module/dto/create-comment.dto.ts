@@ -1,12 +1,17 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
-import { BlogCommentValidateMessage } from '../blog-comment.constant';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateCommentDto {
+import { BlogCommentProperty } from '../swagger/blog-comment-property';
+import { CommonProperty } from '@project/shared-core';
+
+export class CreateBlogCommentDto {
+  @ApiProperty(BlogCommentProperty.Text.Description)
   @IsString()
-  @IsNotEmpty({ message: BlogCommentValidateMessage.MessageIsEmpty })
+  @IsNotEmpty()
   public text: string;
 
+  @ApiProperty(CommonProperty.UserIdNotNull.Description)
   @IsString()
-  @IsMongoId({ message: BlogCommentValidateMessage.InvalidID })
+  @IsMongoId()
   public userId: string;
 }

@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigType } from '@nestjs/config';
 
 import { jwtConfig } from '@project/account-config';
-import { RefreshTokenPayload } from '@project/shared-types';
+import { RefreshTokenPayload } from '@project/shared-core';
 
 import { AuthenticationService } from '../authentication-module/authentication.service';
 import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
@@ -33,6 +33,6 @@ export class JwtRefreshStrategy extends PassportStrategy(
     }
     await this.refreshTokenService.deleteRefreshSession(payload.tokenId);
     await this.refreshTokenService.deleteExpiredRefreshTokens();
-    return this.authService.getUserByLogin(payload.login);
+    return this.authService.getUserByEmail(payload.email);
   }
 }

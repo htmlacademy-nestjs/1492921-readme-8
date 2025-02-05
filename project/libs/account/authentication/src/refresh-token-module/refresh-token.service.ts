@@ -3,7 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import dayjs from 'dayjs';
 
 import { jwtConfig } from '@project/account-config';
-import { RefreshTokenPayload } from '@project/shared-types';
+import { RefreshTokenPayload } from '@project/shared-core';
 import { parseTime } from '@project/shared-helpers';
 
 import { RefreshTokenRepository } from './refresh-token.repository';

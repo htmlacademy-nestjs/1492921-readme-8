@@ -1,9 +1,6 @@
 import {
-  ArrayMaxSize,
   IsArray,
-  IsEmpty,
   IsIn,
-  IsISO8601,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -11,71 +8,94 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
+import { PostType } from '@project/shared-core';
 
-import { PostType } from '@project/shared-types';
-import { ImATeapotException } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
+import { BlogPostProperty } from '../swagger/blog-post-property';
+import { Transform } from 'class-transformer';
 
 export class UpdatePostDto {
+  @ApiProperty(BlogPostProperty.PostType.Description)
   @IsIn(Object.values(PostType))
   @IsNotEmpty()
   postType: PostType;
 
+  @ApiProperty(BlogPostProperty.RepostId.Description)
   @IsOptional()
   @IsString()
   repostId?: string;
 
-  //repostAuthorId?: string;
+  @ApiProperty(BlogPostProperty.Tags.Description)
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  @ArrayMaxSize(8)
-  @Length(3, 10, { each: true })
   tags?: string[];
 
+  @ApiProperty(BlogPostProperty.PublicationDate.Description)
+  @Transform(({ value }) => (value ? new Date(value) : null))
   @IsOptional()
-  @IsISO8601()
   publicationDate?: Date;
 
+  @ApiProperty(BlogPostProperty.Name.Description)
   @IsOptional()
   @ValidateIf((o) => [PostType.Video, PostType.Text].includes(o.postType))
   @IsString()
-  @Length(20, 50)
+  @Length(
+    BlogPostProperty.Name.Validate.MinLength,
+    BlogPostProperty.Name.Validate.MaxLength
+  )
   name?: string;
 
+  @ApiProperty(BlogPostProperty.Url.Description)
   @IsOptional()
-  @ValidateIf((o) =>
-    [PostType.Video, PostType.Photo, PostType.Link].includes(o.postType)
-  )
+  @ValidateIf((o) => [PostType.Video, PostType.Link].includes(o.postType))
   @IsUrl()
   url?: string;
 
+  @ApiProperty(BlogPostProperty.Preview.Description)
   @IsOptional()
   @ValidateIf((o) => o.postType === PostType.Text)
   @IsString()
-  @Length(50, 255)
+  @Length(
+    BlogPostProperty.Preview.Validate.MinLength,
+    BlogPostProperty.Preview.Validate.MaxLength
+  )
   preview?: string;
 
+  @ApiProperty(BlogPostProperty.Text.Description)
   @IsOptional()
   @ValidateIf((o) => o.postType === PostType.Text)
   @IsString()
-  @Length(100, 1024)
+  @Length(
+    BlogPostProperty.Text.Validate.MinLength,
+    BlogPostProperty.Text.Validate.MaxLength
+  )
   text?: string;
 
+  @ApiProperty(BlogPostProperty.QuoteText.Description)
   @IsOptional()
   @ValidateIf((o) => o.postType === PostType.Quote)
   @IsString()
-  @Length(20, 300)
+  @Length(
+    BlogPostProperty.QuoteText.Validate.MinLength,
+    BlogPostProperty.QuoteText.Validate.MaxLength
+  )
   quoteText?: string;
 
+  @ApiProperty(BlogPostProperty.QuoteAuthor.Description)
   @IsOptional()
   @ValidateIf((o) => o.postType === PostType.Quote)
   @IsString()
-  @Length(3, 50)
+  @Length(
+    BlogPostProperty.QuoteAuthor.Validate.MinLength,
+    BlogPostProperty.QuoteAuthor.Validate.MaxLength
+  )
   quoteAuthor?: string;
 
+  @ApiProperty(BlogPostProperty.Description.Description)
   @IsOptional()
   @ValidateIf((o) => o.postType === PostType.Link)
   @IsString()
-  @Length(1, 300)
+  @Length(BlogPostProperty.Description.Validate.MaxLength)
   description?: string;
 }

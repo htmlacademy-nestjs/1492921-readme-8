@@ -1,26 +1,30 @@
 import { Controller } from '@nestjs/common';
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 
-import { RabbitRouting } from '@project/shared-types';
+import { Post, RabbitRouting } from '@project/shared-core';
 
 import { EmailSubscriberService } from './email-subscriber.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
-import { MailService } from './mail-module/mail.service';
 
 @Controller()
 export class EmailSubscriberController {
-  constructor(
-    private readonly subscriberService: EmailSubscriberService,
-    private readonly mailService: MailService
-  ) {}
+  constructor(private readonly subscriberService: EmailSubscriberService) {}
 
   @RabbitSubscribe({
-    exchange: 'readme.notify',
+    exchange: process.env.RABBIT_EXCHANGE,
     routingKey: RabbitRouting.AddSubscriber,
-    queue: 'readme.notify.income',
+    queue: process.env.RABBIT_QUEUE_SUBSCRIBERS,
   })
   public async create(subscriber: CreateSubscriberDto) {
     this.subscriberService.addSubscriber(subscriber);
-    this.mailService.sendNotifyNewSubscriber(subscriber);
+  }
+
+  @RabbitSubscribe({
+    exchange: process.env.RABBIT_EXCHANGE,
+    routingKey: RabbitRouting.SendPostUpdates,
+    queue: process.env.RABBIT_QUEUE_POST_UPDATES,
+  })
+  public async sendPostUpdates(posts: Post[]): Promise<void> {
+    await this.subscriberService.sendNotifyPostUpdates(posts);
   }
 }

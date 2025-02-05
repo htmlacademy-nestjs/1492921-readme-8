@@ -1,25 +1,97 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsIn, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
-import { SortDirection } from '@project/shared-types';
+import { PostType } from '@prisma/client';
+import { CommonProperty, SortDirection, SortType } from '@project/shared-core';
 
 import {
-  DEFAULT_POST_COUNT_LIMIT,
-  DEFAULT_SORT_DIRECTION,
-  DEFAULT_PAGE_COUNT,
+  BlogPostPaginationDefault,
+  BlogPostSortDefault,
 } from './blog-post.constant';
+import { BlogPostProperty } from './swagger/blog-post-property';
 
 export class BlogPostQuery {
-  @Transform(({ value }) => +value || DEFAULT_POST_COUNT_LIMIT)
-  @IsNumber()
-  @IsOptional()
-  public limit = DEFAULT_POST_COUNT_LIMIT;
+  public limit: number = BlogPostPaginationDefault.PostCountLimit;
 
+  @ApiProperty(BlogPostProperty.SortDirection.Description)
   @IsIn(Object.values(SortDirection))
   @IsOptional()
-  public sortDirection: SortDirection = DEFAULT_SORT_DIRECTION;
+  public sortDirection?: SortDirection = BlogPostSortDefault.Direction;
 
-  @Transform(({ value }) => +value || DEFAULT_PAGE_COUNT)
+  @ApiProperty(BlogPostProperty.SortType.Description)
+  @IsIn(Object.values(SortType))
   @IsOptional()
-  public page: number = DEFAULT_PAGE_COUNT;
+  public sortBy?: SortType = BlogPostSortDefault.Type;
+
+  @ApiProperty(CommonProperty.CurrentPage.Description)
+  @Transform(
+    ({ value }) => parseInt(value, 10) || BlogPostPaginationDefault.PageCurrent
+  )
+  @IsOptional()
+  public page?: number = BlogPostPaginationDefault.PageCurrent;
+
+  @ApiProperty(BlogPostProperty.PostType.Description)
+  @IsIn(Object.values(PostType))
+  @IsOptional()
+  postType?: PostType;
+
+  @ApiProperty(BlogPostProperty.AuthorId.Description)
+  @IsString()
+  @IsMongoId()
+  @IsOptional()
+  authorId?: string;
+
+  @ApiProperty(BlogPostProperty.Tags.Description)
+  @Transform(({ value }) =>
+    typeof value === 'string'
+      ? [value.toLowerCase()]
+      : value.map((tag) => tag.toLowerCase())
+  )
+  @IsArray()
+  @IsOptional()
+  public tags?: string[];
+
+  @ApiProperty(BlogPostProperty.MyDraft.Description)
+  @Transform(({ value }) => (value === 'true' ? true : false))
+  @IsBoolean()
+  @IsOptional()
+  myDraft?: boolean = false;
+
+  @ApiProperty(CommonProperty.UserId.Description)
+  @IsMongoId()
+  @IsOptional()
+  userId?: string;
+}
+
+export class BlogPostSearchQuery {
+  public limit: number = BlogPostPaginationDefault.PostCountSearch;
+
+  @ApiProperty(BlogPostProperty.Search.Description)
+  @IsString()
+  public name: string;
+}
+
+export class BlogPostCountQuery {
+  @ApiProperty(CommonProperty.UserIdNotNull.Description)
+  @IsMongoId()
+  public userId: string;
+}
+
+export class BlogSendUpdatesQuery {
+  @ApiProperty(CommonProperty.StartDate.Description)
+  @Transform(({ value }) => (value ? new Date(value) : null))
+  public startDate?: Date;
+
+  @ApiProperty(BlogPostProperty.SendPostUserId.Description)
+  @IsMongoId()
+  @IsOptional()
+  public userId?: string;
 }

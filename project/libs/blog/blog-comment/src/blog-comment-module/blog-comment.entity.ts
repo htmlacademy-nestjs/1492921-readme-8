@@ -1,4 +1,4 @@
-import { Comment, Entity, StorableEntity } from '@project/shared-types';
+import { Comment, Entity, StorableEntity } from '@project/shared-core';
 
 export class BlogCommentEntity
   extends Entity
@@ -18,7 +18,7 @@ export class BlogCommentEntity
     if (!comment) {
       return;
     }
-    this.id = comment.id ?? undefined;
+    this.id = comment.id || undefined;
     this.postId = comment.postId;
     this.userId = comment.userId;
     this.text = comment.text;

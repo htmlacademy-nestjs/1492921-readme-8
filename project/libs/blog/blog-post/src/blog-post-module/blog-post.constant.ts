@@ -1,15 +1,19 @@
-import { SortDirection } from '@project/shared-types';
+import { SortDirection, SortType } from '@project/shared-core';
 
 export const BlogPostError = {
   PostNotFound: 'Post not found',
+  NotAllow: 'Post is not yours',
+  RepostExist: 'You already reposted this post',
+  PostIsDraft: 'Post state is not is published',
 } as const;
 
-export const DEFAULT_POST_COUNT_LIMIT = 25;
-export const DEFAULT_SORT_DIRECTION = SortDirection.Desc;
-export const DEFAULT_PAGE_COUNT = 1;
+export const BlogPostPaginationDefault = {
+  PostCountLimit: 25,
+  PageCurrent: 1,
+  PostCountSearch: 20,
+} as const;
 
-export const TagSetup = {
-  MaxCount: 8,
-  MinChar: 3,
-  MaxChar: 10,
-};
+export const BlogPostSortDefault = {
+  Direction: SortDirection.Desc,
+  Type: SortType.PublicationDate,
+} as const;

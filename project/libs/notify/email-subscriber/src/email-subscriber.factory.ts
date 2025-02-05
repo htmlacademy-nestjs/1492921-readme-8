@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Subscriber, EntityFactory } from '@project/shared-types';
+import { Subscriber, EntityFactory } from '@project/shared-core';
 import { EmailSubscriberEntity } from './email-subscriber.entity';
 
 @Injectable()

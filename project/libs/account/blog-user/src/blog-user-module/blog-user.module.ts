@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BlogUserRepository } from './blog-user.repository';
 import { BlogUserFactory } from './blog-user.factory';
 import { BlogUserModel, BlogUserSchema } from './blog-user.model';
+import { BlogUserService } from './blog-user.service';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { BlogUserModel, BlogUserSchema } from './blog-user.model';
       { name: BlogUserModel.name, schema: BlogUserSchema },
     ]),
   ],
-  providers: [BlogUserRepository, BlogUserFactory],
+  providers: [BlogUserRepository, BlogUserFactory, BlogUserService],
   exports: [BlogUserRepository],
 })
 export class BlogUserModule {}

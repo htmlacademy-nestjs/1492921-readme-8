@@ -24,15 +24,9 @@ export class BlogUserRepository extends BaseMongoRepository<
     if (!email) {
       return null;
     }
-    const document = await this.model.findOne({ email }).exec();
-    return this.createEntityFromDocument(document);
-  }
-
-  public async findByLogin(login: string): Promise<BlogUserEntity | null> {
-    if (!login) {
-      return null;
-    }
-    const document = await this.model.findOne({ login }).exec();
+    const document = await this.model
+      .findOne({ email: { $regex: new RegExp(email, 'i') } })
+      .exec();
     return this.createEntityFromDocument(document);
   }
 }
