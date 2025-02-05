@@ -1,6 +1,4 @@
-  # { id: '6766cb736c313811f627c05e', name: 'Alexey Ivanov', avatarUrl: '' },
-  # { id: '6766cbb86c313811f627c062', name: 'Ivan Petrov', avatarUrl: '' },
-# Create a new user
+ # Create a new user
 POST http://localhost:3333/api/auth/register HTTP/1.1
 Content-Type: application/json
 
