@@ -1,8 +1,10 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
 
-const DEFAULT_PORT = 3000;
-const DEFAULT_MONGO_PORT = 27017;
+const DefaultPort = {
+  Listen: 3000,
+  Mongo: 27017,
+};
 const ENVIRONMENTS = ['development', 'production', 'stage'] as const;
 
 type Environment = (typeof ENVIRONMENTS)[number];
@@ -26,7 +28,7 @@ const validationSchema = Joi.object({
   environment: Joi.string()
     .valid(...ENVIRONMENTS)
     .required(),
-  port: Joi.number().port().default(DEFAULT_PORT),
+  port: Joi.number().port().default(DefaultPort.Listen),
   uploadDirectory: Joi.string().required(),
   serveDirectory: Joi.string().required(),
   db: Joi.object({
@@ -49,13 +51,13 @@ function validateConfig(config: FileVaultConfig): void {
 function getConfig(): FileVaultConfig {
   const config: FileVaultConfig = {
     environment: process.env.NODE_ENV as Environment,
-    port: parseInt(process.env.PORT || `${DEFAULT_PORT}`, 10),
+    port: parseInt(process.env.PORT || `${DefaultPort.Listen}`, 10),
     uploadDirectory: process.env.UPLOAD_DIRECTORY_PATH,
     serveDirectory: process.env.SERVE_ROOT,
     db: {
       host: process.env.MONGO_HOST,
       port: parseInt(
-        process.env.MONGO_PORT ?? DEFAULT_MONGO_PORT.toString(),
+        process.env.MONGO_PORT ?? DefaultPort.Mongo.toString(),
         10
       ),
       name: process.env.MONGO_DB,
