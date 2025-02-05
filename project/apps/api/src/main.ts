@@ -10,7 +10,7 @@ import { API_PORT } from './app/app.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
+  const GLOBAL_PREFIX = 'api';
   const config = new DocumentBuilder()
     .setTitle('Readme App')
     .setDescription('Readme App API')
@@ -19,7 +19,7 @@ async function bootstrap() {
     .addBearerAuth(BearerAuthOption, BearerAuth.RefreshToken)
     .build();
 
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(GLOBAL_PREFIX);
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('spec', app, document);
 
@@ -28,7 +28,7 @@ async function bootstrap() {
   const port = process.env.PORT || API_PORT;
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://localhost:${port}/${GLOBAL_PREFIX}`
   );
 }
 

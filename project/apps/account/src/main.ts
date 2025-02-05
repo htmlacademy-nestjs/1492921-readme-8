@@ -22,8 +22,8 @@ async function bootstrap() {
     .addBearerAuth(BearerAuthOption, BearerAuth.RefreshToken)
     .build();
 
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  const GLOBAL_PREFIX = 'api';
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('spec', app, document);
@@ -39,7 +39,7 @@ async function bootstrap() {
 
   await app.listen(port);
   Logger.log(
-    `🚀 Service ACCOUNT is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Service ACCOUNT is running on: http://localhost:${port}/${GLOBAL_PREFIX}`
   );
 }
 
