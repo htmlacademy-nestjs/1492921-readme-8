@@ -1,11 +1,3 @@
-// export enum PostType {
-//   Video,
-//   Text,
-//   Quote,
-//   Photo,
-//   Link,
-// }
-
 export const PostType = {
   Video: 'video',
   Text: 'text',

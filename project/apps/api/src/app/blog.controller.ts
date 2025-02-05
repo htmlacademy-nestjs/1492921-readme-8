@@ -92,7 +92,6 @@ export class BlogController {
   constructor(
     private readonly httpService: HttpService,
     private readonly fileService: FilesService
-    // private readonly notifyService: BlogNo
   ) {}
 
   // Преобразуем tags в массив, предполагая, что разные тэги разделены запятой
@@ -523,7 +522,6 @@ export class BlogController {
   ) {
     let queryString = url.parse(req.url).query;
     // Считываем дату последней рассылки из файла
-
     const lastDate = this.fileService.readDate();
     if (lastDate) {
       queryString = `${queryString}&startDate=${lastDate}`;

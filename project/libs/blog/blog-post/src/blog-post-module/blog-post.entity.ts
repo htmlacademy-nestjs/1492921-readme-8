@@ -5,9 +5,6 @@ import {
   PostType,
   StorableEntity,
 } from '@project/shared-core';
-
-//import { BlogCommentEntity, BlogCommentFactory } from '@project/blog-comment';
-
 export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public postType: PostType;
   public authorId: string;
@@ -28,7 +25,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public quoteText: string; // заполняется для Quote
   public quoteAuthor: string; // заполняется для Quote
   public description: string; // заполняется для Link
-  //public comments: BlogCommentEntity[];
 
   constructor(post?: Post) {
     super();
@@ -63,13 +59,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     this.quoteAuthor = post.quoteAuthor || null;
     this.quoteText = post.quoteText || null;
     this.description = post.description || null;
-
-    // this.comments = [];
-    // const blogCommentFactory = new BlogCommentFactory();
-    // for (const comment of post.comments ?? []) {
-    //   const blogCommentEntity = blogCommentFactory.create(comment);
-    //   this.comments.push(blogCommentEntity);
-    // }
   }
 
   public toPOJO(): Post {

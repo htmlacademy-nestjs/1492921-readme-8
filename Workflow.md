@@ -1,85 +1,64 @@
 # Как работать над проектом
 
-## Окружение
-
-Для удобства работы над проектом используются инструменты из **Node.js** и **npm**. Все необходимые настройки произведены. Убедитесь, что на рабочем компьютере установлена **Node.js**, соответсвтующая актуальной версии. Актуальная версия **Node.js** указана в файле `package.json` в поле `node`. После, в терминале, перейти в директорию с проектом и _единожды_ запустите команду:
-
+## Перейти в папку с проектом
+```bash
+cd ~/1492921-readme-8/project
+```
+## Установить зависимости
 ```bash
 npm install
 ```
-
-Данная команда запустит процесс установки зависимостей проекта из **npm**.
-
-### Сценарии
-
-После создания проекта вам доступны следующие сценарии.
-
-#### Компиляция проекта
+## Скопировать .env-example -> .env:
 
 ```bash
-npm run compile
+cp apps/account/.env-example apps/account/.env
+cp apps/api/.env-example apps/api/.env
+cp apps/blog/.env-example apps/blog/.env
+cp apps/file-vault/.env-example apps/file-vault/.env
+cp apps/notify/.env-example apps/notify/.env
 ```
-
-Во время выполнения инструкций по компиляции проекта, в корне проекта создается директория `dist`, в которую будут помещены результирующие файлы.
-
-#### Очистка проекта
-
+## Docker
+### Установить docker containers для сервиса аккаунтов (account)
 ```bash
-npm run clean
+docker compose --file ./apps/account/docker-compose.dev.yml --project-name "readme-account" --env-file ./apps/account/.env up -d
 ```
-
-Во время выполения инструкции по очистке проекта, директория `dist`, которая предназначена для хранения результирующих файлов, будет удалена.
-
-#### Сборка проекта
-
+### Установить docker containers для сервиса блога (blog)
 ```bash
-npm run build
+docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "readme-blog" --env-file ./apps/blog/.env up -d
 ```
-
-В процессе сборки приложения, будут выполнены инструкции «Очистка проекта» и «Компиляция проекта». 
-
-#### Проверка линтером
-
+### Установить docker containers для сервиса хранения файлов (file-vault)
 ```bash
-npm run lint
+docker compose --file ./apps/file-vault/file-vault.compose.dev.yml --project-name "readme-file-vault" --env-file ./apps/file-vault/.env up -d
 ```
-
-Запуск проверки проекта статическим анализатором кода **ESLint**.
-
-Анализ кода производится только в файлах, которые находятся в директории `src`.
-
-**Обратите внимание**, при запуске данной команды, ошибки выводятся в терминал.
-
-#### Запуск REPL
-
+### Установить docker containers для сервиса уведомлений (notify)
 ```bash
-npm run ts
+docker compose --file ./apps/notify/notify.compose.dev.yml --project-name "readme-notify" --env-file ./apps/notify/.env up -d
 ```
-
-Запуск `ts-node` позволяет вам напрямую выполнять код TypeScript на NodeJS без предварительной компиляции. 
-
-#### Запуск проекта
-
+## DB Postgres
+### Сгенерировать клиент Prisma
 ```bash
-npm start
+npx nx run blog:db:generate
 ```
+### Сгенерировать и выполнить скрипт создания объектов в БД Postgres
+```bash
+npx nx run blog:db:migrate
+```
+## Запуск сервисов
+```bash
+npx nx run file-vault:serve
+npx nx run notify:serve
+npx nx run account:serve
+npx nx run blog:serve
+npx nx run api:serve
+```
+## Запуск Swagger 
+### для тестирования end-point-ов приложения 
+http://localhost:3000/spec#/
 
-В процессе запуска проекта будет выполнен процесс «Сборки проекта» и запуска результирующего кода.
+### для дополнительно тестирования end-point-ов отдельных микросервисов
+The «Account» service
+http://localhost:3333/spec#/
+<br>
+The «Blog» service
+http://localhost:3334/spec#/       
 
-## Структура проекта
-
-### Директория `src`
-
-В директории размещаются исходный код проекта: компоненты, модули и так далее. Структура директории `src` может быть произвольной.
-
-### Файл `Readme.md`
-
-Файл, содержащий инструкции по работе с учебным репозиторием.
-
-### Файл `Contributing.md`
-
-Файл, содержащий советы и инструкции по внесению изменений в учебный репозиторий.
-
-### Остальное
-
-Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.

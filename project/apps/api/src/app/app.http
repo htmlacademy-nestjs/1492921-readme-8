@@ -64,7 +64,7 @@ Content-Type: application/json
 
 # Create a new Photo post
 POST http://localhost:3000/api/blogs/posts/photo HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0N2ZjMzQ0NDRmYWM2MmE4MDVmYjgiLCJlbWFpbCI6IkFJQG5tYWlsLnJ1IiwibmFtZSI6IkFsZXhleSBJdmFub3YiLCJpYXQiOjE3Mzg0MTU5ODgsImV4cCI6MTczODQxNjI4OH0.qH2woJp1USqwzQmw1jE8qU8ZPKt_2LC4RNgLp4tqP2U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0N2ZjMzQ0NDRmYWM2MmE4MDVmYjgiLCJlbWFpbCI6IkFJQG5tYWlsLnJ1IiwibmFtZSI6IkFsZXhleSBJdmFub3YiLCJpYXQiOjE3Mzg3Mjg2NzUsImV4cCI6MTczODcyODk3NX0.bH3eFT3Y9wLQoA6sgMkN53PxMTMK6ZZOqoss_9Bru_Y
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -85,7 +85,7 @@ Content-Disposition: form-data; name="photoFile"; filename="Фото.jpg"
 
 # Create a new Photo post
 POST http://localhost:3000/api/blogs/posts/photo HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0N2ZjMzQ0NDRmYWM2MmE4MDVmYjgiLCJlbWFpbCI6IkFJQG5tYWlsLnJ1IiwibmFtZSI6IkFsZXhleSBJdmFub3YiLCJpYXQiOjE3Mzg0MTU5ODgsImV4cCI6MTczODQxNjI4OH0.qH2woJp1USqwzQmw1jE8qU8ZPKt_2LC4RNgLp4tqP2U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0N2ZjMzQ0NDRmYWM2MmE4MDVmYjgiLCJlbWFpbCI6IkFJQG5tYWlsLnJ1IiwibmFtZSI6IkFsZXhleSBJdmFub3YiLCJpYXQiOjE3Mzg3Mjg2NzUsImV4cCI6MTczODcyODk3NX0.bH3eFT3Y9wLQoA6sgMkN53PxMTMK6ZZOqoss_9Bru_Y
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary

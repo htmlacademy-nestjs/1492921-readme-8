@@ -96,8 +96,6 @@ export class BlogPostController {
   @ApiOperation(BlogPostOperation.Create)
   @ApiResponse(BlogPostResponse.PostCreated)
   @ApiResponse(CommonResponse.BadRequest)
-  @ApiBody(BlogPostBody.create)
-  //@ApiHeader(BlogPostHeader.RequestId)
   public async create(@Body() dto: CreatePostDto) {
     const newPost = await this.blogPostService.createPost(dto);
     return fillDto(BlogPostRdo, newPost.toPOJO());

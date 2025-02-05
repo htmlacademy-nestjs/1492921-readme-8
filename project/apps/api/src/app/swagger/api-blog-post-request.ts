@@ -42,7 +42,7 @@ export const ApiBlogPostBody = {
           postType: 'photo',
           authorId: '6766fdb720f78014bf83d5a3',
           tags: ['Ford', 'Retro'],
-          //url: '/images/photo.jpeg',
+          url: '/images/photo.jpeg',
         },
       },
       l: {

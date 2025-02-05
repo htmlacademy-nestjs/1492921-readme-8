@@ -117,10 +117,6 @@ export class BlogPostRepository extends BasePostgresRepository<
         quoteAuthor: pojoEntity.quoteAuthor,
         description: pojoEntity.description,
       },
-      // include: {
-      //   comments: true,
-      //   tags: true,
-      // },
     });
     return await this.findById(record.id);
   }

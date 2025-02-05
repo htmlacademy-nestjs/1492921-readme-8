@@ -251,10 +251,4 @@ export const BlogPostProperty = {
       example: '25',
     },
   },
-  // SubscriptionsCount: {
-  //   Description: {
-  //     description: 'The user subscriptions count',
-  //     example: 5,
-  //   },
-  // },
 } as const;
